@@ -99,3 +99,6 @@ COA_StaticSpawnPoint : "{62865C82AB534D91}PrefabsMissionMaking/Systems/SpawnPoin
 GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
  coords 4813.21 27.9 11220
 }
+GenericEntity : "{598B5EFD3AC11242}Prefabs/GRAD_Endgame_Garrison.et" {
+ coords 4950 28 11213
+}
