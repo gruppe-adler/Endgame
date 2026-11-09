@@ -1,0 +1,32 @@
+GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitary_US_01.et" {
+ ID "C23A0C5FBFCA2B25"
+ components {
+  GRAD_Endgame_DocumentSiteComponent "{BE045DAA946CF13D}" {
+  }
+  ActionsManagerComponent "{D6B6D5750C6D3243}" {
+   ActionContexts {
+    UserActionContext "{C86A0F03F7875087}" {
+     UIInfo SCR_ActionUIInfo "{6E33CC66DD4A65C6}" {
+      Name "Documents"
+     }
+     ContextName "world"
+     Position PointInfo "{9534BE0C61CB9CD5}" {
+      Offset 0 0.9 0
+     }
+     Radius 2.5
+    }
+   }
+   additionalActions {
+    GRAD_Endgame_CopyDocumentAction "{15EBB23EFEB11568}" {
+     ParentContextList {
+      "world"
+     }
+     UIInfo SCR_ActionUIInfo "{F7824A46F1A07A70}" {
+      Name "Copy documents"
+     }
+     Duration 10
+    }
+   }
+  }
+ }
+}

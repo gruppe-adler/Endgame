@@ -1,0 +1,101 @@
+COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/Systems/!Lobby/COA_Lobby.et" {
+ coords 0 0 0
+ m_bRespawnEnabled 1
+ m_bWaveRespawn 0
+ m_iTimeToRespawn 60
+ m_iBLUFORTickets -1
+ m_iOPFORTickets -1
+ m_bLockUnusedSlots 0
+ m_BLUFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7301}" {
+  m_rGearScript "{B0EB1A0A0C8C4698}Configs/Gearscripts/GRAD_Endgame_GS_US80s.conf"
+  m_bEnableBFT 1
+  m_bEnableLeadershipRadios 1
+  m_bEnableGIRadios 0
+  m_bEnableRTORadios 1
+ }
+ m_OPFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7302}" {
+  m_rGearScript "{61052F4A8AC7951B}Configs/Gearscripts/GRAD_Endgame_GS_USSR80s.conf"
+  m_bEnableBFT 1
+  m_bEnableLeadershipRadios 1
+  m_bEnableGIRadios 0
+  m_bEnableRTORadios 1
+ }
+ m_iFactionOneRatio 1
+ m_iFactionTwoRatio 1
+ m_iTimeLimitMinutes 45
+ m_bUseSafestartTimeLimit 1
+ m_iSafestartTimeLimit 3
+ m_bUseCVON 0
+ m_aMissionDescriptors {
+  COA_MissionDescriptor "{6A0956CA7C5B8001}" {
+   m_sTitle "Endgame 1989"
+   m_sTextData "Test world for the Endgame 1989 mode."
+   m_aFactionKeys {
+   }
+   m_bShowForAnyFaction 1
+  }
+ }
+ m_sFactionOneKey "BLU"
+ m_sFactionTwoKey "OPF"
+ m_BLUFORSlots {
+  COA_SlottingGroup "{6A190A84AAFF7101}" {
+   m_sCallsign "1-1"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7102}" {
+   m_sCallsign "1-2"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+ }
+ m_OPFORSlots {
+  COA_SlottingGroup "{6A190A84AAFF7201}" {
+   m_sCallsign "2-1"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7202}" {
+   m_sCallsign "2-2"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+ }
+}
+COA_StaticSpawnPoint : "{0B3312C6940005B9}PrefabsMissionMaking/Systems/SpawnPoints/OPFOR_Spawn.et" {
+ coords 4813.21 28 11335.921
+}
+COA_StaticSpawnPoint : "{62865C82AB534D91}PrefabsMissionMaking/Systems/SpawnPoints/BLUFOR_Spawn.et" {
+ coords 4813.21 28 11213.16
+}
+GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
+ coords 4813.21 27.9 11220
+}

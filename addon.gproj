@@ -4,5 +4,7 @@ GameProject {
  TITLE "Endgame"
  Dependencies {
   "58D0FB3206B6F859"
+  "69EA43E490A50DBE"
+  "6624E618B9058265"
  }
 }
