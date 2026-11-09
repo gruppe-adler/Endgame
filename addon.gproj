@@ -1,0 +1,8 @@
+GameProject {
+ ID "Endgame"
+ GUID "6AD3266E1A154C66"
+ TITLE "Endgame"
+ Dependencies {
+  "58D0FB3206B6F859"
+ }
+}
