@@ -1,0 +1,7 @@
+GenericEntity : "{5E6CBF60621C39CD}Prefabs/Props/Military/Arsenal/AmmoBoxes/USSR/AmmoBoxArsenal_Ammunition_USSR.et" {
+ ID "DB5B5FAB8F4D3E27"
+ components {
+  GRAD_Endgame_SnapToTerrainComponent "{C7FDE805EC99108D}" {
+  }
+ }
+}

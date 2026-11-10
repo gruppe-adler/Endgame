@@ -180,9 +180,9 @@ $grp GenericEntity : "{F2A74DE452E6B438}Prefabs/GRAD_Endgame_AmmoPallet.et" {
  {
   coords 4454.423 5.812 11194.052
  }
- {
-  coords 4851.133 111.459 8107.533
- }
+}
+GenericEntity : "{DDA1494C73CF256D}Prefabs/GRAD_Endgame_AmmoPallet_OPFOR.et" {
+ coords 4851.133 111.459 8107.533
 }
 $grp GenericEntity : "{F438889E6C8098D4}Prefabs/GRAD_Endgame_RadioSite.et" {
  {
