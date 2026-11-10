@@ -187,6 +187,19 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "0 = every garrison spawns at game start (decided 2026-11-10). 1 = each spawns when the first player comes near.", category: "AI")]
 	protected bool m_bGarrisonSpawnOnApproach;
 
+	// --- HUD sound ---
+	[Attribute(defvalue: "1", desc: "Typewriter strike for each character typed in a HUD widget, bell at 100 %.", category: "HUD")]
+	protected bool m_bTypewriterSound;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the typewriter events.", params: "acp", category: "HUD")]
+	protected ResourceName m_sTypewriterSoundProject;
+
+	[Attribute(defvalue: "GRAD_Endgame_TypeKey", desc: "Event in the audio project for one key strike.", category: "HUD")]
+	protected string m_sTypewriterKeyEvent;
+
+	[Attribute(defvalue: "GRAD_Endgame_TypeBell", desc: "Event in the audio project for the bell.", category: "HUD")]
+	protected string m_sTypewriterBellEvent;
+
 	// --- Match ---
 	[Attribute(defvalue: "0", desc: "Extra time limit of the radio phase in minutes. 0 = none; the whole match is limited by COALITION's m_iTimeLimitMinutes (60, decided 2026-11-10), which ends as a draw.", category: "Match")]
 	protected float m_fPhase3TimeLimitMinutes;
@@ -263,6 +276,12 @@ class GRAD_Endgame_Config
 	ResourceName GetGarrisonMedium() { return m_sGarrisonMedium; }
 	ResourceName GetGarrisonHeavy() { return m_sGarrisonHeavy; }
 	bool GetGarrisonSpawnOnApproach() { return m_bGarrisonSpawnOnApproach; }
+
+	// HUD sound
+	bool GetTypewriterSound() { return m_bTypewriterSound; }
+	ResourceName GetTypewriterSoundProject() { return m_sTypewriterSoundProject; }
+	string GetTypewriterKeyEvent() { return m_sTypewriterKeyEvent; }
+	string GetTypewriterBellEvent() { return m_sTypewriterBellEvent; }
 
 	// Match
 	float GetPhase3TimeLimitSeconds() { return Scaled(m_fPhase3TimeLimitMinutes * 60); }

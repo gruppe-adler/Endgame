@@ -445,9 +445,9 @@ class GRAD_Endgame_TransmitAction : SCR_ScriptedUserAction
 
 		int percent = Math.Round(m_Site.GetProgressFraction() * 100);
 		if (m_Site.GetState() == GRAD_Endgame_ETransmissionState.TRANSMITTING)
-			outName = string.Format("Stop transmission (%1 %%)", percent);
+			outName = string.Format("Stop transmission (%1 \%)", percent);
 		else
-			outName = string.Format("Transmit (%1 %%)", percent);
+			outName = string.Format("Transmit (%1 \%)", percent);
 		return true;
 	}
 }

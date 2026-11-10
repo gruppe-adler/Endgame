@@ -158,6 +158,15 @@ With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test
 
 If every list reads 0 although the prefabs are placed, reload the world once and run it again.
 
+## Typewriter sound
+
+Needs `Sounds/GRAD_Endgame_Typewriter.acp` with the events `GRAD_Endgame_TypeKey` and `GRAD_Endgame_TypeBell`, set in the config. Until the HUD exists, test from the script console on a client:
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 45 | `GRAD_Endgame_Typewriter.PlayKey(); GRAD_Endgame_Typewriter.PlayBell();` | One strike, one bell |
+| 46 | `GRAD_Endgame_TypedBar b = new GRAD_Endgame_TypedBar(10); b.Update(0, false); Print(b.Update(0.5)); Print(b.Update(1));` | Prints `[#####.....]  50 %` then `[##########]  100 %`; 5 strikes, then 5 strikes and the bell |
+
 ## Results
 
 | Date | Commit | Passed | Failed | Notes |

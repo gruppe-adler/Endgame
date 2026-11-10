@@ -257,7 +257,7 @@ class GRAD_Endgame_MapValidatorPlugin : WorkbenchPlugin
 		}
 
 		if (fair == 0)
-			Fail(string.Format("No fair %1 site set exists (best imbalance %2 %%, allowed %3 %%). Place sites halfway between the FOBs.", what, Math.Round(best * 100), Math.Round(tolerance * 100)));
+			Fail(string.Format("No fair %1 site set exists (best imbalance %2 \%, allowed %3 \%). Place sites halfway between the FOBs.", what, Math.Round(best * 100), Math.Round(tolerance * 100)));
 		else if (distinct.Count() < 3)
 			Warn(string.Format("Only %1 different fair %2 site sets came up in %3 draws: little variety between matches.", distinct.Count(), what, runs));
 		else
