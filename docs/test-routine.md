@@ -22,6 +22,7 @@ Written without Workbench:
 - `Objectives/GRAD_Endgame_FobComponent.c` (FOB taken when its garrison is wiped out, spawn points move there)
 - `Objectives/GRAD_Endgame_SiteSelection.c` (5 of all placed sites, balanced between the FOBs)
 - `Info/GRAD_Endgame_InfoService.c`, `GRAD_Endgame_InfoClient.c` (per-side markers, hints, decoded order by owner RPC, resync on join and respawn)
+- `Objectives/GRAD_Endgame_FobVehicleSpawnerComponent.c` (light vehicles at the FOB, respawn when destroyed or driven away)
 - `Objectives/GRAD_Endgame_Cipher.c`, `GRAD_Endgame_RadioSiteComponent.c` (cipher, cipher sites, radio sites, transmit action, direction finding)
 
 Calls to look at first if something does not compile:
@@ -108,6 +109,10 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 28 | Start the game | `sites_chosen;;;;5 of N sites, imbalance X %` with X at most 10. Only those 5 show the copy action; garrisons spawn at once at the 5 sites and both FOBs, none at the others |
 | 29 | Wipe out the BLUFOR FOB garrison | `fob_state;BLUFOR;...;taken`, `spawn_moved;BLUFOR;...;1 spawn point(s)`, `free_respawn`. A dead BLUFOR player now spawns at the FOB |
 | 30 | Wipe out the OPFOR FOB garrison too | `phase;;;;FOB -> DOCUMENTS (rule)` |
+| 29b | Place two `GRAD_Endgame_FobVehicleSpawnerComponent` spots per side near the FOBs, with a light vehicle prefab. Take the BLUFOR FOB | `vehicle_spawn;BLUFOR` per spot; nothing for OPFOR yet |
+| 29c | Drive a BLUFOR vehicle 600 m away (time scale 10: wait 40 s) | A new vehicle on the empty spot; the driven one stays where it is |
+| 29d | Drive one 600 m away, bring it back before 40 s | No new vehicle |
+| 29e | Destroy a vehicle on its spot | No replacement while the wreck blocks the spot. TODO: clear wrecks, or spawn beside them |
 | 31 | In phase RADIO, a new client joins | No free slot to take; he lands in spectator |
 
 ## Phases (needs the game-mode component)

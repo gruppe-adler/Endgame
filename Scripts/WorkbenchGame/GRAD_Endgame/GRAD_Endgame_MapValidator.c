@@ -172,6 +172,21 @@ class GRAD_Endgame_MapValidatorPlugin : WorkbenchPlugin
 			return;
 		}
 
+		int vehiclesOne, vehiclesTwo;
+		foreach (GRAD_Endgame_FobVehicleSpawnerComponent spawner : GRAD_Endgame_FobVehicleSpawnerComponent.GetAll())
+		{
+			if (spawner.GetFactionKey() == cfg.GetFactionKeyOne())
+				vehiclesOne++;
+			else if (spawner.GetFactionKey() == cfg.GetFactionKeyTwo())
+				vehiclesTwo++;
+		}
+		if (vehiclesOne == 0 || vehiclesTwo == 0)
+			Warn(string.Format("FOB vehicle spots: %1 for %2, %3 for %4. Each side should have some.", vehiclesOne, cfg.GetFactionKeyOne(), vehiclesTwo, cfg.GetFactionKeyTwo()));
+		else if (vehiclesOne != vehiclesTwo)
+			Warn(string.Format("Uneven FOB vehicles: %1 for %2, %3 for %4.", vehiclesOne, cfg.GetFactionKeyOne(), vehiclesTwo, cfg.GetFactionKeyTwo()));
+		else
+			Pass(string.Format("%1 FOB vehicle spots per side.", vehiclesOne));
+
 		float distance = vector.DistanceXZ(fobOne.GetOwner().GetOrigin(), fobTwo.GetOwner().GetOrigin());
 		if (distance < MIN_FOB_DISTANCE)
 			Warn(string.Format("FOBs are only %1 m apart (want %2+).", Math.Round(distance), MIN_FOB_DISTANCE));

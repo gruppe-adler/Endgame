@@ -10,6 +10,7 @@ class GRAD_Endgame_FobComponentClass : ScriptComponentClass
 //!    COALITION resolves a spawn location from the spawn point ENTITY at spawn time, so moving the
 //!    entity is enough, no re-registration);
 //!  - the owning faction gets a free respawn (Sugar Lake);
+//!  - the light vehicles on this side's GRAD_Endgame_FobVehicleSpawnerComponent spots appear;
 //!  - when both FOBs are taken, the game moves from phase FOB to DOCUMENTS (Sugar Lake).
 //!
 //! Prefab: this component plus a GRAD_Endgame_GarrisonComponent on the SAME entity. Place one per
@@ -103,6 +104,13 @@ class GRAD_Endgame_FobComponent : ScriptComponent
 		GRAD_Endgame_MatchLog.Write("fob_state", m_sFactionKey, 0, GetOwner().GetOrigin(), "taken");
 
 		MoveSpawnPoints();
+
+		// Light vehicles at this FOB become available now.
+		foreach (GRAD_Endgame_FobVehicleSpawnerComponent spawner : GRAD_Endgame_FobVehicleSpawnerComponent.GetAll())
+		{
+			if (spawner.GetFactionKey() == m_sFactionKey)
+				spawner.Enable();
+		}
 
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
 		COA_RespawnManager respawnManager = COA_RespawnManager.GetInstance();

@@ -103,10 +103,10 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "A destroyed vehicle refunds its budget cost.", category: "Vehicles")]
 	protected bool m_bVehicleRefundOnLoss;
 
-	[Attribute(defvalue: "400", desc: "Seconds until an abandoned or destroyed transport respawns at the depot (Sugar Lake value).", category: "Vehicles")]
+	[Attribute(defvalue: "400", desc: "Seconds until a FOB vehicle that was destroyed or driven away respawns on its spot (Sugar Lake value).", category: "Vehicles")]
 	protected float m_fTransportRespawnSeconds;
 
-	[Attribute(defvalue: "500", desc: "Distance in metres from its start position beyond which a transport's respawn timer runs (Sugar Lake value).", category: "Vehicles")]
+	[Attribute(defvalue: "500", desc: "A FOB vehicle further than this from its spot counts as taken away and is replaced (Sugar Lake value).", category: "Vehicles")]
 	protected float m_fTransportRespawnRadius;
 
 	// --- Documents ---
