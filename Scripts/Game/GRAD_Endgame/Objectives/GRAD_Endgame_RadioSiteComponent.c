@@ -54,6 +54,10 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 
 	protected static ref array<GRAD_Endgame_RadioSiteComponent> s_aAll = {};
 
+	// Every machine with sound: the running loop, if any (pattern from COALITION's COA_RallyPoint)
+	protected AudioHandle m_LoopHandle = AudioHandle.Invalid;
+	protected bool m_bLoopPlaying;
+
 	// Server only
 	protected int m_iOperatorId;
 	protected float m_fNextDfIn;
@@ -125,21 +129,75 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 	{
 		super.OnPostInit(owner);
 		s_aAll.Insert(this);
+
+		// A late joiner gets the state without the change callback, so start the loop if needed.
+		GetGame().GetCallqueue().CallLater(UpdateLoop, 1000, false);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override void OnDelete(IEntity owner)
 	{
 		GetGame().GetCallqueue().Remove(ServerTick);
+		GetGame().GetCallqueue().Remove(UpdateLoop);
+		StopLoop();
 		s_aAll.RemoveItem(this);
 		super.OnDelete(owner);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Client: state arrived. TODO (WP4): start or stop the radio loop sound here, and once after
-	//! joining, because the callback does not fire for a late joiner.
+	//! Client: state arrived.
 	protected void OnStateReplicated()
 	{
+		UpdateLoop();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Radio loop (decided 2026-11-10): while the site transmits it plays a looping sound at the set,
+	//! so defenders can find it by ear. Runs on every machine that has sound, including a listen
+	//! server (the server calls it itself in SetState, because the replication callback only runs
+	//! on clients). The sound and its range come from the audio project in the config.
+	protected void UpdateLoop()
+	{
+		bool shouldPlay = m_eState == GRAD_Endgame_ETransmissionState.TRANSMITTING;
+		if (shouldPlay == m_bLoopPlaying)
+			return;
+
+		if (!shouldPlay)
+		{
+			StopLoop();
+			return;
+		}
+
+		if (System.IsConsoleApp())
+			return;
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg || cfg.GetRadioLoopProject().IsEmpty() || cfg.GetRadioLoopEvent().IsEmpty())
+			return;
+
+		vector transform[4];
+		GetOwner().GetWorldTransform(transform);
+		m_LoopHandle = AudioSystem.PlayEvent(cfg.GetRadioLoopProject(), cfg.GetRadioLoopEvent(), transform);
+		m_bLoopPlaying = true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void StopLoop()
+	{
+		if (m_bLoopPlaying && m_LoopHandle != AudioHandle.Invalid)
+			AudioSystem.TerminateSound(m_LoopHandle);
+
+		m_LoopHandle = AudioHandle.Invalid;
+		m_bLoopPlaying = false;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: change state, replicate it and update the loop for a listen-server host.
+	protected void SetState(GRAD_Endgame_ETransmissionState state)
+	{
+		m_eState = state;
+		Replication.BumpMe();
+		UpdateLoop();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -228,8 +286,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 		}
 
 		m_iOperatorId = playerId;
-		m_eState = GRAD_Endgame_ETransmissionState.TRANSMITTING;
-		Replication.BumpMe();
+		SetState(GRAD_Endgame_ETransmissionState.TRANSMITTING);
 
 		// IMMEDIATE: the first fix goes out now; DELAYED: after one interval.
 		m_fNextDfIn = 0;
@@ -252,8 +309,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 		if (cfg && cfg.GetTransmissionInterrupt() == GRAD_Endgame_ETransmissionInterrupt.RESET)
 			m_fProgress = 0;
 
-		m_eState = GRAD_Endgame_ETransmissionState.INTERRUPTED;
-		Replication.BumpMe();
+		SetState(GRAD_Endgame_ETransmissionState.INTERRUPTED);
 
 		GRAD_Endgame_MatchLog.Write("transmission", m_sProgressFaction, m_iOperatorId, GetOwner().GetOrigin(), string.Format("interrupted (%1) at %2 s", cause, Math.Round(m_fProgress)));
 		GRAD_Endgame_InfoService.HintFaction(m_sProgressFaction, "Radio", "Transmission interrupted: " + cause);
@@ -344,8 +400,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 	protected void Complete()
 	{
 		GetGame().GetCallqueue().Remove(ServerTick);
-		m_eState = GRAD_Endgame_ETransmissionState.DONE;
-		Replication.BumpMe();
+		SetState(GRAD_Endgame_ETransmissionState.DONE);
 
 		GRAD_Endgame_MatchLog.Write("transmission", m_sProgressFaction, m_iOperatorId, GetOwner().GetOrigin(), "done");
 

@@ -159,8 +159,11 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "300", desc: "OPEN. Radius in metres of the direction-finding search area.", category: "Radio")]
 	protected float m_fDfAreaRadius;
 
-	[Attribute(defvalue: "150", desc: "OPEN. Distance in metres at which the radio loop can be heard.", category: "Radio")]
-	protected float m_fRadioLoopRange;
+	[Attribute(defvalue: "{EFFB3D8065A486E3}", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project of the loop a transmitting radio site plays. Default: the vanilla deployed-radio chatter COALITION uses at rally points, as a placeholder.", params: "acp", category: "Radio")]
+	protected ResourceName m_sRadioLoopProject;
+
+	[Attribute(defvalue: "SOUND_DEPLOYED_RADIO_CHATTER", desc: "Event in that audio project. It must loop; how far it carries is set in the audio project (target about 150 m).", category: "Radio")]
+	protected string m_sRadioLoopEvent;
 
 	[Attribute(defvalue: "1", desc: "Militia guards the radio sites.", category: "Radio")]
 	protected bool m_bMilitiaAtRadioSites;
@@ -260,7 +263,8 @@ class GRAD_Endgame_Config
 	GRAD_Endgame_EDirectionFindingAccuracy GetDirectionFindingAccuracy() { return m_eDirectionFindingAccuracy; }
 	float GetDfIntervalSeconds() { return Scaled(m_fDfIntervalSeconds); }
 	float GetDfAreaRadius() { return m_fDfAreaRadius; }
-	float GetRadioLoopRange() { return m_fRadioLoopRange; }
+	ResourceName GetRadioLoopProject() { return m_sRadioLoopProject; }
+	string GetRadioLoopEvent() { return m_sRadioLoopEvent; }
 	bool GetMilitiaAtRadioSites() { return m_bMilitiaAtRadioSites; }
 
 	// AI

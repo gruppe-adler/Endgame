@@ -147,6 +147,7 @@ With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test
 | 39 | Operator with cipher transmits | `transmission;BLUFOR;...;started at 0 s`; OPFOR gets "Enemy transmission within 300 m of ..." and `df_sent` |
 | 40 | Operator walks 10 m away | `interrupted (operator left the set) at N s`; with PAUSE, starting again continues from N |
 | 41 | Transmit to the end | `transmission ... done`, `match_end;BLUFOR;;;winner BLUFOR (transmission)` |
+| 41b | Stand 50 m from a transmitting site, then 300 m | Radio chatter loop audible near the set, gone far away; stops when the transmission stops; a client joining mid-transmission hears it too |
 | 42 | Kill the operator while transmitting | `interrupted (operator killed)`; the cipher can be taken from the body |
 
 ## Map validator
