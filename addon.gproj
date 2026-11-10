@@ -7,4 +7,19 @@ GameProject {
   "69EA43E490A50DBE"
   "6624E618B9058265"
  }
+ Configurations {
+  GameProjectConfig PC {
+  }
+  GameProjectConfig XBOX_ONE {
+  }
+  GameProjectConfig XBOX_SERIES {
+  }
+  GameProjectConfig PS4 {
+  }
+  GameProjectConfig PS5 {
+   PlatformHardware PS5
+  }
+  GameProjectConfig HEADLESS {
+  }
+ }
 }
