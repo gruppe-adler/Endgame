@@ -109,7 +109,7 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 28 | Start the game | `sites_chosen;;;;5 of N sites, imbalance X %` with X at most 10. Only those 5 show the copy action; garrisons spawn at once at the 5 sites and both FOBs, none at the others |
 | 29 | Wipe out the BLUFOR FOB garrison | `fob_state;BLUFOR;...;taken`, `spawn_moved;BLUFOR;...;1 spawn point(s)`, `free_respawn`. A dead BLUFOR player now spawns at the FOB |
 | 30 | Wipe out the OPFOR FOB garrison too | `phase;;;;FOB -> DOCUMENTS (rule)` |
-| 29b | Place two `GRAD_Endgame_FobVehicleSpawnerComponent` spots per side near the FOBs, with a light vehicle prefab. Take the BLUFOR FOB | `vehicle_spawn;BLUFOR` per spot; nothing for OPFOR yet |
+| 29b | Place two `GRAD_Endgame_FobVehicleSpawnerComponent` spots per side near the FOBs, with a light vehicle prefab. Start the game | `vehicle_spawn` for every spot of both sides at once |
 | 29c | Drive a BLUFOR vehicle 600 m away (time scale 10: wait 40 s) | A new vehicle on the empty spot; the driven one stays where it is |
 | 29d | Drive one 600 m away, bring it back before 40 s | No new vehicle |
 | 29e | Destroy a vehicle on its spot | After 40 s the wreck disappears and a new vehicle stands there |

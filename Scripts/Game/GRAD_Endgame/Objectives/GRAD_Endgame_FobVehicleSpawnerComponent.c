@@ -8,7 +8,7 @@ class GRAD_Endgame_FobVehicleSpawnerComponentClass : ScriptComponentClass
 //! that respawn when taken away).
 //!
 //! Rules (Sugar Lake's transport respawn):
-//!  - Nothing spawns until this side's FOB is taken; then the vehicle appears on this spot.
+//!  - The vehicle is there from game start (decided 2026-11-10: the FOB's AI guards it anyway).
 //!  - When the vehicle is destroyed, or has been driven more than m_fTransportRespawnRadius (500 m)
 //!    from the spot, a timer of m_fTransportRespawnSeconds (400 s) starts.
 //!  - When the timer is up and the spot is clear, a new vehicle spawns. A wreck of the spot's own
@@ -56,18 +56,40 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	{
 		super.OnPostInit(owner);
 		s_aAll.Insert(this);
+
+		if (Replication.IsServer())
+			GetGame().GetCallqueue().CallLater(WaitForGameStart, 2000, true);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: spawn the first vehicle once the match runs (same moment the garrisons spawn).
+	protected void WaitForGameStart()
+	{
+		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
+		bool running;
+		if (gameMode)
+			running = gameMode.GetPhase() != GRAD_Endgame_EPhase.WAITING;
+		else
+			running = COA_Gamemode.GetInstance() && COA_Gamemode.GetInstance().m_GamemodeState == COA_EGamemodeState.GAME;
+
+		if (!running)
+			return;
+
+		GetGame().GetCallqueue().Remove(WaitForGameStart);
+		Enable();
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override void OnDelete(IEntity owner)
 	{
 		GetGame().GetCallqueue().Remove(ServerTick);
+		GetGame().GetCallqueue().Remove(WaitForGameStart);
 		s_aAll.RemoveItem(this);
 		super.OnDelete(owner);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Server: the FOB of this side has been taken. Spawn the first vehicle and start watching it.
+	//! Server: spawn the first vehicle and start watching it. Called once at game start.
 	void Enable()
 	{
 		if (!Replication.IsServer() || m_bEnabled)
