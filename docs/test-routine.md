@@ -144,6 +144,15 @@ With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test
 | 41 | Transmit to the end | `transmission ... done`, `match_end;BLUFOR;;;winner BLUFOR (transmission)` |
 | 42 | Kill the operator while transmitting | `interrupted (operator killed)`; the cipher can be taken from the body |
 
+## Map validator
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 43 | World Editor: Plugins > GRAD Endgame > Validate Endgame map | A dialog with PASS / WARN / FAIL lines, also in the console and the clipboard. On the current test world: FAIL for missing FOBs, radio and cipher sites, until those prefabs are placed |
+| 44 | Place both FOBs, 6+ document sites, 2+ radio sites, 2 cipher sites; run again | No FAIL. Fix any WARN about distances or variety, or accept it |
+
+If every list reads 0 although the prefabs are placed, reload the world once and run it again.
+
 ## Results
 
 | Date | Commit | Passed | Failed | Notes |
