@@ -40,6 +40,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	[RplProp()]
 	protected bool m_bPermadeathActive;
 
+	//! Document threshold set by an admin before the mission starts. -1 = use the config value.
+	[RplProp()]
+	protected int m_iThresholdOverride = -1;
+
 	protected static GRAD_Endgame_GameModeComponent s_Instance;
 
 	protected ref ScriptInvoker m_OnPhaseChanged = new ScriptInvoker();   //!< (GRAD_Endgame_EPhase oldPhase, GRAD_Endgame_EPhase newPhase)
@@ -73,6 +77,40 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	string GetWinnerKey()
 	{
 		return m_sWinnerKey;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Copies a side needs for phase 3: the admin's lobby setting, else the config value.
+	int GetDocumentThreshold()
+	{
+		if (m_iThresholdOverride >= 0)
+			return m_iThresholdOverride;
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg)
+			return 0;
+		return cfg.GetDocumentThreshold();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: an admin sets the threshold. Only before the mission starts, and only to a value the
+	//! active sites can reach (one copy per site). Returns false if refused.
+	bool SetDocumentThreshold(int threshold, int adminId)
+	{
+		if (!Replication.IsServer() || m_ePhase != GRAD_Endgame_EPhase.WAITING)
+			return false;
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		int sites = GRAD_Endgame_DocumentSiteComponent.GetAll().Count();
+		if (cfg && cfg.GetActiveDocumentSites() > 0)
+			sites = Math.Min(sites, cfg.GetActiveDocumentSites());
+		if (threshold < 1 || (sites > 0 && threshold > sites))
+			return false;
+
+		m_iThresholdOverride = threshold;
+		Replication.BumpMe();
+		GRAD_Endgame_MatchLog.Debug(string.Format("Admin %1 set the document threshold to %2", adminId, threshold));
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -181,7 +219,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 				if (m_ePhase != GRAD_Endgame_EPhase.WAITING)
 					break;
 
-				GRAD_Endgame_MatchLog.StartMatch(string.Format("world=%1", GetGame().GetWorldFile()));
+				GRAD_Endgame_MatchLog.StartMatch(string.Format("world=%1, document threshold %2", GetGame().GetWorldFile(), GetDocumentThreshold()));
 				SelectDocumentSites();
 				SelectRadioSites();
 				SetPhase(GRAD_Endgame_EPhase.FOB, "rule");
@@ -577,11 +615,11 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			return total;
 
 		// Own side only: the count, and this site leaves its map (one copy per site per side).
-		GRAD_Endgame_InfoService.HintFaction(factionKey, "Documents", string.Format("%1 of %2 copied", total, cfg.GetDocumentThreshold()));
+		GRAD_Endgame_InfoService.HintFaction(factionKey, "Documents", string.Format("%1 of %2 copied", total, GetDocumentThreshold()));
 		if (!siteMarkerId.IsEmpty() && cfg.GetCopiesPerSitePerFaction() == 1)
 			GRAD_Endgame_InfoService.RemoveMarker(factionKey, siteMarkerId);
 
-		if (cfg.GetDocumentThreshold() > 0 && total >= cfg.GetDocumentThreshold() && m_ePhase == GRAD_Endgame_EPhase.DOCUMENTS)
+		if (GetDocumentThreshold() > 0 && total >= GetDocumentThreshold() && m_ePhase == GRAD_Endgame_EPhase.DOCUMENTS)
 		{
 			m_sLeadingFaction = factionKey;
 			SetPhase(GRAD_Endgame_EPhase.RADIO, "rule");

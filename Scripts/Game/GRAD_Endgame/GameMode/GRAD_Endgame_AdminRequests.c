@@ -7,6 +7,7 @@
 //!     COA_PlayerRplToAuthorityManager.GetInstance().EndgameAdvancePhase();
 //!     COA_PlayerRplToAuthorityManager.GetInstance().EndgameReleaseWave("BLUFOR");
 //!     COA_PlayerRplToAuthorityManager.GetInstance().EndgameEndMatch("OPFOR");   // "" = draw
+//!     COA_PlayerRplToAuthorityManager.GetInstance().EndgameSetThreshold(4);     // before start
 //!
 //! The server ignores every request whose sender is not an admin (COALITION's IsCallerAdmin, which
 //! is SCR_Global.IsAdmin on the caller's id). Each accepted request is written to the match log.
@@ -56,6 +57,31 @@ modded class COA_PlayerRplToAuthorityManager
 
 		GRAD_Endgame_MatchLog.Write("admin", factionKey, GetCallerPlayerId(), vector.Zero, "release wave");
 		respawnManager.EndgameFreeRespawn(factionKey, "admin");
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Set how many copies a side needs for phase 3. Only before the mission starts.
+	void EndgameSetThreshold(int threshold)
+	{
+		Rpc(RpcAsk_EndgameSetThreshold, threshold);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RpcAsk_EndgameSetThreshold(int threshold)
+	{
+		if (!IsCallerAdmin())
+			return;
+
+		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
+		if (!gameMode)
+			return;
+
+		int callerId = GetCallerPlayerId();
+		if (gameMode.SetDocumentThreshold(threshold, callerId))
+			GRAD_Endgame_InfoService.HintPlayer(callerId, "Endgame", string.Format("Documents needed for phase 3: %1", threshold));
+		else
+			GRAD_Endgame_InfoService.HintPlayer(callerId, "Endgame", "Not changed: only before the mission starts, and at most one per active document site.");
 	}
 
 	//------------------------------------------------------------------------------------------------

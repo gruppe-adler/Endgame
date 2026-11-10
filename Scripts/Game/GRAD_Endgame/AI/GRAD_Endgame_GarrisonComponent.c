@@ -1,45 +1,63 @@
 //------------------------------------------------------------------------------------------------
+enum GRAD_Endgame_EGarrisonTier
+{
+	LIGHT,
+	MEDIUM,
+	HEAVY,
+	CUSTOM   //!< use the prefabs set on this component instead of the config's tier list
+}
+
+//------------------------------------------------------------------------------------------------
 class GRAD_Endgame_GarrisonComponentClass : ScriptComponentClass
 {
 }
 
 //------------------------------------------------------------------------------------------------
-//! A garrison at this entity. The server spawns ONE AI group, once, and never removes it again
-//! (decided 2026-11-10: no despawning, the engine carries a round's worth of AI; spawning by
-//! script keeps map setup to placing this prefab).
+//! A garrison at this entity: FIA militia, hostile to both player sides (decided 2026-11-10).
+//! The server spawns its groups once and never removes them (no despawning; spawning by script
+//! keeps map setup to placing one prefab).
+//!
+//! What spawns: the group prefabs of the tier (LIGHT, MEDIUM, HEAVY) from the config, or with
+//! CUSTOM the prefabs set on this component. Several groups make one garrison, so a heavy garrison
+//! can be a rifle squad plus a machine-gun team.
 //!
 //! When it spawns:
-//!  - config m_bGarrisonSpawnOnApproach off (default, decided 2026-11-10): at game start, that is
-//!    when COALITION's state becomes GAME (or the phase leaves WAITING);
+//!  - config m_bGarrisonSpawnOnApproach off (default): at game start, that is when COALITION's
+//!    state becomes GAME (or the phase leaves WAITING);
 //!  - on: when the first player comes within the spawn radius;
 //!  - any time: when something calls SpawnNow().
-//! A garrison on a document site that was not chosen for the match never spawns.
+//! A garrison on a document or radio site that was not chosen for the match never spawns.
 //!
-//! "Cleared" is reported once, when the group has had members and has none left. FOB capture (M2)
-//! and the document sites (M4) listen to GetOnCleared().
+//! "Cleared" is reported once, when every group has had members and none is left. FOB capture
+//! listens to GetOnCleared().
 //!
-//! Server only; clients see the AI through normal replication. The spawn pattern is
-//! BreakingContact's GRAD_BC_CivilianScoutManager (SCR_AIGroup from a group prefab, optional
-//! waypoint).
+//! Server only; clients see the AI through normal replication. Spawn pattern from BreakingContact's
+//! GRAD_BC_CivilianScoutManager (SCR_AIGroup from a group prefab, optional waypoint).
 //!
 //! CHANGED WITHOUT WORKBENCH (2026-11-10): not compiled, not run.
 class GRAD_Endgame_GarrisonComponent : ScriptComponent
 {
-	[Attribute("{E3545CFEDD312D54}Prefabs/Groups/OPFOR/Group_USSR_RifleSquad_p.et", UIWidgets.ResourcePickerThumbnail, "AI group prefab that forms the garrison. TODO: a militia group, chosen by tier from the config.", params: "et")]
-	protected ResourceName m_sGroupPrefab;
+	[Attribute("1", UIWidgets.ComboBox, "Size of the garrison. LIGHT, MEDIUM and HEAVY take their group prefabs from the config.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_EGarrisonTier))]
+	protected GRAD_Endgame_EGarrisonTier m_eTier;
 
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "Optional waypoint prefab (for example a defend waypoint). Without one the group holds its spawn position.", params: "et")]
+	[Attribute("", UIWidgets.ResourcePickerThumbnail, "Only with tier CUSTOM: the group prefabs to spawn.", params: "et")]
+	protected ref array<ResourceName> m_aCustomGroups;
+
+	[Attribute("", UIWidgets.ResourcePickerThumbnail, "Optional waypoint prefab (for example a defend waypoint), one per group. Without one the groups hold their spawn position.", params: "et")]
 	protected ResourceName m_sWaypointPrefab;
 
 	[Attribute("200", UIWidgets.Slider, "A player within this distance (m) spawns the garrison, if spawning on approach is on in the config.", "10 2000 10")]
 	protected float m_fSpawnRadius;
 
+	[Attribute("6", desc: "Groups after the first are placed this many metres apart around the entity, so they do not spawn inside each other.")]
+	protected float m_fGroupSpacing;
+
 	protected const int CHECK_INTERVAL_MS = 1000;
 
-	protected SCR_AIGroup m_Group;
-	protected AIWaypoint m_Waypoint;
+	protected ref array<SCR_AIGroup> m_aGroups = {};
+	protected ref array<AIWaypoint> m_aWaypoints = {};
 	protected bool m_bSpawned;      //!< the one spawn has happened (or failed for good)
-	protected bool m_bHadAgents;    //!< the group has had at least one member
+	protected bool m_bHadAgents;    //!< the groups have had at least one member
 	protected bool m_bCleared;
 	protected int m_iLastAgentCount;
 
@@ -63,10 +81,33 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Server: true once the garrison existed and has no member left.
 	bool IsCleared()
 	{
 		return m_bCleared;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	GRAD_Endgame_EGarrisonTier GetTier()
+	{
+		return m_eTier;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! The group prefabs this garrison spawns.
+	void GetGroupPrefabs(notnull array<ResourceName> prefabs)
+	{
+		prefabs.Clear();
+
+		if (m_eTier == GRAD_Endgame_EGarrisonTier.CUSTOM)
+		{
+			if (m_aCustomGroups)
+				prefabs.InsertAll(m_aCustomGroups);
+			return;
+		}
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (cfg)
+			cfg.GetGarrisonGroups(m_eTier, prefabs);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -83,7 +124,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	override void OnDelete(IEntity owner)
 	{
 		GetGame().GetCallqueue().Remove(Check);
-		RemoveGroup();
+		RemoveGroups();
 		super.OnDelete(owner);
 	}
 
@@ -141,7 +182,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Once per second on the server: spawn on approach, then watch for "cleared".
+	//! Once per second on the server: spawn when due, then watch for "cleared".
 	protected void Check()
 	{
 		if (!m_bSpawned)
@@ -156,16 +197,22 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 			return;
 		}
 
-		if (!m_Group)
+		if (m_aGroups.IsEmpty())
 		{
-			// The spawn failed, or the group entity is gone: nothing left to watch.
+			// The spawn failed: nothing to watch.
 			GetGame().GetCallqueue().Remove(Check);
 			return;
 		}
 
-		// The group may create its soldiers over several frames, so an empty group only means
-		// "cleared" after it has had members (finding G2).
-		int agents = m_Group.GetAgentsCount();
+		// Groups may create their soldiers over several frames, so "no members" only counts as
+		// cleared after the garrison has had members.
+		int agents;
+		foreach (SCR_AIGroup group : m_aGroups)
+		{
+			if (group)
+				agents += group.GetAgentsCount();
+		}
+
 		s_iActiveAgents += agents - m_iLastAgentCount;
 		m_iLastAgentCount = agents;
 
@@ -179,7 +226,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 			return;
 
 		m_bCleared = true;
-		s_iActiveGroups--;
+		s_iActiveGroups -= m_aGroups.Count();
 		GetGame().GetCallqueue().Remove(Check);
 		GRAD_Endgame_MatchLog.Write("garrison_cleared", "", 0, GetOwner().GetOrigin(), string.Format("groups left %1, agents left %2", s_iActiveGroups, s_iActiveAgents));
 		m_OnCleared.Invoke(this);
@@ -194,67 +241,107 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 
 		m_bSpawned = true;
 
-		EntitySpawnParams params = new EntitySpawnParams();
-		params.TransformMode = ETransformMode.WORLD;
-		GetOwner().GetWorldTransform(params.Transform);
-
-		IEntity groupEntity = GetGame().SpawnEntityPrefab(Resource.Load(m_sGroupPrefab), GetGame().GetWorld(), params);
-		m_Group = SCR_AIGroup.Cast(groupEntity);
-		if (!m_Group)
+		array<ResourceName> prefabs = {};
+		GetGroupPrefabs(prefabs);
+		if (prefabs.IsEmpty())
 		{
-			GRAD_Endgame_MatchLog.Error("Garrison: group prefab is not an SCR_AIGroup: " + m_sGroupPrefab);
+			GRAD_Endgame_MatchLog.Error(string.Format("Garrison at %1 has no group prefabs for tier %2 (config or component).", GetOwner().GetOrigin(), SCR_Enum.GetEnumName(GRAD_Endgame_EGarrisonTier, m_eTier)));
+			return;
+		}
+
+		vector transform[4];
+		GetOwner().GetWorldTransform(transform);
+		vector center = transform[3];
+
+		for (int i = 0; i < prefabs.Count(); i++)
+		{
+			EntitySpawnParams params = new EntitySpawnParams();
+			params.TransformMode = ETransformMode.WORLD;
+			params.Transform[0] = transform[0];
+			params.Transform[1] = transform[1];
+			params.Transform[2] = transform[2];
+			params.Transform[3] = center;
+
+			// First group on the entity, the others on a ring around it.
+			if (i > 0)
+			{
+				float angle = Math.PI2 * (i - 1) / Math.Max(prefabs.Count() - 1, 1);
+				params.Transform[3] = center + Vector(Math.Cos(angle) * m_fGroupSpacing, 0, Math.Sin(angle) * m_fGroupSpacing);
+			}
+
+			SpawnGroup(prefabs[i], params);
+		}
+
+		s_iActiveGroups += m_aGroups.Count();
+		foreach (SCR_AIGroup group : m_aGroups)
+			m_iLastAgentCount += group.GetAgentsCount();
+		s_iActiveAgents += m_iLastAgentCount;
+		if (m_iLastAgentCount > 0)
+			m_bHadAgents = true;
+
+		GRAD_Endgame_MatchLog.Write("garrison_spawn", "", 0, center, string.Format("tier %1, groups %2, agents at spawn %3, groups active %4", SCR_Enum.GetEnumName(GRAD_Endgame_EGarrisonTier, m_eTier), m_aGroups.Count(), m_iLastAgentCount, s_iActiveGroups));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void SpawnGroup(ResourceName prefab, EntitySpawnParams params)
+	{
+		IEntity groupEntity = GetGame().SpawnEntityPrefab(Resource.Load(prefab), GetGame().GetWorld(), params);
+		SCR_AIGroup group = SCR_AIGroup.Cast(groupEntity);
+		if (!group)
+		{
+			GRAD_Endgame_MatchLog.Error("Garrison: group prefab is not an SCR_AIGroup: " + prefab);
 			if (groupEntity)
 				SCR_EntityHelper.DeleteEntityAndChildren(groupEntity);
 			return;
 		}
 
 		// Keep the empty group entity, so "cleared" can be read from it.
-		m_Group.SetDeleteWhenEmpty(false);
+		group.SetDeleteWhenEmpty(false);
+		m_aGroups.Insert(group);
 
-		if (!m_sWaypointPrefab.IsEmpty())
+		if (m_sWaypointPrefab.IsEmpty())
+			return;
+
+		AIWaypoint waypoint = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(Resource.Load(m_sWaypointPrefab), GetGame().GetWorld(), params));
+		if (waypoint)
 		{
-			m_Waypoint = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(Resource.Load(m_sWaypointPrefab), GetGame().GetWorld(), params));
-			if (m_Waypoint)
-				m_Group.AddWaypoint(m_Waypoint);
+			group.AddWaypoint(waypoint);
+			m_aWaypoints.Insert(waypoint);
 		}
-
-		s_iActiveGroups++;
-		m_iLastAgentCount = m_Group.GetAgentsCount();
-		s_iActiveAgents += m_iLastAgentCount;
-		if (m_iLastAgentCount > 0)
-			m_bHadAgents = true;
-
-		GRAD_Endgame_MatchLog.Write("garrison_spawn", "", 0, GetOwner().GetOrigin(), string.Format("agents at spawn %1, groups active %2", m_iLastAgentCount, s_iActiveGroups));
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Only for OnDelete (world shutdown, entity removed in the editor). Not used during a match.
-	protected void RemoveGroup()
+	protected void RemoveGroups()
 	{
-		if (m_Waypoint)
+		foreach (AIWaypoint waypoint : m_aWaypoints)
 		{
-			SCR_EntityHelper.DeleteEntityAndChildren(m_Waypoint);
-			m_Waypoint = null;
+			if (waypoint)
+				SCR_EntityHelper.DeleteEntityAndChildren(waypoint);
+		}
+		m_aWaypoints.Clear();
+
+		foreach (SCR_AIGroup group : m_aGroups)
+		{
+			if (!group)
+				continue;
+
+			// Deleting a group alone leaves its soldiers behind, so remove them first.
+			array<AIAgent> agents = {};
+			group.GetAgents(agents);
+			foreach (AIAgent agent : agents)
+			{
+				if (agent && agent.GetControlledEntity())
+					SCR_EntityHelper.DeleteEntityAndChildren(agent.GetControlledEntity());
+			}
+			SCR_EntityHelper.DeleteEntityAndChildren(group);
 		}
 
-		if (!m_Group)
-			return;
-
-		// Deleting the group alone leaves its soldiers behind, so remove them first.
-		array<AIAgent> agents = {};
-		m_Group.GetAgents(agents);
-		foreach (AIAgent agent : agents)
-		{
-			if (agent && agent.GetControlledEntity())
-				SCR_EntityHelper.DeleteEntityAndChildren(agent.GetControlledEntity());
-		}
-
-		SCR_EntityHelper.DeleteEntityAndChildren(m_Group);
-		m_Group = null;
+		if (!m_bCleared)
+			s_iActiveGroups -= m_aGroups.Count();
+		m_aGroups.Clear();
 
 		s_iActiveAgents -= m_iLastAgentCount;
 		m_iLastAgentCount = 0;
-		if (!m_bCleared)
-			s_iActiveGroups--;
 	}
 }

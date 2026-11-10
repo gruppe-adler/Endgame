@@ -101,7 +101,7 @@ The config default is one copy per side per site.
 
 ## FOB and site selection (needs the game-mode component, two FOB prefabs and 6+ document sites)
 
-A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and `GRAD_Endgame_GarrisonComponent` on the same entity.
+A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and `GRAD_Endgame_GarrisonComponent` on the same entity. Place an ammo crate next to each FOB (decided 2026-11-10: ammo is no constraint, so an unlimited vanilla arsenal or ammo box of the side; no script needed). No vehicle depot and no helicopter.
 
 | # | Do | Expect |
 | --- | --- | --- |
@@ -166,6 +166,16 @@ Needs `Sounds/GRAD_Endgame_Typewriter.acp` with the events `GRAD_Endgame_TypeKey
 | --- | --- | --- |
 | 45 | `GRAD_Endgame_Typewriter.PlayKey(); GRAD_Endgame_Typewriter.PlayBell();` | One strike, one bell |
 | 46 | `GRAD_Endgame_TypedBar b = new GRAD_Endgame_TypedBar(10); b.Update(0, false); Print(b.Update(0.5)); Print(b.Update(1));` | Prints `[#####.....]  50 %` then `[##########]  100 %`; 5 strikes, then 5 strikes and the bell |
+
+## Garrison tiers and lobby threshold
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 47 | Fill the three tier lists in the config with FIA groups, set a FOB garrison to MEDIUM. Start | `garrison_spawn;...;tier MEDIUM, groups 2, ...`; the two groups stand about 6 m apart |
+| 48 | Shoot at FIA as US and as Soviet | FIA fights both. If it ignores the US, fix the faction relations |
+| 49 | Before the mission starts, admin: `COA_PlayerRplToAuthorityManager.GetInstance().EndgameSetThreshold(4);` | Hint "Documents needed for phase 3: 4"; `match_start` line shows threshold 4; phase 3 starts at the 4th copy |
+| 50 | Same call after the start, or with 6 when 5 sites are active | Hint "Not changed: ..." |
+| 51 | With the layout override in place: admin menu > Game Mode | The documents-needed box shows the current value; Set changes it as in 49 |
 
 ## Results
 

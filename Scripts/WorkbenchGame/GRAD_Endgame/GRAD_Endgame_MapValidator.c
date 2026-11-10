@@ -332,6 +332,22 @@ class GRAD_Endgame_MapValidatorPlugin : WorkbenchPlugin
 				withoutGarrison++;
 		}
 
+		array<ResourceName> groups = {};
+		array<string> tierNames = {"LIGHT", "MEDIUM", "HEAVY"};
+		array<GRAD_Endgame_EGarrisonTier> tiers = {GRAD_Endgame_EGarrisonTier.LIGHT, GRAD_Endgame_EGarrisonTier.MEDIUM, GRAD_Endgame_EGarrisonTier.HEAVY};
+		for (int t = 0; t < tiers.Count(); t++)
+		{
+			cfg.GetGarrisonGroups(tiers[t], groups);
+			if (groups.IsEmpty())
+				Fail(string.Format("Garrison tier %1 has no group prefabs in the config. Suggestion: FIA groups from Prefabs/Groups/INDFOR.", tierNames[t]));
+			foreach (ResourceName group : groups)
+			{
+				if (group.Contains("USSR") || group.Contains("/OPFOR/") || group.Contains("/BLUFOR/") || group.Contains("US_"))
+					Warn(string.Format("Garrison tier %1 uses %2, which looks like a player faction. Garrisons should be FIA.", tierNames[t], group));
+			}
+		}
+		Warn("Check by hand: FIA must be hostile to both player factions in the faction manager.");
+
 		if (withoutGarrison > 0)
 			Warn(string.Format("%1 document site(s) have no garrison.", withoutGarrison));
 		else if (!documentSites.IsEmpty())

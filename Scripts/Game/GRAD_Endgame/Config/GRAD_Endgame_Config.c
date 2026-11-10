@@ -94,15 +94,6 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", uiwidget: UIWidgets.ComboBox, desc: "Decided 2026-11-10: OFF (no restriction; document sites are hidden until phase 2 instead). Not implemented beyond OFF.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ERestrictionMode), category: "FOB")]
 	protected GRAD_Endgame_ERestrictionMode m_eRestrictionMode;
 
-	[Attribute(defvalue: "-1", desc: "OPEN. Resupplies available at a FOB crate. -1 = unlimited.", category: "FOB")]
-	protected int m_iFobResupplyCount;
-
-	[Attribute(defvalue: "-1", desc: "OPEN. Vehicle budget per side. -1 = unlimited.", category: "Vehicles")]
-	protected int m_iVehicleBudget;
-
-	[Attribute(defvalue: "0", desc: "A destroyed vehicle refunds its budget cost.", category: "Vehicles")]
-	protected bool m_bVehicleRefundOnLoss;
-
 	[Attribute(defvalue: "400", desc: "Seconds until a FOB vehicle that was destroyed or driven away respawns on its spot (Sugar Lake value).", category: "Vehicles")]
 	protected float m_fTransportRespawnSeconds;
 
@@ -122,7 +113,7 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "1", desc: "Copies one side may take from one site (decided 2026-11-10: 1). 0 = unlimited.", category: "Documents")]
 	protected int m_iCopiesPerSitePerFaction;
 
-	[Attribute(defvalue: "3", desc: "Copies (= sites, at one per site) a side needs to start the radio phase. Proposal 3 of 5. 0 = never (admin only).", category: "Documents")]
+	[Attribute(defvalue: "3", desc: "Copies (= sites, at one per site) a side needs to start the radio phase (decided 2026-11-10: 3). Default only: an admin can change it in the lobby before the mission starts. 0 = never (admin only).", category: "Documents")]
 	protected int m_iDocumentThreshold;
 
 	[Attribute(defvalue: "150", desc: "Radius in metres of the area marker shown for a document site (when exact positions are off).", category: "Documents")]
@@ -175,14 +166,18 @@ class GRAD_Endgame_Config
 	protected bool m_bMilitiaAtRadioSites;
 
 	// --- AI ---
-	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefab of a light garrison.", params: "et", category: "AI")]
-	protected ResourceName m_sGarrisonLight;
+	// FIA militia (decided 2026-11-10). Suggested vanilla groups from Prefabs/Groups/INDFOR, pick in
+	// Workbench: LIGHT = sentry team + fire team (about 6), MEDIUM = rifle squad + fire team (about
+	// 12), HEAVY = rifle squad + machine-gun team + fire team (about 16). FIA must be hostile to both
+	// player factions in the faction manager (vanilla Conflict makes it friendly to the US).
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a light garrison, all spawned together. Suggestion: FIA sentry team + FIA fire team.", params: "et", category: "AI")]
+	protected ref array<ResourceName> m_aGarrisonLight;
 
-	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefab of a medium garrison.", params: "et", category: "AI")]
-	protected ResourceName m_sGarrisonMedium;
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a medium garrison. Suggestion: FIA rifle squad + FIA fire team.", params: "et", category: "AI")]
+	protected ref array<ResourceName> m_aGarrisonMedium;
 
-	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefab of a heavy garrison.", params: "et", category: "AI")]
-	protected ResourceName m_sGarrisonHeavy;
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a heavy garrison. Suggestion: FIA rifle squad + FIA machine-gun team + FIA fire team.", params: "et", category: "AI")]
+	protected ref array<ResourceName> m_aGarrisonHeavy;
 
 	[Attribute(defvalue: "0", desc: "0 = every garrison spawns at game start (decided 2026-11-10). 1 = each spawns when the first player comes near.", category: "AI")]
 	protected bool m_bGarrisonSpawnOnApproach;
@@ -240,9 +235,6 @@ class GRAD_Endgame_Config
 
 	// FOB and vehicles
 	GRAD_Endgame_ERestrictionMode GetRestrictionMode() { return m_eRestrictionMode; }
-	int GetFobResupplyCount() { return m_iFobResupplyCount; }
-	int GetVehicleBudget() { return m_iVehicleBudget; }
-	bool GetVehicleRefundOnLoss() { return m_bVehicleRefundOnLoss; }
 	float GetTransportRespawnSeconds() { return Scaled(m_fTransportRespawnSeconds); }
 	float GetTransportRespawnRadius() { return m_fTransportRespawnRadius; }
 
@@ -272,9 +264,19 @@ class GRAD_Endgame_Config
 	bool GetMilitiaAtRadioSites() { return m_bMilitiaAtRadioSites; }
 
 	// AI
-	ResourceName GetGarrisonLight() { return m_sGarrisonLight; }
-	ResourceName GetGarrisonMedium() { return m_sGarrisonMedium; }
-	ResourceName GetGarrisonHeavy() { return m_sGarrisonHeavy; }
+	void GetGarrisonGroups(GRAD_Endgame_EGarrisonTier tier, notnull array<ResourceName> groups)
+	{
+		groups.Clear();
+		array<ResourceName> source;
+		switch (tier)
+		{
+			case GRAD_Endgame_EGarrisonTier.LIGHT: source = m_aGarrisonLight; break;
+			case GRAD_Endgame_EGarrisonTier.MEDIUM: source = m_aGarrisonMedium; break;
+			case GRAD_Endgame_EGarrisonTier.HEAVY: source = m_aGarrisonHeavy; break;
+		}
+		if (source)
+			groups.InsertAll(source);
+	}
 	bool GetGarrisonSpawnOnApproach() { return m_bGarrisonSpawnOnApproach; }
 
 	// HUD sound
