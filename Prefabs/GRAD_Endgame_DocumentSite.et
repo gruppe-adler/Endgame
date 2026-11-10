@@ -4,7 +4,7 @@ GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitar
   GRAD_Endgame_DocumentSiteComponent "{BE045DAA946CF13D}" {
   }
   GRAD_Endgame_GarrisonComponent "{76F172E29F4407AA}" {
-   m_eTier 0
+   m_eTier LIGHT
   }
   ActionsManagerComponent "{D6B6D5750C6D3243}" {
    ActionContexts {
@@ -30,6 +30,23 @@ GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitar
      Duration 10
     }
    }
+  }
+ }
+ {
+  GenericEntity : "{5DA1635FAFD1600D}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V2.et" {
+   ID "6AD55E23F85F345B"
+   coords 0.005 0.9 0.157
+   angles 0 176.775 0
+  }
+  GenericEntity : "{60954667DABDE93A}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V5.et" {
+   ID "6AD55E23F85F3497"
+   coords 0.056 0.9 0.248
+   angles 0 107.493 0
+  }
+  GenericEntity : "{85090A9ED6587E51}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V4.et" {
+   ID "6AD55E23F85F3454"
+   coords -0.056 0.9 0.254
+   angles 0 149.223 0
   }
  }
 }

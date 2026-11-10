@@ -173,6 +173,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		GetGame().GetCallqueue().Remove(ServerTick);
 		GetGame().GetCallqueue().Remove(ClientInitialSync);
 		GetGame().GetCallqueue().Remove(EnablePermadeath);
+		GetGame().GetCallqueue().Remove(SendReplayFrame);
+		GetGame().GetCallqueue().Remove(AdvanceToAfterAction);
 		if (s_Instance == this)
 			s_Instance = null;
 		super.OnDelete(owner);
@@ -345,7 +347,114 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		// outcome it falls back to and set it before this call.
 		COA_Gamemode gamemode = COA_Gamemode.Cast(GetOwner());
 		if (gamemode && gamemode.m_GamemodeState == COA_EGamemodeState.GAME)
+		{
+			// Replay first, then the after-action screen.
+			float replaySeconds = StartReplay();
+			if (replaySeconds > 0)
+				GetGame().GetCallqueue().CallLater(AdvanceToAfterAction, replaySeconds * 1000, false);
+			else
+				gamemode.AdvanceGamemodeState(true);
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void AdvanceToAfterAction()
+	{
+		COA_Gamemode gamemode = COA_Gamemode.Cast(GetOwner());
+		if (gamemode && gamemode.m_GamemodeState == COA_EGamemodeState.GAME)
 			gamemode.AdvanceGamemodeState(true);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	// REPLAY (server sends, every client plays; see GRAD_Endgame_Replay and GRAD_Endgame_ReplayPlayer)
+	//------------------------------------------------------------------------------------------------
+	protected int m_iReplayNextFrame;
+
+	protected const int REPLAY_FRAME_DELAY_MS = 40;
+	protected const float REPLAY_TAIL_SECONDS = 5;
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: send the recorded replay to everybody. Returns how many seconds the after-action
+	//! screen must wait for the replay (transfer plus playback), or 0 if there is no replay.
+	protected float StartReplay()
+	{
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		GRAD_Endgame_Replay replay = GRAD_Endgame_Replay.GetRecording();
+		if (!cfg || !cfg.GetReplayEnabled() || replay.m_aFrames.Count() < 2)
+			return 0;
+
+		float duration = replay.GetDuration();
+		float speed = Math.Max(duration / Math.Max(cfg.GetReplayTargetSeconds(), 10), 1);
+
+		array<int> ids = {};
+		array<string> names = {};
+		foreach (int id, string name : replay.m_mNames)
+		{
+			ids.Insert(id);
+			names.Insert(name);
+		}
+
+		Rpc(RpcDo_ReplayBegin, replay.m_fInterval, speed, ids, names);
+		if (HasLocalPlayer())
+			RpcDo_ReplayBegin(replay.m_fInterval, speed, ids, names);
+
+		m_iReplayNextFrame = 0;
+		GetGame().GetCallqueue().CallLater(SendReplayFrame, REPLAY_FRAME_DELAY_MS, true);
+
+		float transferSeconds = replay.m_aFrames.Count() * REPLAY_FRAME_DELAY_MS / 1000 + 1;
+		float playSeconds = duration / speed + replay.m_fInterval / speed;
+		GRAD_Endgame_MatchLog.Write("replay", "", 0, vector.Zero, string.Format("%1 frames, %2 events, speed %3x, %4 s", replay.m_aFrames.Count(), replay.m_aEventTexts.Count(), Math.Round(speed), Math.Round(playSeconds)));
+		return transferSeconds + playSeconds + REPLAY_TAIL_SECONDS;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool HasLocalPlayer()
+	{
+		return SCR_PlayerController.GetLocalPlayerId() > 0;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: one frame per call, then the events and the start signal.
+	protected void SendReplayFrame()
+	{
+		GRAD_Endgame_Replay replay = GRAD_Endgame_Replay.GetRecording();
+
+		if (m_iReplayNextFrame < replay.m_aFrames.Count())
+		{
+			GRAD_Endgame_ReplayFrame frame = replay.m_aFrames[m_iReplayNextFrame];
+			m_iReplayNextFrame++;
+			Rpc(RpcDo_ReplayFrame, frame.m_fTime, frame.m_aIds, frame.m_aFlags, frame.m_aX, frame.m_aZ);
+			if (HasLocalPlayer())
+				RpcDo_ReplayFrame(frame.m_fTime, frame.m_aIds, frame.m_aFlags, frame.m_aX, frame.m_aZ);
+			return;
+		}
+
+		GetGame().GetCallqueue().Remove(SendReplayFrame);
+		Rpc(RpcDo_ReplayEnd, replay.m_aEventTimes, replay.m_aEventTexts);
+		if (HasLocalPlayer())
+			RpcDo_ReplayEnd(replay.m_aEventTimes, replay.m_aEventTexts);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_ReplayBegin(float interval, float speed, array<int> rosterIds, array<string> rosterNames)
+	{
+		GRAD_Endgame_ReplayPlayer.Begin(interval, speed, rosterIds, rosterNames);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_ReplayFrame(float time, array<int> ids, array<int> flags, array<float> xs, array<float> zs)
+	{
+		GRAD_Endgame_ReplayPlayer.AddFrame(time, ids, flags, xs, zs);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_ReplayEnd(array<float> eventTimes, array<string> eventTexts)
+	{
+		GRAD_Endgame_ReplayPlayer.SetEvents(eventTimes, eventTexts);
+		GRAD_Endgame_ReplayPlayer.Start();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -686,6 +795,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			EndMatch("", "timer");
 			return;
 		}
+
+		GRAD_Endgame_Replay.GetRecording().Tick(TICK_MS / 1000, cfg);
 
 		int aliveOne, aliveTwo;
 		CountAlive(cfg, aliveOne, aliveTwo);

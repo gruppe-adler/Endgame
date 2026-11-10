@@ -29,4 +29,16 @@ GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitar
    }
   }
  }
+ {
+  GenericEntity {
+   ID "6AD55E221B124B49"
+   components {
+    MeshObject "{6AD55E23E258497B}" {
+     Object "{E2C58061477FBD97}Assets/Props/Military/Radios/RadioStation_RF10_01/RadioStation_RF10_01.xob"
+    }
+   }
+   coords 0.039 0.9 -0.054
+   angles 0 -179.288 0
+  }
+ }
 }

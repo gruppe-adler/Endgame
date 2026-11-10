@@ -212,6 +212,15 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "Also print every match log line and extra debug lines to the console.", category: "Debug")]
 	protected bool m_bDebugLog;
 
+	[Attribute(defvalue: "1", desc: "Record player positions during the match and play them back on the map before the after-action screen.", category: "Replay")]
+	protected bool m_bReplayEnabled;
+
+	[Attribute(defvalue: "5", desc: "Seconds between recorded positions. Smaller is smoother but sends more data at the end.", params: "1 30 1", category: "Replay")]
+	protected float m_fReplayIntervalSeconds;
+
+	[Attribute(defvalue: "60", desc: "The replay is sped up so it takes about this many real seconds.", params: "10 300 5", category: "Replay")]
+	protected float m_fReplayTargetSeconds;
+
 	[Attribute(defvalue: "0", desc: "Run the built-in self tests (wave rules, site selection) once when the match starts and print the results to the log. Replaces the script console.", category: "Debug")]
 	protected bool m_bRunSelfTests;
 
@@ -300,4 +309,7 @@ class GRAD_Endgame_Config
 	float GetDebugTimeScale() { return m_fDebugTimeScale; }
 	bool GetDebugLog() { return m_bDebugLog; }
 	bool GetRunSelfTests() { return m_bRunSelfTests; }
+	bool GetReplayEnabled() { return m_bReplayEnabled; }
+	float GetReplayIntervalSeconds() { return m_fReplayIntervalSeconds; }
+	float GetReplayTargetSeconds() { return m_fReplayTargetSeconds; }
 }

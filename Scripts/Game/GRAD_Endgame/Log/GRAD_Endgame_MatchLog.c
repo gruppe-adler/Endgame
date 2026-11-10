@@ -35,6 +35,7 @@ class GRAD_Endgame_MatchLog
 
 		FileIO.MakeDirectory(DIRECTORY);
 		WriteRaw("seconds;event;faction;player;position;details");
+		GRAD_Endgame_Replay.ResetRecording();
 		Write("match_start", "", 0, vector.Zero, details);
 
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
@@ -71,6 +72,8 @@ class GRAD_Endgame_MatchLog
 		string playerText = "";
 		if (playerId > 0)
 			playerText = playerId.ToString();
+
+		GRAD_Endgame_Replay.OnLogEvent(eventName, factionKey, details);
 
 		string line = string.Format("%1;%2;%3;%4;%5;%6", Math.Round(Now() - s_fMatchStart), eventName, factionKey, playerText, positionText, details);
 		WriteRaw(line);
