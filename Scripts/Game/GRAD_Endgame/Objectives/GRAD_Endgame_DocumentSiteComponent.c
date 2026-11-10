@@ -41,6 +41,9 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 
 	protected static ref array<GRAD_Endgame_DocumentSiteComponent> s_aAll = {};
 
+	//! Server: id of this site's map marker ("doc_<index>").
+	protected string m_sMarkerId;
+
 	protected const int STALE_LOCK_MS = 30000;   //!< a lock nobody released is dropped after this
 
 	//------------------------------------------------------------------------------------------------
@@ -53,6 +56,14 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	bool IsActive()
 	{
 		return m_bActive;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	string GetMarkerId()
+	{
+		if (m_sMarkerId.IsEmpty())
+			m_sMarkerId = "doc_" + s_aAll.Find(this).ToString();
+		return m_sMarkerId;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -208,7 +219,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		// the threshold. Without it (M0 test world) the site logs the copy itself.
 		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
 		if (gameMode)
-			gameMode.AddDocument(factionKey, playerId, GetOwner().GetOrigin());
+			gameMode.AddDocument(factionKey, playerId, GetOwner().GetOrigin(), GetMarkerId());
 		else
 			GRAD_Endgame_MatchLog.Write("copy", factionKey, playerId, GetOwner().GetOrigin(), string.Format("site count %1", GetCopyCount(factionKey)));
 

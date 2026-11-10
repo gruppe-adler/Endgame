@@ -21,6 +21,9 @@ Written without Workbench:
 - `Objectives/GRAD_Endgame_DocumentSiteComponent.c`, `GRAD_Endgame_CopyDocumentAction.c` (site lock, per-side counts, active flag)
 - `Objectives/GRAD_Endgame_FobComponent.c` (FOB taken when its garrison is wiped out, spawn points move there)
 - `Objectives/GRAD_Endgame_SiteSelection.c` (5 of all placed sites, balanced between the FOBs)
+- `Info/GRAD_Endgame_InfoService.c`, `GRAD_Endgame_InfoClient.c` (per-side markers, hints, decoded order by owner RPC, resync on join and respawn)
+- `Objectives/GRAD_Endgame_FobVehicleSpawnerComponent.c` (light vehicles at the FOB, respawn when destroyed or driven away)
+- `Objectives/GRAD_Endgame_Cipher.c`, `GRAD_Endgame_RadioSiteComponent.c` (cipher, cipher sites, radio sites, transmit action, direction finding)
 
 Calls to look at first if something does not compile:
 
@@ -98,7 +101,7 @@ The config default is one copy per side per site.
 
 ## FOB and site selection (needs the game-mode component, two FOB prefabs and 6+ document sites)
 
-A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and `GRAD_Endgame_GarrisonComponent` on the same entity.
+A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and `GRAD_Endgame_GarrisonComponent` on the same entity. Place an ammo crate next to each FOB (decided 2026-11-10: ammo is no constraint, so an unlimited vanilla arsenal or ammo box of the side; no script needed). No vehicle depot and no helicopter.
 
 | # | Do | Expect |
 | --- | --- | --- |
@@ -106,6 +109,10 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 28 | Start the game | `sites_chosen;;;;5 of N sites, imbalance X %` with X at most 10. Only those 5 show the copy action; garrisons spawn at once at the 5 sites and both FOBs, none at the others |
 | 29 | Wipe out the BLUFOR FOB garrison | `fob_state;BLUFOR;...;taken`, `spawn_moved;BLUFOR;...;1 spawn point(s)`, `free_respawn`. A dead BLUFOR player now spawns at the FOB |
 | 30 | Wipe out the OPFOR FOB garrison too | `phase;;;;FOB -> DOCUMENTS (rule)` |
+| 29b | Place two `GRAD_Endgame_FobVehicleSpawnerComponent` spots per side near the FOBs, with a light vehicle prefab. Start the game | `vehicle_spawn` for every spot of both sides at once |
+| 29c | Drive a BLUFOR vehicle 600 m away (time scale 10: wait 40 s) | A new vehicle on the empty spot; the driven one stays where it is |
+| 29d | Drive one 600 m away, bring it back before 40 s | No new vehicle |
+| 29e | Destroy a vehicle on its spot | After 40 s the wreck disappears and a new vehicle stands there |
 | 31 | In phase RADIO, a new client joins | No free slot to take; he lands in spectator |
 
 ## Phases (needs the game-mode component)
@@ -118,6 +125,58 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 24 | Same call from a client that is not an admin | Nothing happens, no log line |
 | 25 | A client joins in phase DOCUMENTS | Document check 16 behaves correctly on that client (it knows the phase) |
 | 26 | `...EndgameEndMatch("BLUFOR");` | `match_end;BLUFOR;;;winner BLUFOR (admin)`, COALITION goes to its after-action screen |
+
+## Radio phase (needs the game-mode component, 2+ radio site prefabs, 1+ cipher site, a cipher item prefab)
+
+Prefabs to build in Workbench first:
+- **Radio site**: `GRAD_Endgame_RadioSiteComponent`, an ActionsManagerComponent with `GRAD_Endgame_TransmitAction` (Duration about 3 s), optional `GRAD_Endgame_GarrisonComponent`.
+- **Cipher site**: an empty entity with `GRAD_Endgame_CipherSiteComponent`.
+- **Cipher item**: any small inventory item with `GRAD_Endgame_CipherComponent`; set it as `m_sCipherPrefab` in the config.
+
+With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test player the radio operator slot.
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 32 | Start the game | `radio_sites_chosen`; no document markers yet. When both FOBs are taken (phase 2): "Documents located" and "Documents within 150 m of ..." for each active site, on both sides |
+| 33 | BLUFOR copies at 3 sites | Hint "3 of 3 copied" to BLUFOR only; each copied site's marker disappears for BLUFOR only. Then `FOB/DOCUMENTS -> RADIO`, `cipher;;;;spawned`, `threshold;BLUFOR` |
+| 34 | BLUFOR squad lead | Hint "Decoded order" with the cipher grid. OPFOR gets no order and no cipher marker |
+| 35 | Both sides | Hint "Radio site" for each active radio site |
+| 36 | A BLUFOR leader respawns or rejoins | Gets the order and all BLUFOR markers again (SyncPlayer) |
+| 37 | Pick up the cipher | `cipher;BLUFOR;<id>;...;picked up` |
+| 38 | Non-operator with cipher uses the radio | "Only the radio operator" |
+| 39 | Operator with cipher transmits | `transmission;BLUFOR;...;started at 0 s`; OPFOR gets "Enemy transmission within 300 m of ..." and `df_sent` |
+| 40 | Operator walks 10 m away | `interrupted (operator left the set) at N s`; with PAUSE, starting again continues from N |
+| 41 | Transmit to the end | `transmission ... done`, `match_end;BLUFOR;;;winner BLUFOR (transmission)` |
+| 41b | Stand 50 m from a transmitting site, then 300 m | Radio chatter loop audible near the set, gone far away; stops when the transmission stops; a client joining mid-transmission hears it too |
+| 42 | Kill the operator while transmitting | `interrupted (operator killed)`; the cipher can be taken from the body |
+
+## Map validator
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 43 | World Editor: Plugins > GRAD Endgame > Validate Endgame map | A dialog with PASS / WARN / FAIL lines, also in the console and the clipboard. On the current test world: FAIL for missing FOBs, radio and cipher sites, until those prefabs are placed |
+| 44 | Place both FOBs, 6+ document sites, 2+ radio sites, 2 cipher sites; run again | No FAIL. Fix any WARN about distances or variety, or accept it |
+
+If every list reads 0 although the prefabs are placed, reload the world once and run it again.
+
+## Typewriter sound
+
+Needs `Sounds/GRAD_Endgame_Typewriter.acp` with the events `GRAD_Endgame_TypeKey` and `GRAD_Endgame_TypeBell`, set in the config. Until the HUD exists, test from the script console on a client:
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 45 | `GRAD_Endgame_Typewriter.PlayKey(); GRAD_Endgame_Typewriter.PlayBell();` | One strike, one bell |
+| 46 | `GRAD_Endgame_TypedBar b = new GRAD_Endgame_TypedBar(10); b.Update(0, false); Print(b.Update(0.5)); Print(b.Update(1));` | Prints `[#####.....]  50 %` then `[##########]  100 %`; 5 strikes, then 5 strikes and the bell |
+
+## Garrison tiers and lobby threshold
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 47 | Fill the three tier lists in the config with FIA groups, set a FOB garrison to MEDIUM. Start | `garrison_spawn;...;tier MEDIUM, groups 2, ...`; the two groups stand about 6 m apart |
+| 48 | Shoot at FIA as US and as Soviet | FIA fights both. If it ignores the US, fix the faction relations |
+| 49 | Before the mission starts, admin: `COA_PlayerRplToAuthorityManager.GetInstance().EndgameSetThreshold(4);` | Hint "Documents needed for phase 3: 4"; `match_start` line shows threshold 4; phase 3 starts at the 4th copy |
+| 50 | Same call after the start, or with 6 when 5 sites are active | Hint "Not changed: ..." |
+| 51 | With the layout override in place: admin menu > Game Mode | The documents-needed box shows the current value; Set changes it as in 49 |
 
 ## Results
 
