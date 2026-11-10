@@ -91,7 +91,7 @@ class GRAD_Endgame_Config
 	// FOB capture (decided 2026-11-10): the FOB is taken when its garrison is wiped out, and the
 	// side's spawn points move there. No hold time, no radius, no second spawn.
 
-	[Attribute(defvalue: "0", uiwidget: UIWidgets.ComboBox, desc: "OPEN. What happens to players who leave the start area before their FOB is taken. OFF = nothing.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ERestrictionMode), category: "FOB")]
+	[Attribute(defvalue: "0", uiwidget: UIWidgets.ComboBox, desc: "Decided 2026-11-10: OFF (no restriction; document sites are hidden until phase 2 instead). Not implemented beyond OFF.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ERestrictionMode), category: "FOB")]
 	protected GRAD_Endgame_ERestrictionMode m_eRestrictionMode;
 
 	[Attribute(defvalue: "-1", desc: "OPEN. Resupplies available at a FOB crate. -1 = unlimited.", category: "FOB")]

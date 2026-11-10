@@ -132,7 +132,7 @@ With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test
 
 | # | Do | Expect |
 | --- | --- | --- |
-| 32 | Start the game | `radio_sites_chosen`; hints "Documents within 150 m of ..." for each active document site on both sides |
+| 32 | Start the game | `radio_sites_chosen`; no document markers yet. When both FOBs are taken (phase 2): "Documents located" and "Documents within 150 m of ..." for each active site, on both sides |
 | 33 | BLUFOR copies at 3 sites | Hint "3 of 3 copied" to BLUFOR only; each copied site's marker disappears for BLUFOR only. Then `FOB/DOCUMENTS -> RADIO`, `cipher;;;;spawned`, `threshold;BLUFOR` |
 | 34 | BLUFOR squad lead | Hint "Decoded order" with the cipher grid. OPFOR gets no order and no cipher marker |
 | 35 | Both sides | Hint "Radio site" for each active radio site |

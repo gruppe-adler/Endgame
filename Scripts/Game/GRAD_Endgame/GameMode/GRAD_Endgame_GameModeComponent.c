@@ -234,6 +234,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 		GRAD_Endgame_MatchLog.Write("phase", "", 0, vector.Zero, string.Format("%1 -> %2 (%3)", SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, oldPhase), SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, phase), cause));
 
+		if (phase == GRAD_Endgame_EPhase.DOCUMENTS && cfg)
+			RevealDocumentSites(cfg);
+
 		if (phase == GRAD_Endgame_EPhase.RADIO && cfg)
 			OnRadioPhaseStarted(cfg);
 
@@ -421,21 +424,35 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		for (int i = 0; i < all.Count(); i++)
 			all[i].SetActive(chosen.Contains(i));
 
-		// Both sides learn where the documents are: an area, or the exact spot.
-		float areaRadius = cfg.GetDocumentAreaRadius();
-		if (cfg.GetExactDocumentPositions())
-			areaRadius = 0;
-		foreach (int index : chosen)
-		{
-			vector shown = GRAD_Endgame_InfoService.Blur(all[index].GetOwner().GetOrigin(), areaRadius);
-			string id = all[index].GetMarkerId();
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents");
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents");
-		}
 
 		GRAD_Endgame_MatchLog.Write("sites_chosen", "", 0, vector.Zero, string.Format("%1 of %2 sites, imbalance %3 %%", chosen.Count(), all.Count(), Math.Round(imbalance * 100)));
 		if (fobOne && fobTwo && imbalance > cfg.GetSiteBalanceTolerance())
 			GRAD_Endgame_MatchLog.Error(string.Format("No fair set of document sites found (best imbalance %1 %%). Place more sites halfway between the FOBs.", Math.Round(imbalance * 100)));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Phase 2 start (decided 2026-11-10: no restriction radius in phase 1; instead the document
+	//! sites stay hidden until phase 2). Both sides learn where the active sites are: an area, or
+	//! the exact spot.
+	protected void RevealDocumentSites(notnull GRAD_Endgame_Config cfg)
+	{
+		float areaRadius = cfg.GetDocumentAreaRadius();
+		if (cfg.GetExactDocumentPositions())
+			areaRadius = 0;
+
+		foreach (GRAD_Endgame_DocumentSiteComponent site : GRAD_Endgame_DocumentSiteComponent.GetAll())
+		{
+			if (!site.IsActive())
+				continue;
+
+			vector shown = GRAD_Endgame_InfoService.Blur(site.GetOwner().GetOrigin(), areaRadius);
+			string id = site.GetMarkerId();
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents");
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents");
+		}
+
+		GRAD_Endgame_InfoService.HintFaction(cfg.GetFactionKeyOne(), "Documents located", "Copy documents at the marked sites.");
+		GRAD_Endgame_InfoService.HintFaction(cfg.GetFactionKeyTwo(), "Documents located", "Copy documents at the marked sites.");
 	}
 
 	//------------------------------------------------------------------------------------------------
