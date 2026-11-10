@@ -1,0 +1,9 @@
+GenericEntity {
+ ID "49B4F61BBDA219DD"
+ components {
+  GRAD_Endgame_FobVehicleSpawnerComponent "{49C54E18B71CEE08}" {
+   m_sFactionKey "OPFOR"
+   m_sVehiclePrefab "{259EE7B78C51B624}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469.et"
+  }
+ }
+}

@@ -480,7 +480,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 		foreach (GRAD_Endgame_DocumentSiteComponent site : GRAD_Endgame_DocumentSiteComponent.GetAll())
 		{
-			if (!site.IsActive())
+			if (!site.IsSiteActive())
 				continue;
 
 			vector shown = GRAD_Endgame_InfoService.Blur(site.GetOwner().GetOrigin(), areaRadius);
@@ -545,7 +545,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	{
 		foreach (GRAD_Endgame_RadioSiteComponent radio : GRAD_Endgame_RadioSiteComponent.GetAll())
 		{
-			if (!radio.IsActive())
+			if (!radio.IsSiteActive())
 				continue;
 			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");
 			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");

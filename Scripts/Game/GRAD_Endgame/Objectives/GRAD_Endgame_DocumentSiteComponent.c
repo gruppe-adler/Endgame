@@ -53,7 +53,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	bool IsActive()
+	bool IsSiteActive()
 	{
 		return m_bActive;
 	}

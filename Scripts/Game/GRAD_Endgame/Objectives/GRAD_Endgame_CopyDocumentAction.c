@@ -51,7 +51,7 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
-		return m_Site != null && m_Site.IsActive();
+		return m_Site != null && m_Site.IsSiteActive();
 	}
 
 	//------------------------------------------------------------------------------------------------

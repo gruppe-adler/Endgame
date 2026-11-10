@@ -1,0 +1,7 @@
+GenericEntity : "{6D56FED1E55A8F84}Prefabs/Items/Misc/IntelligenceFolder_E_01/IntelligenceFolder_E_01.et" {
+ ID "673BFDF739500C27"
+ components {
+  GRAD_Endgame_CipherComponent "{51D012385B05CBFC}" {
+  }
+ }
+}

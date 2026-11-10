@@ -1,0 +1,12 @@
+GenericEntity {
+ ID "2A75B46D915A90F4"
+ components {
+  GRAD_Endgame_FobComponent "{1C2314054063193B}" {
+   m_sFactionKey "BLUFOR"
+   m_vSpawnOffset 12 0 0
+  }
+  GRAD_Endgame_GarrisonComponent "{D2F81EC66F3B5A5E}" {
+   m_eTier 1
+  }
+ }
+}

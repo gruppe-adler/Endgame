@@ -3,6 +3,9 @@ GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitar
  components {
   GRAD_Endgame_DocumentSiteComponent "{BE045DAA946CF13D}" {
   }
+  GRAD_Endgame_GarrisonComponent "{76F172E29F4407AA}" {
+   m_eTier 0
+  }
   ActionsManagerComponent "{D6B6D5750C6D3243}" {
    ActionContexts {
     UserActionContext "{C86A0F03F7875087}" {

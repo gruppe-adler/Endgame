@@ -1,0 +1,32 @@
+GenericEntity : "{7762F50A860DD074}Prefabs/Props/Military/Furniture/TableMilitary_US_01.et" {
+ ID "8A80708FC71BB84E"
+ components {
+  GRAD_Endgame_RadioSiteComponent "{48443E0FDEB7B97A}" {
+  }
+  ActionsManagerComponent "{7874FFD2EA461252}" {
+   ActionContexts {
+    UserActionContext "{24F527D84733B66A}" {
+     UIInfo SCR_ActionUIInfo "{EBA906D723B8A9DA}" {
+      Name "Radio"
+     }
+     ContextName "world"
+     Position PointInfo "{87A33BB657EA1C31}" {
+      Offset 0 0.9 0
+     }
+     Radius 2.5
+    }
+   }
+   additionalActions {
+    GRAD_Endgame_TransmitAction "{C36AC7930696D863}" {
+     ParentContextList {
+      "world"
+     }
+     UIInfo SCR_ActionUIInfo "{7C4434FE65A7ACCC}" {
+      Name "Transmit"
+     }
+     Duration 3
+    }
+   }
+  }
+ }
+}

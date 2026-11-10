@@ -100,7 +100,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	bool IsActive()
+	bool IsSiteActive()
 	{
 		return m_bActive;
 	}
@@ -443,7 +443,7 @@ class GRAD_Endgame_TransmitAction : SCR_ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
-		return m_Site && m_Site.IsActive();
+		return m_Site && m_Site.IsSiteActive();
 	}
 
 	//------------------------------------------------------------------------------------------------

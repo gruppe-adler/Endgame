@@ -212,6 +212,9 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "Also print every match log line and extra debug lines to the console.", category: "Debug")]
 	protected bool m_bDebugLog;
 
+	[Attribute(defvalue: "0", desc: "Run the built-in self tests (wave rules, site selection) once when the match starts and print the results to the log. Replaces the script console.", category: "Debug")]
+	protected bool m_bRunSelfTests;
+
 	//------------------------------------------------------------------------------------------------
 	protected float Scaled(float seconds)
 	{
@@ -296,4 +299,5 @@ class GRAD_Endgame_Config
 	// Debug
 	float GetDebugTimeScale() { return m_fDebugTimeScale; }
 	bool GetDebugLog() { return m_bDebugLog; }
+	bool GetRunSelfTests() { return m_bRunSelfTests; }
 }

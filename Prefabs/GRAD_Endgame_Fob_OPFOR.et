@@ -1,0 +1,12 @@
+GenericEntity {
+ ID "49BBE719B499CF2B"
+ components {
+  GRAD_Endgame_FobComponent "{D7774FCB840DAC1E}" {
+   m_sFactionKey "OPFOR"
+   m_vSpawnOffset 12 0 0
+  }
+  GRAD_Endgame_GarrisonComponent "{F8240469B94EF8E5}" {
+   m_eTier 1
+  }
+ }
+}

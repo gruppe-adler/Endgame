@@ -36,6 +36,13 @@ class GRAD_Endgame_MatchLog
 		FileIO.MakeDirectory(DIRECTORY);
 		WriteRaw("seconds;event;faction;player;position;details");
 		Write("match_start", "", 0, vector.Zero, details);
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (cfg && cfg.GetRunSelfTests())
+		{
+			GRAD_Endgame_FactionWaveTest.Run();
+			GRAD_Endgame_SiteSelectionTest.Run();
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------

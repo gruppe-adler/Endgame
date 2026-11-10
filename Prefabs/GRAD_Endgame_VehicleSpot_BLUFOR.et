@@ -1,0 +1,9 @@
+GenericEntity {
+ ID "F04B4F9C4E6AE422"
+ components {
+  GRAD_Endgame_FobVehicleSpawnerComponent "{D827D3581F0C03CE}" {
+   m_sFactionKey "BLUFOR"
+   m_sVehiclePrefab "{F649585ABB3706C4}Prefabs/Vehicles/Wheeled/M151A2/M151A2.et"
+  }
+ }
+}

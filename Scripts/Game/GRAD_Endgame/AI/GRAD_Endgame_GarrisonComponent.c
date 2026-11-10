@@ -166,13 +166,13 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	protected bool IsOwnerSiteActive()
 	{
 		GRAD_Endgame_DocumentSiteComponent site = GRAD_Endgame_DocumentSiteComponent.Cast(GetOwner().FindComponent(GRAD_Endgame_DocumentSiteComponent));
-		if (site && !site.IsActive())
+		if (site && !site.IsSiteActive())
 			return false;
 
 		GRAD_Endgame_RadioSiteComponent radio = GRAD_Endgame_RadioSiteComponent.Cast(GetOwner().FindComponent(GRAD_Endgame_RadioSiteComponent));
 		if (radio)
 		{
-			if (!radio.IsActive())
+			if (!radio.IsSiteActive())
 				return false;
 			GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
 			if (cfg && !cfg.GetMilitiaAtRadioSites())
@@ -289,7 +289,10 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		SCR_AIGroup group = SCR_AIGroup.Cast(groupEntity);
 		if (!group)
 		{
-			GRAD_Endgame_MatchLog.Error("Garrison: group prefab is not an SCR_AIGroup: " + prefab);
+			string got = "nothing spawned (prefab not found?)";
+			if (groupEntity)
+				got = "spawned a " + groupEntity.ClassName();
+			GRAD_Endgame_MatchLog.Error(string.Format("Garrison: group prefab is not an SCR_AIGroup: %1 (%2)", prefab, got));
 			if (groupEntity)
 				SCR_EntityHelper.DeleteEntityAndChildren(groupEntity);
 			return;
