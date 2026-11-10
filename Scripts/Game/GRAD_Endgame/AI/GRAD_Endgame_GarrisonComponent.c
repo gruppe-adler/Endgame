@@ -125,7 +125,19 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	protected bool IsOwnerSiteActive()
 	{
 		GRAD_Endgame_DocumentSiteComponent site = GRAD_Endgame_DocumentSiteComponent.Cast(GetOwner().FindComponent(GRAD_Endgame_DocumentSiteComponent));
-		return !site || site.IsActive();
+		if (site && !site.IsActive())
+			return false;
+
+		GRAD_Endgame_RadioSiteComponent radio = GRAD_Endgame_RadioSiteComponent.Cast(GetOwner().FindComponent(GRAD_Endgame_RadioSiteComponent));
+		if (radio)
+		{
+			if (!radio.IsActive())
+				return false;
+			GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+			if (cfg && !cfg.GetMilitiaAtRadioSites())
+				return false;
+		}
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------

@@ -21,6 +21,8 @@ Written without Workbench:
 - `Objectives/GRAD_Endgame_DocumentSiteComponent.c`, `GRAD_Endgame_CopyDocumentAction.c` (site lock, per-side counts, active flag)
 - `Objectives/GRAD_Endgame_FobComponent.c` (FOB taken when its garrison is wiped out, spawn points move there)
 - `Objectives/GRAD_Endgame_SiteSelection.c` (5 of all placed sites, balanced between the FOBs)
+- `Info/GRAD_Endgame_InfoService.c`, `GRAD_Endgame_InfoClient.c` (per-side markers, hints, decoded order by owner RPC, resync on join and respawn)
+- `Objectives/GRAD_Endgame_Cipher.c`, `GRAD_Endgame_RadioSiteComponent.c` (cipher, cipher sites, radio sites, transmit action, direction finding)
 
 Calls to look at first if something does not compile:
 
@@ -118,6 +120,29 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 24 | Same call from a client that is not an admin | Nothing happens, no log line |
 | 25 | A client joins in phase DOCUMENTS | Document check 16 behaves correctly on that client (it knows the phase) |
 | 26 | `...EndgameEndMatch("BLUFOR");` | `match_end;BLUFOR;;;winner BLUFOR (admin)`, COALITION goes to its after-action screen |
+
+## Radio phase (needs the game-mode component, 2+ radio site prefabs, 1+ cipher site, a cipher item prefab)
+
+Prefabs to build in Workbench first:
+- **Radio site**: `GRAD_Endgame_RadioSiteComponent`, an ActionsManagerComponent with `GRAD_Endgame_TransmitAction` (Duration about 3 s), optional `GRAD_Endgame_GarrisonComponent`.
+- **Cipher site**: an empty entity with `GRAD_Endgame_CipherSiteComponent`.
+- **Cipher item**: any small inventory item with `GRAD_Endgame_CipherComponent`; set it as `m_sCipherPrefab` in the config.
+
+With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test player the radio operator slot.
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 32 | Start the game | `radio_sites_chosen`; hints "Documents within 150 m of ..." for each active document site on both sides |
+| 33 | BLUFOR copies at 3 sites | Hint "3 of 3 copied" to BLUFOR only; each copied site's marker disappears for BLUFOR only. Then `FOB/DOCUMENTS -> RADIO`, `cipher;;;;spawned`, `threshold;BLUFOR` |
+| 34 | BLUFOR squad lead | Hint "Decoded order" with the cipher grid. OPFOR gets no order and no cipher marker |
+| 35 | Both sides | Hint "Radio site" for each active radio site |
+| 36 | A BLUFOR leader respawns or rejoins | Gets the order and all BLUFOR markers again (SyncPlayer) |
+| 37 | Pick up the cipher | `cipher;BLUFOR;<id>;...;picked up` |
+| 38 | Non-operator with cipher uses the radio | "Only the radio operator" |
+| 39 | Operator with cipher transmits | `transmission;BLUFOR;...;started at 0 s`; OPFOR gets "Enemy transmission within 300 m of ..." and `df_sent` |
+| 40 | Operator walks 10 m away | `interrupted (operator left the set) at N s`; with PAUSE, starting again continues from N |
+| 41 | Transmit to the end | `transmission ... done`, `match_end;BLUFOR;;;winner BLUFOR (transmission)` |
+| 42 | Kill the operator while transmitting | `interrupted (operator killed)`; the cipher can be taken from the body |
 
 ## Results
 

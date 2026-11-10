@@ -125,6 +125,9 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "3", desc: "Copies (= sites, at one per site) a side needs to start the radio phase. Proposal 3 of 5. 0 = never (admin only).", category: "Documents")]
 	protected int m_iDocumentThreshold;
 
+	[Attribute(defvalue: "150", desc: "Radius in metres of the area marker shown for a document site (when exact positions are off).", category: "Documents")]
+	protected float m_fDocumentAreaRadius;
+
 	[Attribute(defvalue: "0", desc: "Task markers show the exact site instead of an area.", category: "Documents")]
 	protected bool m_bExactDocumentPositions;
 
@@ -132,6 +135,12 @@ class GRAD_Endgame_Config
 	protected bool m_bShowEnemyProgress;
 
 	// --- Cipher and radio ---
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Inventory item prefab carrying GRAD_Endgame_CipherComponent.", params: "et", category: "Radio")]
+	protected ResourceName m_sCipherPrefab;
+
+	[Attribute(defvalue: "5", desc: "Metres the operator may move away from the radio set before the transmission is interrupted.", category: "Radio")]
+	protected float m_fOperatorRange;
+
 	[Attribute(defvalue: "0", desc: "Defenders are told where the cipher lies.", category: "Radio")]
 	protected bool m_bCipherRevealToDefenders;
 
@@ -231,10 +240,13 @@ class GRAD_Endgame_Config
 	int GetCopiesPerSitePerFaction() { return m_iCopiesPerSitePerFaction; }
 	int GetDocumentThreshold() { return m_iDocumentThreshold; }
 	bool GetExactDocumentPositions() { return m_bExactDocumentPositions; }
+	float GetDocumentAreaRadius() { return m_fDocumentAreaRadius; }
 	bool GetShowEnemyProgress() { return m_bShowEnemyProgress; }
 
 	// Cipher and radio
 	bool GetCipherRevealToDefenders() { return m_bCipherRevealToDefenders; }
+	ResourceName GetCipherPrefab() { return m_sCipherPrefab; }
+	float GetOperatorRange() { return m_fOperatorRange; }
 	int GetActiveRadioSites() { return m_iActiveRadioSites; }
 	float GetTransmissionSeconds() { return Scaled(m_fTransmissionSeconds); }
 	GRAD_Endgame_ETransmissionInterrupt GetTransmissionInterrupt() { return m_eTransmissionInterrupt; }

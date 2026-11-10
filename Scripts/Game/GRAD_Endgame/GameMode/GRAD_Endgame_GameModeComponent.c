@@ -47,6 +47,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 	// Server only
 	protected ref map<string, int> m_mDocumentTotals = new map<string, int>();
+	protected string m_sLeadingFaction;   //!< side that reached the document threshold first
 	protected bool m_bRespawnDisabledByUs;
 	protected int m_iEliminationTicksOne;
 	protected int m_iEliminationTicksTwo;
@@ -182,6 +183,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 				GRAD_Endgame_MatchLog.StartMatch(string.Format("world=%1", GetGame().GetWorldFile()));
 				SelectDocumentSites();
+				SelectRadioSites();
 				SetPhase(GRAD_Endgame_EPhase.FOB, "rule");
 				break;
 			}
@@ -294,6 +296,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void OnRadioPhaseStarted(notnull GRAD_Endgame_Config cfg)
 	{
+		RevealRadioPhase(cfg);
+
 		COA_RespawnManager respawnManager = COA_RespawnManager.GetInstance();
 		if (!respawnManager)
 			return;
@@ -343,6 +347,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		}
 
 		m_mDocumentTotals.Clear();
+		m_sLeadingFaction = "";
+		GRAD_Endgame_InfoService.Reset();
 		// TODO (Workbench): a new round in the same load also needs fresh garrisons, FOBs back to
 		// untaken and spawn points back at their start. Check whether COALITION reloads the world
 		// between rounds; if it does, nothing is needed here.
@@ -415,9 +421,124 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		for (int i = 0; i < all.Count(); i++)
 			all[i].SetActive(chosen.Contains(i));
 
+		// Both sides learn where the documents are: an area, or the exact spot.
+		float areaRadius = cfg.GetDocumentAreaRadius();
+		if (cfg.GetExactDocumentPositions())
+			areaRadius = 0;
+		foreach (int index : chosen)
+		{
+			vector shown = GRAD_Endgame_InfoService.Blur(all[index].GetOwner().GetOrigin(), areaRadius);
+			string id = all[index].GetMarkerId();
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents");
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents");
+		}
+
 		GRAD_Endgame_MatchLog.Write("sites_chosen", "", 0, vector.Zero, string.Format("%1 of %2 sites, imbalance %3 %%", chosen.Count(), all.Count(), Math.Round(imbalance * 100)));
 		if (fobOne && fobTwo && imbalance > cfg.GetSiteBalanceTolerance())
 			GRAD_Endgame_MatchLog.Error(string.Format("No fair set of document sites found (best imbalance %1 %%). Place more sites halfway between the FOBs.", Math.Round(imbalance * 100)));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Choose the radio sites at game start (so their militia spawns with the other garrisons), with
+	//! the same balance rule as the document sites. Their positions are revealed in phase 3.
+	protected void SelectRadioSites()
+	{
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg)
+			return;
+
+		array<GRAD_Endgame_RadioSiteComponent> all = GRAD_Endgame_RadioSiteComponent.GetAll();
+		if (all.IsEmpty())
+		{
+			GRAD_Endgame_MatchLog.Error("No radio site placed: the radio phase cannot be won by transmission.");
+			return;
+		}
+
+		array<vector> positions = {};
+		foreach (GRAD_Endgame_RadioSiteComponent site : all)
+			positions.Insert(site.GetOwner().GetOrigin());
+
+		vector posOne, posTwo;
+		GetFobPositions(cfg, posOne, posTwo);
+
+		array<int> chosen = {};
+		float imbalance = GRAD_Endgame_SiteSelection.Choose(positions, posOne, posTwo, cfg.GetActiveRadioSites(), cfg.GetSiteBalanceTolerance(), chosen);
+		for (int i = 0; i < all.Count(); i++)
+			all[i].SetActive(chosen.Contains(i), i);
+
+		GRAD_Endgame_MatchLog.Write("radio_sites_chosen", "", 0, vector.Zero, string.Format("%1 of %2 sites, imbalance %3 %%", chosen.Count(), all.Count(), Math.Round(imbalance * 100)));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void GetFobPositions(notnull GRAD_Endgame_Config cfg, out vector posOne, out vector posTwo)
+	{
+		posOne = vector.Zero;
+		posTwo = vector.Zero;
+		GRAD_Endgame_FobComponent fobOne = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyOne());
+		GRAD_Endgame_FobComponent fobTwo = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyTwo());
+		if (fobOne && fobTwo)
+		{
+			posOne = fobOne.GetOwner().GetOrigin();
+			posTwo = fobTwo.GetOwner().GetOrigin();
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Phase 3: reveal the radio sites to both sides, spawn the cipher at a random cipher site, and
+	//! give its location to the leading side's leaders as the decoded order.
+	protected void RevealRadioPhase(notnull GRAD_Endgame_Config cfg)
+	{
+		foreach (GRAD_Endgame_RadioSiteComponent radio : GRAD_Endgame_RadioSiteComponent.GetAll())
+		{
+			if (!radio.IsActive())
+				continue;
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");
+		}
+
+		array<GRAD_Endgame_CipherSiteComponent> cipherSites = GRAD_Endgame_CipherSiteComponent.GetAll();
+		if (cipherSites.IsEmpty())
+		{
+			GRAD_Endgame_MatchLog.Error("No cipher site placed: nobody can transmit.");
+			return;
+		}
+
+		GRAD_Endgame_CipherSiteComponent cipherSite = cipherSites.GetRandomElement();
+		cipherSite.SpawnCipher(cfg.GetCipherPrefab());
+		vector cipherPos = cipherSite.GetOwner().GetOrigin();
+
+		// Who learns where it is: the side that reached the threshold. Advanced by an admin, the side
+		// with more copies; even, both.
+		string leader = m_sLeadingFaction;
+		if (leader.IsEmpty())
+		{
+			int one = m_mDocumentTotals.Get(cfg.GetFactionKeyOne());
+			int two = m_mDocumentTotals.Get(cfg.GetFactionKeyTwo());
+			if (one > two)
+				leader = cfg.GetFactionKeyOne();
+			else if (two > one)
+				leader = cfg.GetFactionKeyTwo();
+		}
+
+		string orderText = string.Format("The cipher lies at grid %1 / %2. Bring it to a radio site and transmit.", Math.Round(cipherPos[0]), Math.Round(cipherPos[2]));
+		array<string> told = {};
+		if (leader.IsEmpty() || cfg.GetCipherRevealToDefenders())
+		{
+			told.Insert(cfg.GetFactionKeyOne());
+			told.Insert(cfg.GetFactionKeyTwo());
+		}
+		else
+		{
+			told.Insert(leader);
+		}
+
+		foreach (string factionKey : told)
+		{
+			GRAD_Endgame_InfoService.SetOrder(factionKey, orderText);
+			GRAD_Endgame_InfoService.SetMarker(factionKey, "cipher", cipherPos, 0, "Cipher");
+		}
+
+		GRAD_Endgame_MatchLog.Write("threshold", leader, 0, cipherPos, string.Format("order sent to %1 side(s)", told.Count()));
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -425,7 +546,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	//! Server: one copy was made by this faction. Returns the faction's new total.
 	//! At the threshold the radio phase starts. TODO (M4): send the decoded order to the leader.
-	int AddDocument(string factionKey, int playerId, vector position)
+	int AddDocument(string factionKey, int playerId, vector position, string siteMarkerId = "")
 	{
 		if (!Replication.IsServer())
 			return 0;
@@ -435,9 +556,17 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		GRAD_Endgame_MatchLog.Write("copy", factionKey, playerId, position, string.Format("total %1", total));
 
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
-		if (cfg && cfg.GetDocumentThreshold() > 0 && total >= cfg.GetDocumentThreshold() && m_ePhase == GRAD_Endgame_EPhase.DOCUMENTS)
+		if (!cfg)
+			return total;
+
+		// Own side only: the count, and this site leaves its map (one copy per site per side).
+		GRAD_Endgame_InfoService.HintFaction(factionKey, "Documents", string.Format("%1 of %2 copied", total, cfg.GetDocumentThreshold()));
+		if (!siteMarkerId.IsEmpty() && cfg.GetCopiesPerSitePerFaction() == 1)
+			GRAD_Endgame_InfoService.RemoveMarker(factionKey, siteMarkerId);
+
+		if (cfg.GetDocumentThreshold() > 0 && total >= cfg.GetDocumentThreshold() && m_ePhase == GRAD_Endgame_EPhase.DOCUMENTS)
 		{
-			GRAD_Endgame_MatchLog.Write("threshold", factionKey, playerId, position, string.Format("total %1", total));
+			m_sLeadingFaction = factionKey;
 			SetPhase(GRAD_Endgame_EPhase.RADIO, "rule");
 		}
 
