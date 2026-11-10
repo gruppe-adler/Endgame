@@ -1,12 +1,23 @@
 //------------------------------------------------------------------------------------------------
-//! Hold action "copy the documents" (T5). Pattern from BreakingContact's
+//! Hold action "copy the documents". Pattern from BreakingContact's
 //! GRAD_BC_ToggleRadioTransmission:
 //!  - HasLocalEffectOnlyScript false: CanBeShown / CanBePerformed run on the client,
 //!    PerformAction runs on the server.
 //!  - The hold itself is PerformContinuousAction + LoopActionUpdate; a flag makes sure the copy is
 //!    counted once per hold.
-//! The progress bar is local to the performer. Everyone else sees the replicated copy count in the
-//! action label.
+//!
+//! One player at a time (finding D1): the hold timer and the completed flag belong to this action
+//! object, not to the player, so two players holding at once would disturb each other. The site
+//! therefore carries a replicated "in use by" id; everyone else gets "In use".
+//!
+//! The progress bar is local to the performer. The action label shows the copies the acting
+//! player's own side has made here.
+//!
+//! TODO (Workbench): read the hold duration from the config (m_fCopySeconds); for now the
+//! prefab's Duration decides. TODO: confirm that OnActionStart and OnActionCanceled run on the
+//! server for a broadcast action. If they do not, the lock is never set (harmless) and D1 stays.
+//!
+//! CHANGED WITHOUT WORKBENCH (2026-11-10): not compiled, not run.
 class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 {
 	protected GRAD_Endgame_DocumentSiteComponent m_Site;
@@ -17,6 +28,12 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 	{
 		super.Init(pOwnerEntity, pManagerComponent);
 		m_Site = GRAD_Endgame_DocumentSiteComponent.Cast(pOwnerEntity.FindComponent(GRAD_Endgame_DocumentSiteComponent));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected int GetPlayerId(IEntity user)
+	{
+		return GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(user);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -34,13 +51,21 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
-		return m_Site != null;
+		return m_Site != null && m_Site.IsActive();
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
-		return m_Site != null;
+		if (!m_Site)
+			return false;
+
+		string reason = m_Site.GetRefusalReason(GetPlayerId(user));
+		if (reason.IsEmpty())
+			return true;
+
+		SetCannotPerformReason(reason);
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -48,12 +73,18 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 	{
 		m_bActionCompleted = false;
 		super.OnActionStart(pUserEntity);
+
+		if (m_Site && Replication.IsServer())
+			m_Site.Lock(GetPlayerId(pUserEntity));
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override void OnActionCanceled(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
 		m_bActionCompleted = false;
+
+		if (m_Site && Replication.IsServer())
+			m_Site.Unlock(GetPlayerId(pUserEntity));
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -75,8 +106,8 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 		if (!m_Site)
 			return;
 
-		int playerId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(pUserEntity);
-		m_Site.AddCopy(playerId);
+		// AddCopy does nothing on clients, checks the rules again on the server and frees the site.
+		m_Site.AddCopy(GetPlayerId(pUserEntity));
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -85,7 +116,8 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 		if (!m_Site)
 			return false;
 
-		outName = string.Format("Copy documents (%1 made)", m_Site.GetCopyCount());
+		string factionKey = GRAD_Endgame_DocumentSiteComponent.GetFactionKeyOfPlayer(SCR_PlayerController.GetLocalPlayerId());
+		outName = string.Format("Copy documents (%1 made)", m_Site.GetCopyCount(factionKey));
 		return true;
 	}
 }
