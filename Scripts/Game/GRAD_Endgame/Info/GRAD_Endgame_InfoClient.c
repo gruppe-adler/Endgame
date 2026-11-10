@@ -6,6 +6,7 @@ class GRAD_Endgame_ClientInfo
 {
 	protected static ref map<string, ref GRAD_Endgame_MarkerData> s_mMarkers = new map<string, ref GRAD_Endgame_MarkerData>();
 	protected static string s_sOrder;
+	protected static ref map<string, ref SCR_MapMarkerBase> s_mMapMarkers = new map<string, ref SCR_MapMarkerBase>();   //!< the same markers as vanilla map markers, local to this client
 	protected static ref ScriptInvoker s_OnChanged = new ScriptInvoker();
 
 	//------------------------------------------------------------------------------------------------
@@ -32,19 +33,60 @@ class GRAD_Endgame_ClientInfo
 	static void Set(string id, vector position, float radius, string label)
 	{
 		s_mMarkers.Set(id, new GRAD_Endgame_MarkerData(id, position, radius, label));
+		ShowOnMap(id, position, label);
 		s_OnChanged.Invoke();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Show a marker on the player's map as a vanilla custom marker that only this client has.
+	protected static void ShowOnMap(string id, vector position, string label)
+	{
+		HideOnMap(id);
+
+		SCR_MapMarkerManagerComponent manager = SCR_MapMarkerManagerComponent.GetInstance();
+		if (!manager)
+		{
+			Print("[GRAD_Endgame] No map marker manager; marker " + id + " only shown as a hint.", LogLevel.WARNING);
+			return;
+		}
+
+		SCR_MapMarkerBase marker = new SCR_MapMarkerBase();
+		marker.SetType(SCR_EMapMarkerType.PLACED_CUSTOM);
+		marker.SetWorldPos(position[0], position[2]);
+		marker.SetCustomText(label);
+		manager.InsertStaticMarker(marker, true);
+		s_mMapMarkers.Set(id, marker);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected static void HideOnMap(string id)
+	{
+		SCR_MapMarkerBase marker = s_mMapMarkers.Get(id);
+		if (!marker)
+			return;
+
+		s_mMapMarkers.Remove(id);
+		SCR_MapMarkerManagerComponent manager = SCR_MapMarkerManagerComponent.GetInstance();
+		if (manager)
+			manager.RemoveStaticMarker(marker);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	static void Remove(string id)
 	{
 		s_mMarkers.Remove(id);
+		HideOnMap(id);
 		s_OnChanged.Invoke();
 	}
 
 	//------------------------------------------------------------------------------------------------
 	static void Clear()
 	{
+		array<string> ids = {};
+		foreach (string id, SCR_MapMarkerBase marker : s_mMapMarkers)
+			ids.Insert(id);
+		foreach (string id : ids)
+			HideOnMap(id);
 		s_mMarkers.Clear();
 		s_OnChanged.Invoke();
 	}

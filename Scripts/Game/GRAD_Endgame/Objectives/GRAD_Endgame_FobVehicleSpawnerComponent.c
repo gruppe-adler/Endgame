@@ -55,6 +55,7 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
+		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 
 		if (Replication.IsServer())

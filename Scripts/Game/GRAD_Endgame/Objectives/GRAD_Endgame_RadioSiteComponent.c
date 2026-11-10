@@ -128,6 +128,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
+		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 
 		// A late joiner gets the state without the change callback, so start the loop if needed.

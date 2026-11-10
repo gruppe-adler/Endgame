@@ -1,0 +1,7 @@
+GenericEntity : "{AE0FFC699F429214}Prefabs/Props/Military/Camps/PalletAmmo_01_US.et" {
+ ID "6513270E269E0D37"
+ components {
+  GRAD_Endgame_SnapToTerrainComponent "{0C5C7FD0A6A3A450}" {
+  }
+ }
+}

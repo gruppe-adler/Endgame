@@ -108,6 +108,7 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
+		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 	}
 

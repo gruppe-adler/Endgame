@@ -1,32 +1,17 @@
-COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/Systems/!Lobby/COA_Lobby.et" {
- coords 0 0 0
+SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
+ coords 4813.21 28 11100
+}
+COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et" {
  components {
   GRAD_Endgame_GameModeComponent "{7A1E3C5B9D204F68}" {
   }
  }
+ coords 0 0 0
  m_bRespawnEnabled 1
  m_bWaveRespawn 0
  m_iTimeToRespawn 60
- m_iBLUFORTickets -1
- m_iOPFORTickets -1
- m_bLockUnusedSlots 0
- m_BLUFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7301}" {
-  m_rGearScript "{B0EB1A0A0C8C4698}Configs/Gearscripts/GRAD_Endgame_GS_US80s.conf"
-  m_bEnableBFT 1
-  m_bEnableLeadershipRadios 1
-  m_bEnableGIRadios 0
-  m_bEnableRTORadios 1
- }
- m_OPFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7302}" {
-  m_rGearScript "{61052F4A8AC7951B}Configs/Gearscripts/GRAD_Endgame_GS_USSR80s.conf"
-  m_bEnableBFT 1
-  m_bEnableLeadershipRadios 1
-  m_bEnableGIRadios 0
-  m_bEnableRTORadios 1
- }
- m_iFactionOneRatio 1
- m_iFactionTwoRatio 1
  m_iTimeLimitMinutes 60
+ m_bLockUnusedSlots 0
  m_bUseSafestartTimeLimit 1
  m_iSafestartTimeLimit 3
  m_bUseCVON 0
@@ -39,6 +24,8 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/Systems/!Lobby/COA_Lobby.et"
    m_bShowForAnyFaction 1
   }
  }
+ m_iFactionOneRatio 1
+ m_iFactionTwoRatio 1
  m_sFactionOneKey "BLU"
  m_sFactionTwoKey "OPF"
  m_BLUFORSlots {
@@ -93,82 +80,121 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/Systems/!Lobby/COA_Lobby.et"
    m_iGroupRespawns -1
   }
  }
+ m_iBLUFORTickets -1
+ m_iOPFORTickets -1
+ m_BLUFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7301}" {
+  m_rGearScript "{B0EB1A0A0C8C4698}Configs/Gearscripts/GRAD_Endgame_GS_US80s.conf"
+  m_bEnableBFT 1
+  m_bEnableLeadershipRadios 1
+  m_bEnableGIRadios 0
+  m_bEnableRTORadios 1
+ }
+ m_OPFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7302}" {
+  m_rGearScript "{61052F4A8AC7951B}Configs/Gearscripts/GRAD_Endgame_GS_USSR80s.conf"
+  m_bEnableBFT 1
+  m_bEnableLeadershipRadios 1
+  m_bEnableGIRadios 0
+  m_bEnableRTORadios 1
+ }
 }
-COA_StaticSpawnPoint : "{0B3312C6940005B9}PrefabsMissionMaking/Systems/SpawnPoints/OPFOR_Spawn.et" {
+COA_StaticSpawnPoint "6AD556E33B9D8B6F" : "{0B3312C6940005B9}PrefabsMissionMaking/SpawnPoints/SpawnPoints/OPFOR_Spawn.et" {
  coords 4813.21 28 11335.921
 }
-COA_StaticSpawnPoint : "{62865C82AB534D91}PrefabsMissionMaking/Systems/SpawnPoints/BLUFOR_Spawn.et" {
- coords 4813.21 28 11213.16
+GenericEntity : "{142A5B364288AED4}Prefabs/GRAD_Endgame_Fob_OPFOR.et" {
+ coords 4846.613 111.953 8100.167
 }
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4880 28 11260
+$grp GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
+ {
+  coords 4558.053 22.014 10504.468
+  angles 0 -94.6 0
+ }
+ {
+  coords 5807.629 5.132 9785.035
+  angles 0 1.134 0
+ }
+ {
+  coords 4459.453 9.675 10869.078
+  angles 0 -107.493 0
+ }
+ {
+  coords 5207.588 40.458 10453.247
+  angles 0 -135.197 0
+ }
+ {
+  coords 4927.104 40.611 9074.263
+  angles 0 -53.007 0
+ }
+ {
+  coords 4510.9 18.265 9485.995
+  angles 0 -90.094 0
+ }
+ {
+  coords 4154.949 42.225 7799.197
+  angles 0 -49.807 0
+ }
+ {
+  coords 5507.011 44.394 10550.714
+  angles 0 -107.493 0
+ }
+ {
+  coords 6380.95 6.375 9625.914
+  angles 0 -161.885 0
+ }
 }
 GenericEntity : "{598B5EFD3AC11242}Prefabs/GRAD_Endgame_Garrison.et" {
- coords 5450 28 11213
+ coords 4558.053 22.014 10504.468
 }
-SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
- coords 4813.21 28 11100
+$grp GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
+ {
+  coords 4407.722 9.383 9472.038
+ }
+ {
+  coords 5227.646 38.536 11378.714
+ }
 }
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4900 28 11280
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4700 28 11500
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 5000 28 11000
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 5150 28 11200
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4400 28 11450
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4650 28 10950
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 5300 28 11600
-}
-GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
- coords 4950 28 11450
+COA_StaticSpawnPoint "6AD556E33B9D8980" : "{62865C82AB534D91}PrefabsMissionMaking/SpawnPoints/SpawnPoints/BLUFOR_Spawn.et" {
+ coords 4813.21 28 11213.16
 }
 GenericEntity : "{8CB7E485E9D08D1E}Prefabs/GRAD_Endgame_Fob_BLUFOR.et" {
- coords 4500 28 11213
+ coords 4451.581 5.811 11212.504
 }
-GenericEntity : "{142A5B364288AED4}Prefabs/GRAD_Endgame_Fob_OPFOR.et" {
- coords 5200 28 11336
+$grp GenericEntity : "{9D1A106621301828}Prefabs/GRAD_Endgame_VehicleSpot_OPFOR.et" {
+ {
+  coords 4858.664 112.383 8131.787
+  angles 0 39.316 0
+ }
+ {
+  coords 4863.973 112.624 8137.461
+  angles 0 25.497 0
+ }
 }
-GenericEntity : "{CA5DE314ACB59BA8}Prefabs/GRAD_Endgame_VehicleSpot_BLUFOR.et" {
- coords 4480 28 11190
+$grp GenericEntity : "{CA5DE314ACB59BA8}Prefabs/GRAD_Endgame_VehicleSpot_BLUFOR.et" {
+ {
+  coords 4459.017 5.75 11187.604
+ }
+ {
+  coords 4457.688 5.781 11204.26
+ }
 }
-GenericEntity : "{CA5DE314ACB59BA8}Prefabs/GRAD_Endgame_VehicleSpot_BLUFOR.et" {
- coords 4480 28 11240
+$grp GenericEntity : "{F2A74DE452E6B438}Prefabs/GRAD_Endgame_AmmoPallet.et" {
+ {
+  coords 4454.423 5.812 11194.052
+ }
+ {
+  coords 4851.133 111.459 8107.533
+ }
 }
-GenericEntity : "{9D1A106621301828}Prefabs/GRAD_Endgame_VehicleSpot_OPFOR.et" {
- coords 5220 28 11320
-}
-GenericEntity : "{9D1A106621301828}Prefabs/GRAD_Endgame_VehicleSpot_OPFOR.et" {
- coords 5220 28 11360
-}
-GenericEntity : "{F438889E6C8098D4}Prefabs/GRAD_Endgame_RadioSite.et" {
- coords 4800 28 11600
-}
-GenericEntity : "{F438889E6C8098D4}Prefabs/GRAD_Endgame_RadioSite.et" {
- coords 5100 28 10900
-}
-GenericEntity : "{F438889E6C8098D4}Prefabs/GRAD_Endgame_RadioSite.et" {
- coords 4500 28 10800
-}
-GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
- coords 4700 28 11100
-}
-GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
- coords 5000 28 11500
-}
-GenericEntity : "{AE0FFC699F429214}Prefabs/Props/Military/Camps/PalletAmmo_01_US.et" {
- coords 4510 28 11225
-}
-GenericEntity : "{AE0FFC699F429214}Prefabs/Props/Military/Camps/PalletAmmo_01_US.et" {
- coords 5210 28 11348
+$grp GenericEntity : "{F438889E6C8098D4}Prefabs/GRAD_Endgame_RadioSite.et" {
+ {
+  coords 4408.723 14.005 10770.932
+  angles 0 -26.466 0
+ }
+ {
+  coords 5267.97 26.767 9365.192
+  angles 0 -89.645 0
+ }
+ {
+  coords 4754.616 20.992 9319.349
+  angles 0 -7.222 0
+ }
 }

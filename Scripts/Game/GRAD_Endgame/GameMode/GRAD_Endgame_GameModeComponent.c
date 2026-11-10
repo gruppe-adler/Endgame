@@ -55,6 +55,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	protected bool m_bRespawnDisabledByUs;
 	protected int m_iEliminationTicksOne;
 	protected int m_iEliminationTicksTwo;
+	protected bool m_bEliminationArmed;   //!< both sides had players when the radio phase began; with one side empty (solo test) nobody can be eliminated
 	protected int m_iLoadLogCountdown;
 
 	protected const int TICK_MS = 1000;
@@ -199,6 +200,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 		GRAD_Endgame_EPhase oldPhase = m_eLastNotifiedPhase;
 		m_eLastNotifiedPhase = m_ePhase;
+		if (m_ePhase == GRAD_Endgame_EPhase.ENDED)
+			GRAD_Endgame_ClientInfo.Clear();
 		m_OnPhaseChanged.Invoke(oldPhase, m_ePhase);
 	}
 
@@ -272,11 +275,19 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 		GRAD_Endgame_MatchLog.Write("phase", "", 0, vector.Zero, string.Format("%1 -> %2 (%3)", SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, oldPhase), SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, phase), cause));
 
+		if (phase == GRAD_Endgame_EPhase.FOB && cfg)
+			ShowFobMarkers(cfg);
+
 		if (phase == GRAD_Endgame_EPhase.DOCUMENTS && cfg)
 			RevealDocumentSites(cfg);
 
 		if (phase == GRAD_Endgame_EPhase.RADIO && cfg)
+		{
 			OnRadioPhaseStarted(cfg);
+			int startAliveOne, startAliveTwo;
+			CountAlive(cfg, startAliveOne, startAliveTwo);
+			m_bEliminationArmed = startAliveOne > 0 && startAliveTwo > 0;
+		}
 
 		// Late joining: open in phases 1 and 2, closed from phase 3 (decided 2026-11-10). With all
 		// open slots locked, a player who joins can only spectate.
@@ -286,6 +297,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			if (slottingManager)
 				slottingManager.LockAllOpenSlots();
 		}
+
+		if (phase == GRAD_Endgame_EPhase.ENDED)
+			GRAD_Endgame_ClientInfo.Clear();   // the after-action screen must not find our map markers
 
 		m_OnPhaseChanged.Invoke(oldPhase, phase);
 	}
@@ -395,6 +409,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		// between rounds; if it does, nothing is needed here.
 		m_iEliminationTicksOne = 0;
 		m_iEliminationTicksTwo = 0;
+		m_bEliminationArmed = false;
 		m_bPermadeathActive = false;
 		m_sWinnerKey = "";
 
@@ -423,10 +438,28 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (!cfg)
 			return;
 
+		GRAD_Endgame_InfoService.RemoveMarker(fob.GetFactionKey(), "fob_" + fob.GetFactionKey());
+
 		GRAD_Endgame_FobComponent fobOne = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyOne());
 		GRAD_Endgame_FobComponent fobTwo = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyTwo());
 		if (fobOne && fobTwo && fobOne.IsTaken() && fobTwo.IsTaken())
 			SetPhase(GRAD_Endgame_EPhase.DOCUMENTS, "rule");
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Phase 1: each side sees its own FOB and has to clear the garrison there.
+	protected void ShowFobMarkers(GRAD_Endgame_Config cfg)
+	{
+		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
+		foreach (string key : keys)
+		{
+			GRAD_Endgame_FobComponent fob = GRAD_Endgame_FobComponent.GetForFaction(key);
+			if (!fob)
+				continue;
+
+			GRAD_Endgame_InfoService.SetMarker(key, "fob_" + key, fob.GetOwner().GetOrigin(), 0, "Your FOB: clear the garrison");
+			GRAD_Endgame_InfoService.HintFaction(key, "Phase 1: take your FOB", "Clear the militia from the marked FOB to unlock your spawn there.");
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -657,7 +690,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		int aliveOne, aliveTwo;
 		CountAlive(cfg, aliveOne, aliveTwo);
 
-		if (m_ePhase == GRAD_Endgame_EPhase.RADIO && m_bPermadeathActive && cfg.GetEliminationEndsMatch())
+		if (m_ePhase == GRAD_Endgame_EPhase.RADIO && m_bPermadeathActive && m_bEliminationArmed && cfg.GetEliminationEndsMatch())
 		{
 			if (aliveOne == 0)
 				m_iEliminationTicksOne++;
