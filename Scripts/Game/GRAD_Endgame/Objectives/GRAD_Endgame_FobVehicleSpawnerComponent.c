@@ -11,7 +11,8 @@ class GRAD_Endgame_FobVehicleSpawnerComponentClass : ScriptComponentClass
 //!  - Nothing spawns until this side's FOB is taken; then the vehicle appears on this spot.
 //!  - When the vehicle is destroyed, or has been driven more than m_fTransportRespawnRadius (500 m)
 //!    from the spot, a timer of m_fTransportRespawnSeconds (400 s) starts.
-//!  - When the timer is up and the spot is clear, a new vehicle spawns. The old one, if it still
+//!  - When the timer is up and the spot is clear, a new vehicle spawns. A wreck of the spot's own
+//!    vehicle standing on the spot is removed first. The old one, if it still
 //!    exists, stays where it is: whoever took it keeps it.
 //!  - A vehicle brought back within the radius before the timer is up cancels the respawn.
 //!
@@ -84,13 +85,19 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	protected static bool IsDestroyed(notnull IEntity vehicle)
+	{
+		SCR_VehicleDamageManagerComponent damage = SCR_VehicleDamageManagerComponent.Cast(vehicle.FindComponent(SCR_VehicleDamageManagerComponent));
+		return damage && damage.GetState() == EDamageState.DESTROYED;
+	}
+
+	//------------------------------------------------------------------------------------------------
 	protected bool IsGone(notnull GRAD_Endgame_Config cfg)
 	{
 		if (!m_Vehicle)
 			return true;
 
-		SCR_VehicleDamageManagerComponent damage = SCR_VehicleDamageManagerComponent.Cast(m_Vehicle.FindComponent(SCR_VehicleDamageManagerComponent));
-		if (damage && damage.GetState() == EDamageState.DESTROYED)
+		if (IsDestroyed(m_Vehicle))
 			return true;
 
 		return vector.Distance(m_Vehicle.GetOrigin(), GetOwner().GetOrigin()) > cfg.GetTransportRespawnRadius();
@@ -124,7 +131,17 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 			return;
 		}
 
-		if (Now() < m_fRespawnAt || !IsSpotClear())
+		if (Now() < m_fRespawnAt)
+			return;
+
+		// A wreck of our own vehicle on the spot is cleared away; anything else blocks the spot.
+		if (m_Vehicle && IsDestroyed(m_Vehicle) && vector.Distance(m_Vehicle.GetOrigin(), GetOwner().GetOrigin()) < m_fClearRadius)
+		{
+			SCR_EntityHelper.DeleteEntityAndChildren(m_Vehicle);
+			m_Vehicle = null;
+		}
+
+		if (!IsSpotClear())
 			return;
 
 		m_fRespawnAt = -1;

@@ -112,7 +112,7 @@ A FOB prefab is an entity with `GRAD_Endgame_FobComponent` (faction key set) and
 | 29b | Place two `GRAD_Endgame_FobVehicleSpawnerComponent` spots per side near the FOBs, with a light vehicle prefab. Take the BLUFOR FOB | `vehicle_spawn;BLUFOR` per spot; nothing for OPFOR yet |
 | 29c | Drive a BLUFOR vehicle 600 m away (time scale 10: wait 40 s) | A new vehicle on the empty spot; the driven one stays where it is |
 | 29d | Drive one 600 m away, bring it back before 40 s | No new vehicle |
-| 29e | Destroy a vehicle on its spot | No replacement while the wreck blocks the spot. TODO: clear wrecks, or spawn beside them |
+| 29e | Destroy a vehicle on its spot | After 40 s the wreck disappears and a new vehicle stands there |
 | 31 | In phase RADIO, a new client joins | No free slot to take; he lands in spectator |
 
 ## Phases (needs the game-mode component)
