@@ -1,0 +1,51 @@
+FrameWidgetClass {
+ Name "GRAD_Endgame_MapStatusLineRoot"
+ {
+  OverlayWidgetClass "{D053C31CA41B079B}" {
+   Name "StatusLine"
+   Slot FrameWidgetSlot "{C43939A67CF58F54}" {
+    Anchor 0.5 1 0.5 1
+    PositionX -420
+    OffsetLeft -420
+    PositionY -50
+    OffsetTop -50
+    SizeX 840
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 1
+   {
+    ImageWidgetClass "{75F5DA6A8603C1E0}" {
+     Name "StatusLinePaper"
+     Slot OverlayWidgetSlot "{641001996899FF8F}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{19B8FADB5162444F}" {
+     Name "StatusLineContent"
+     Slot OverlayWidgetSlot "{33F7C62F9C562B46}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{4A85B34DB626DA63}" {
+             Name "StatusLineText"
+             Slot LayoutSlot "{317209D96C77F449}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+ }
+}

@@ -341,6 +341,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (!winnerKey.IsEmpty())
 			result = "winner " + winnerKey;
 		GRAD_Endgame_MatchLog.Write("match_end", winnerKey, 0, vector.Zero, string.Format("%1 (%2)", result, cause));
+		GRAD_Endgame_TaskService.FinishAll(winnerKey);
 
 		// Hand over to COALITION's after-action state, unless COALITION is what ended the match.
 		// TODO (Workbench): COALITION's outro can show a winning faction; find the setter of the
@@ -460,6 +461,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void OnRadioPhaseStarted(notnull GRAD_Endgame_Config cfg)
 	{
+		CloseDocumentTasks(cfg);
+
 		RevealRadioPhase(cfg);
 
 		COA_RespawnManager respawnManager = COA_RespawnManager.GetInstance();
@@ -547,7 +550,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (!cfg)
 			return;
 
-		GRAD_Endgame_InfoService.RemoveMarker(fob.GetFactionKey(), "fob_" + fob.GetFactionKey());
+		GRAD_Endgame_InfoService.RemoveMarker(fob.GetFactionKey(), "fob_" + fob.GetFactionKey(), true);
 
 		GRAD_Endgame_FobComponent fobOne = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyOne());
 		GRAD_Endgame_FobComponent fobTwo = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyTwo());
@@ -566,7 +569,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			if (!fob)
 				continue;
 
-			GRAD_Endgame_InfoService.SetMarker(key, "fob_" + key, fob.GetOwner().GetOrigin(), 0, "Your FOB: clear the garrison");
+			GRAD_Endgame_InfoService.SetMarker(key, "fob_" + key, fob.GetOwner().GetOrigin(), 0, "Take your FOB", "Clear the militia from your FOB. Your spawn moves there when it is taken.");
 			GRAD_Endgame_InfoService.HintFaction(key, "Phase 1: take your FOB", "Clear the militia from the marked FOB to unlock your spawn there.");
 		}
 	}
@@ -620,6 +623,14 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (cfg.GetExactDocumentPositions())
 			areaRadius = 0;
 
+		// One parent task per side carries the progress towards the threshold; the sites are its
+		// children.
+		string docsDesc = string.Format("Copy the documents at %1 of the marked sites. One copy per site.", GetDocumentThreshold());
+		GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), "docs", vector.Zero, 0, "Secure the documents", docsDesc);
+		GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), "docs", vector.Zero, 0, "Secure the documents", docsDesc);
+		GRAD_Endgame_TaskService.SetProgress(cfg.GetFactionKeyOne(), "docs", 0);
+		GRAD_Endgame_TaskService.SetProgress(cfg.GetFactionKeyTwo(), "docs", 0);
+
 		foreach (GRAD_Endgame_DocumentSiteComponent site : GRAD_Endgame_DocumentSiteComponent.GetAll())
 		{
 			if (!site.IsSiteActive())
@@ -627,8 +638,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 			vector shown = GRAD_Endgame_InfoService.Blur(site.GetOwner().GetOrigin(), areaRadius);
 			string id = site.GetMarkerId();
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents");
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents");
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents", "", "docs");
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents", "", "docs");
 		}
 
 		GRAD_Endgame_InfoService.HintFaction(cfg.GetFactionKeyOne(), "Documents located", "Copy documents at the marked sites.");
@@ -681,6 +692,27 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Phase 2 is over: the side that reached the threshold completes its document task, the other
+	//! fails it; sites nobody copied leave both task lists.
+	protected void CloseDocumentTasks(notnull GRAD_Endgame_Config cfg)
+	{
+		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
+		foreach (string key : keys)
+		{
+			foreach (GRAD_Endgame_DocumentSiteComponent site : GRAD_Endgame_DocumentSiteComponent.GetAll())
+			{
+				if (site.IsSiteActive() && site.GetCopyCount(key) == 0)
+					GRAD_Endgame_InfoService.RemoveMarker(key, site.GetMarkerId());
+			}
+
+			if (key == m_sLeadingFaction)
+				GRAD_Endgame_TaskService.Complete(key, "docs");
+			else
+				GRAD_Endgame_TaskService.Fail(key, "docs");
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
 	//! Phase 3: reveal the radio sites to both sides, spawn the cipher at a random cipher site, and
 	//! give its location to the leading side's leaders as the decoded order.
 	protected void RevealRadioPhase(notnull GRAD_Endgame_Config cfg)
@@ -689,8 +721,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		{
 			if (!radio.IsSiteActive())
 				continue;
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site");
+			string radioDesc = "Transmit the message from here with the cipher. Defend the site if the enemy transmits.";
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site", radioDesc);
+			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), radio.GetMarkerId(), radio.GetOwner().GetOrigin(), 0, "Radio site", radioDesc);
 		}
 
 		array<GRAD_Endgame_CipherSiteComponent> cipherSites = GRAD_Endgame_CipherSiteComponent.GetAll();
@@ -732,7 +765,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		foreach (string factionKey : told)
 		{
 			GRAD_Endgame_InfoService.SetOrder(factionKey, orderText);
-			GRAD_Endgame_InfoService.SetMarker(factionKey, "cipher", cipherPos, 0, "Cipher");
+			GRAD_Endgame_InfoService.SetMarker(factionKey, "cipher", cipherPos, 0, "Recover the cipher", "The codebook lies here. Bring it to a radio site.");
 		}
 
 		GRAD_Endgame_MatchLog.Write("threshold", leader, 0, cipherPos, string.Format("order sent to %1 side(s)", told.Count()));
@@ -759,7 +792,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		// Own side only: the count, and this site leaves its map (one copy per site per side).
 		GRAD_Endgame_InfoService.HintFaction(factionKey, "Documents", string.Format("%1 of %2 copied", total, GetDocumentThreshold()));
 		if (!siteMarkerId.IsEmpty() && cfg.GetCopiesPerSitePerFaction() == 1)
-			GRAD_Endgame_InfoService.RemoveMarker(factionKey, siteMarkerId);
+			GRAD_Endgame_InfoService.RemoveMarker(factionKey, siteMarkerId, true);
+		if (GetDocumentThreshold() > 0)
+			GRAD_Endgame_TaskService.SetProgress(factionKey, "docs", total / (float)GetDocumentThreshold());
 
 		if (GetDocumentThreshold() > 0 && total >= GetDocumentThreshold() && m_ePhase == GRAD_Endgame_EPhase.DOCUMENTS)
 		{

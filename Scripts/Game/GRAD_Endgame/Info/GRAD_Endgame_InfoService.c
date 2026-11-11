@@ -45,47 +45,37 @@ class GRAD_Endgame_InfoService
 	{
 		s_mMarkers.Clear();
 		s_mOrderText.Clear();
+		GRAD_Endgame_TaskService.Reset();
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Show (or move) a marker for every player of a faction.
-	static void SetMarker(string factionKey, string id, vector position, float radius, string label)
+	//! Show (or move) an objective for every player of a faction, as a native task
+	//! (GRAD_Endgame_TaskService), which replicates and survives join in progress by itself.
+	//! \param[in] radius > 0: the position is an area centre (the task sits at the blurred centre)
+	//! \param[in] parentId our id of a parent task of the same side, or empty
+	static void SetMarker(string factionKey, string id, vector position, float radius, string label, string description = "", string parentId = "")
 	{
 		if (!Replication.IsServer() || factionKey.IsEmpty())
 			return;
 
-		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
-		markers.Set(id, new GRAD_Endgame_MarkerData(id, position, radius, label));
+		if (description.IsEmpty() && radius > 0)
+			description = string.Format("Somewhere within %1 m of the marked point.", Math.Round(radius));
 
-		array<int> players = {};
-		GetFactionPlayers(factionKey, players);
-		foreach (int playerId : players)
-		{
-			COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
-			if (owner)
-				owner.EndgameSetMarker(id, position, radius, label);
-		}
+		GRAD_Endgame_TaskService.Upsert(factionKey, id, label, description, position, parentId);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	static void RemoveMarker(string factionKey, string id)
+	//! \param[in] done true: the side achieved it (task completed); false: it no longer applies
+	//!            (task removed)
+	static void RemoveMarker(string factionKey, string id, bool done = false)
 	{
 		if (!Replication.IsServer())
 			return;
 
-		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
-		if (!markers.Contains(id))
-			return;
-		markers.Remove(id);
-
-		array<int> players = {};
-		GetFactionPlayers(factionKey, players);
-		foreach (int playerId : players)
-		{
-			COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
-			if (owner)
-				owner.EndgameRemoveMarker(id);
-		}
+		if (done)
+			GRAD_Endgame_TaskService.Complete(factionKey, id);
+		else
+			GRAD_Endgame_TaskService.Remove(factionKey, id);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -151,10 +141,6 @@ class GRAD_Endgame_InfoService
 		COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
 		if (!owner)
 			return;
-
-		owner.EndgameClearMarkers();
-		foreach (string id, GRAD_Endgame_MarkerData marker : GetMarkers(factionKey))
-			owner.EndgameSetMarker(marker.m_sId, marker.m_vPosition, marker.m_fRadius, marker.m_sLabel);
 
 		string order;
 		if (s_mOrderText.Find(factionKey, order) && IsLeader(playerId))

@@ -178,6 +178,28 @@ Needs `Sounds/GRAD_Endgame_Typewriter.acp` with the events `GRAD_Endgame_TypeKey
 | 50 | Same call after the start, or with 6 when 5 sites are active | Hint "Not changed: ..." |
 | 51 | With the layout override in place: admin menu > Game Mode | The documents-needed box shows the current value; Set changes it as in 49 |
 
+## Native tasks and HUD (2026-11-11)
+
+Setup in Workbench first: register `GRAD_Endgame_FieldLogDisplay` in the player controller's HUD manager with `UI/layouts/GRAD_Endgame_FieldLog.layout`; add `GRAD_Endgame_MapStatusLine` to the map configuration with its layout; add the input actions `GRAD_Endgame_FieldLog`, `GRAD_Endgame_DismissOrder`, `GRAD_Endgame_ToggleTransmission`, `GRAD_Endgame_ToggleSpectator`. Keep `m_fCopySeconds` equal to the copy action's Duration in the document site prefab, or the team's bar runs at a different speed than the copier's.
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 52 | Start the game, open the task list / map as BLUFOR, then as OPFOR | Each side sees only "Take your FOB" at its own FOB. Task debug menu: Win+Alt > Systems > Task System |
+| 53 | Take the BLUFOR FOB | BLUFOR's task completes; OPFOR's stays |
+| 54 | Phase 2 | Each side: "Secure the documents" in the list (no map icon) with a progress bar at 0 %, five "Documents" child tasks on the map |
+| 55 | BLUFOR copies a site | That child task completes for BLUFOR only; BLUFOR's parent shows 33 % |
+| 56 | Phase 3 | Leading side's "Secure the documents" completed, the other's failed, uncopied site tasks gone; both see "Radio site" tasks; the informed side sees "Recover the cipher" |
+| 57 | Pick up the cipher | "Recover the cipher" completes for the carrier's side |
+| 58 | Transmit | The radio site task of the transmitting side shows progress rising 1 % at a time; the other side gets "Stop the enemy transmission" at the fix, moving every interval |
+| 59 | Interrupt | "Stop the enemy transmission" disappears; progress stays (pause) |
+| 60 | Win | Winner's open tasks completed, loser's failed |
+| 61 | Late join in phase 2 | Tasks of the joiner's side appear without any resend |
+| 62 | Two BLUFOR players at a site, one copies | Both see the action slip "COPYING DOCUMENTS" filling at the same speed; an OPFOR player next to them sees nothing |
+| 63 | A server notice (e.g. copy made) | Appears in the Notice card for 8 s, typed; without the HUD registered, as a vanilla hint |
+| 64 | Leader of the informed side at phase 3 | Decoded order card stays until [K] |
+| 65 | [J], [T], [U] | Field log opens/closes; transmission log hides/shows; spectator strip hides/shows |
+| 66 | Open the map | Status line at the bottom edge; not on the normal screen |
+
 ## Results
 
 | Date | Commit | Passed | Failed | Notes |
