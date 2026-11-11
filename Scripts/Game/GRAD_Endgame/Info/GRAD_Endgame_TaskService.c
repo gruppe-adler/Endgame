@@ -10,13 +10,6 @@
 //! Server only. Rules from the BI wiki (Task System Usage): manage tasks only through
 //! SCR_TaskSystem, read them through SCR_Task getters, never touch SCR_TaskData.
 //!
-//! SECURITY NOTE: the task system replicates all task data to every client and filters what is
-//! shown on the client. A modified client can therefore read the other side's tasks, including
-//! their positions. That conflicts with the "Network contract" for the two secret items: the cipher
-//! location and the direction-finding fix. Both are still created as tasks here because the user
-//! asked for the native system everywhere; see GRAD_Endgame_InfoService.SECRET_IDS to keep them
-//! on the old owner-RPC path instead.
-//!
 //! WRITTEN WITHOUT WORKBENCH (2026-11-11): not compiled, not run. Enum value names
 //! (SCR_ETaskOwnership.FACTION, SCR_ETaskVisibility.FACTION, SCR_ETaskUIVisibility.ALL / LIST_ONLY,
 //! SCR_ETaskState.COMPLETED / FAILED / CANCELLED) are taken from the wiki's descriptions and need a

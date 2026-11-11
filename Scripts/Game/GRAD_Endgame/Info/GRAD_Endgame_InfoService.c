@@ -49,22 +49,14 @@ class GRAD_Endgame_InfoService
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Show (or move) an objective for every player of a faction.
-	//! Since 2026-11-11 this is a native task (GRAD_Endgame_TaskService), which replicates and
-	//! survives join in progress by itself. Only the secret items (cipher location, direction-finding
-	//! fix) can be kept on the old owner-RPC path with config m_bSecretInfoAsTasks off.
+	//! Show (or move) an objective for every player of a faction, as a native task
+	//! (GRAD_Endgame_TaskService), which replicates and survives join in progress by itself.
 	//! \param[in] radius > 0: the position is an area centre (the task sits at the blurred centre)
 	//! \param[in] parentId our id of a parent task of the same side, or empty
 	static void SetMarker(string factionKey, string id, vector position, float radius, string label, string description = "", string parentId = "")
 	{
 		if (!Replication.IsServer() || factionKey.IsEmpty())
 			return;
-
-		if (UsesRpc(id))
-		{
-			SetRpcMarker(factionKey, id, position, radius, label);
-			return;
-		}
 
 		if (description.IsEmpty() && radius > 0)
 			description = string.Format("Somewhere within %1 m of the marked point.", Math.Round(radius));
@@ -80,63 +72,10 @@ class GRAD_Endgame_InfoService
 		if (!Replication.IsServer())
 			return;
 
-		if (UsesRpc(id))
-		{
-			RemoveRpcMarker(factionKey, id);
-			return;
-		}
-
 		if (done)
 			GRAD_Endgame_TaskService.Complete(factionKey, id);
 		else
 			GRAD_Endgame_TaskService.Remove(factionKey, id);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Secret ids go by owner RPC when the config says so (see the security note in TaskService).
-	protected static bool UsesRpc(string id)
-	{
-		bool secret = id == "cipher" || id.StartsWith("df_");
-		if (!secret)
-			return false;
-
-		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
-		return cfg && !cfg.GetSecretInfoAsTasks();
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Old path: a local marker on each player of the side, remembered for SyncPlayer.
-	protected static void SetRpcMarker(string factionKey, string id, vector position, float radius, string label)
-	{
-		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
-		markers.Set(id, new GRAD_Endgame_MarkerData(id, position, radius, label));
-
-		array<int> players = {};
-		GetFactionPlayers(factionKey, players);
-		foreach (int playerId : players)
-		{
-			COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
-			if (owner)
-				owner.EndgameSetMarker(id, position, radius, label);
-		}
-	}
-
-	//------------------------------------------------------------------------------------------------
-	protected static void RemoveRpcMarker(string factionKey, string id)
-	{
-		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
-		if (!markers.Contains(id))
-			return;
-		markers.Remove(id);
-
-		array<int> players = {};
-		GetFactionPlayers(factionKey, players);
-		foreach (int playerId : players)
-		{
-			COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
-			if (owner)
-				owner.EndgameRemoveMarker(id);
-		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -202,10 +141,6 @@ class GRAD_Endgame_InfoService
 		COA_PlayerRplToOwnerManager owner = COA_PlayerRplToOwnerManager.GetForPlayer(playerId);
 		if (!owner)
 			return;
-
-		owner.EndgameClearMarkers();
-		foreach (string id, GRAD_Endgame_MarkerData marker : GetMarkers(factionKey))
-			owner.EndgameSetMarker(marker.m_sId, marker.m_vPosition, marker.m_fRadius, marker.m_sLabel);
 
 		string order;
 		if (s_mOrderText.Find(factionKey, order) && IsLeader(playerId))

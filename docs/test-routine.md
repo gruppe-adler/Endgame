@@ -199,7 +199,6 @@ Setup in Workbench first: register `GRAD_Endgame_FieldLogDisplay` in the player 
 | 64 | Leader of the informed side at phase 3 | Decoded order card stays until [K] |
 | 65 | [J], [T], [U] | Field log opens/closes; transmission log hides/shows; spectator strip hides/shows |
 | 66 | Open the map | Status line at the bottom edge; not on the normal screen |
-| 67 | Config `m_bSecretInfoAsTasks` off | Cipher and direction-finding fixes come as local map markers and hints instead of tasks |
 
 ## Results
 
