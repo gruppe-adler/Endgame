@@ -165,6 +165,9 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "SOUND_DEPLOYED_RADIO_CHATTER", desc: "Event in that audio project. It must loop; how far it carries is set in the audio project (target about 150 m).", category: "Radio")]
 	protected string m_sRadioLoopEvent;
 
+	[Attribute(defvalue: "1", desc: "Cipher location and direction-finding fixes are native tasks like every other objective. Task data reaches every client, so a modified client could read them; off = send them only to the side allowed to know (owner RPC, local map marker).", category: "Radio")]
+	protected bool m_bSecretInfoAsTasks;
+
 	[Attribute(defvalue: "1", desc: "Militia guards the radio sites.", category: "Radio")]
 	protected bool m_bMilitiaAtRadioSites;
 
@@ -278,6 +281,7 @@ class GRAD_Endgame_Config
 	ResourceName GetRadioLoopProject() { return m_sRadioLoopProject; }
 	string GetRadioLoopEvent() { return m_sRadioLoopEvent; }
 	bool GetMilitiaAtRadioSites() { return m_bMilitiaAtRadioSites; }
+	bool GetSecretInfoAsTasks() { return m_bSecretInfoAsTasks; }
 
 	// AI
 	void GetGarrisonGroups(GRAD_Endgame_EGarrisonTier tier, notnull array<ResourceName> groups)

@@ -45,15 +45,69 @@ class GRAD_Endgame_InfoService
 	{
 		s_mMarkers.Clear();
 		s_mOrderText.Clear();
+		GRAD_Endgame_TaskService.Reset();
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Show (or move) a marker for every player of a faction.
-	static void SetMarker(string factionKey, string id, vector position, float radius, string label)
+	//! Show (or move) an objective for every player of a faction.
+	//! Since 2026-11-11 this is a native task (GRAD_Endgame_TaskService), which replicates and
+	//! survives join in progress by itself. Only the secret items (cipher location, direction-finding
+	//! fix) can be kept on the old owner-RPC path with config m_bSecretInfoAsTasks off.
+	//! \param[in] radius > 0: the position is an area centre (the task sits at the blurred centre)
+	//! \param[in] parentId our id of a parent task of the same side, or empty
+	static void SetMarker(string factionKey, string id, vector position, float radius, string label, string description = "", string parentId = "")
 	{
 		if (!Replication.IsServer() || factionKey.IsEmpty())
 			return;
 
+		if (UsesRpc(id))
+		{
+			SetRpcMarker(factionKey, id, position, radius, label);
+			return;
+		}
+
+		if (description.IsEmpty() && radius > 0)
+			description = string.Format("Somewhere within %1 m of the marked point.", Math.Round(radius));
+
+		GRAD_Endgame_TaskService.Upsert(factionKey, id, label, description, position, parentId);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! \param[in] done true: the side achieved it (task completed); false: it no longer applies
+	//!            (task removed)
+	static void RemoveMarker(string factionKey, string id, bool done = false)
+	{
+		if (!Replication.IsServer())
+			return;
+
+		if (UsesRpc(id))
+		{
+			RemoveRpcMarker(factionKey, id);
+			return;
+		}
+
+		if (done)
+			GRAD_Endgame_TaskService.Complete(factionKey, id);
+		else
+			GRAD_Endgame_TaskService.Remove(factionKey, id);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Secret ids go by owner RPC when the config says so (see the security note in TaskService).
+	protected static bool UsesRpc(string id)
+	{
+		bool secret = id == "cipher" || id.StartsWith("df_");
+		if (!secret)
+			return false;
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		return cfg && !cfg.GetSecretInfoAsTasks();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Old path: a local marker on each player of the side, remembered for SyncPlayer.
+	protected static void SetRpcMarker(string factionKey, string id, vector position, float radius, string label)
+	{
 		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
 		markers.Set(id, new GRAD_Endgame_MarkerData(id, position, radius, label));
 
@@ -68,11 +122,8 @@ class GRAD_Endgame_InfoService
 	}
 
 	//------------------------------------------------------------------------------------------------
-	static void RemoveMarker(string factionKey, string id)
+	protected static void RemoveRpcMarker(string factionKey, string id)
 	{
-		if (!Replication.IsServer())
-			return;
-
 		map<string, ref GRAD_Endgame_MarkerData> markers = GetMarkers(factionKey);
 		if (!markers.Contains(id))
 			return;

@@ -9,6 +9,57 @@ class GRAD_Endgame_ClientInfo
 	protected static ref map<string, ref SCR_MapMarkerBase> s_mMapMarkers = new map<string, ref SCR_MapMarkerBase>();   //!< the same markers as vanilla map markers, local to this client
 	protected static ref ScriptInvoker s_OnChanged = new ScriptInvoker();
 
+	// Notices for the HUD (widget C) and the field log
+	protected static ref array<string> s_aNoticeTitles = {};
+	protected static ref array<string> s_aNoticeTexts = {};
+	protected static int s_iNoticeCount;
+	protected static const int NOTICE_HISTORY = 12;
+
+	//------------------------------------------------------------------------------------------------
+	//! A server notice arrived. Goes to the field-log HUD; without the HUD (not registered yet, or
+	//! another game mode) it falls back to a vanilla hint so nothing is lost.
+	static void PushNotice(string title, string text, float hintSeconds = 8)
+	{
+		s_aNoticeTitles.Insert(title);
+		s_aNoticeTexts.Insert(text);
+		if (s_aNoticeTitles.Count() > NOTICE_HISTORY)
+		{
+			s_aNoticeTitles.RemoveOrdered(0);
+			s_aNoticeTexts.RemoveOrdered(0);
+		}
+		s_iNoticeCount++;
+
+		if (!GRAD_Endgame_FieldLogDisplay.GetInstance())
+			SCR_HintManagerComponent.ShowCustomHint(text, title, hintSeconds);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Counts every notice ever pushed; the HUD compares it to know when a new one came.
+	static int GetNoticeCount()
+	{
+		return s_iNoticeCount;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	static void GetLatestNotice(out string title, out string text)
+	{
+		title = "";
+		text = "";
+		if (s_aNoticeTitles.IsEmpty())
+			return;
+		title = s_aNoticeTitles[s_aNoticeTitles.Count() - 1];
+		text = s_aNoticeTexts[s_aNoticeTexts.Count() - 1];
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Newest first, "TITLE: text", for the field log.
+	static void GetRecentNotices(notnull array<string> lines)
+	{
+		lines.Clear();
+		for (int i = s_aNoticeTitles.Count() - 1; i >= 0; i--)
+			lines.Insert(string.Format("%1: %2", s_aNoticeTitles[i], s_aNoticeTexts[i]));
+	}
+
 	//------------------------------------------------------------------------------------------------
 	static map<string, ref GRAD_Endgame_MarkerData> GetMarkers()
 	{
@@ -173,7 +224,7 @@ modded class COA_PlayerRplToOwnerManager
 	[RplRpc(RplChannel.Reliable, RplRcver.Owner)]
 	protected void RpcDo_EndgameShowHint(string title, string text)
 	{
-		SCR_HintManagerComponent.ShowCustomHint(text, title, 8);
+		GRAD_Endgame_ClientInfo.PushNotice(title, text);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -181,6 +232,8 @@ modded class COA_PlayerRplToOwnerManager
 	protected void RpcDo_EndgameReceiveOrder(string text)
 	{
 		GRAD_Endgame_ClientInfo.SetOrder(text);
-		SCR_HintManagerComponent.ShowCustomHint(text, "Decoded order", 20);
+		// The HUD pins the order (widget F); without it, fall back to a long hint.
+		if (!GRAD_Endgame_FieldLogDisplay.GetInstance())
+			SCR_HintManagerComponent.ShowCustomHint(text, "Decoded order", 20);
 	}
 }

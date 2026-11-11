@@ -1,0 +1,587 @@
+FrameWidgetClass {
+ Name "GRAD_Endgame_FieldLogRoot"
+ {
+  OverlayWidgetClass "{49BBE719B499CF2B}" {
+   Name "OrdersCard"
+   Slot FrameWidgetSlot "{D7774FCB840DAC1E}" {
+    Anchor 0 0 0 0
+    PositionX 40
+    OffsetLeft 40
+    PositionY 40
+    OffsetTop 40
+    SizeX 300
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{F8240469B94EF8E5}" {
+     Name "OrdersCardPaper"
+     Slot OverlayWidgetSlot "{142A5B364288AED4}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{F04B4F9C4E6AE422}" {
+     Name "OrdersCardContent"
+     Slot OverlayWidgetSlot "{D827D3581F0C03CE}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{2A75B46D915A90F4}" {
+             Name "OrdersTitle"
+             Slot LayoutSlot "{1C2314054063193B}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "ORDERS"
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{D2F81EC66F3B5A5E}" {
+             Name "OrdersBody"
+             Slot LayoutSlot "{8CB7E485E9D08D1E}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{8A80708FC71BB84E}" {
+   Name "Notice"
+   Slot FrameWidgetSlot "{48443E0FDEB7B97A}" {
+    Anchor 0.5 0 0.5 0
+    PositionX -200
+    OffsetLeft -200
+    PositionY 40
+    OffsetTop 40
+    SizeX 400
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{7874FFD2EA461252}" {
+     Name "NoticePaper"
+     Slot OverlayWidgetSlot "{24F527D84733B66A}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{EBA906D723B8A9DA}" {
+     Name "NoticeContent"
+     Slot OverlayWidgetSlot "{87A33BB657EA1C31}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{CA5DE314ACB59BA8}" {
+             Name "NoticeTitle"
+             Slot LayoutSlot "{49B4F61BBDA219DD}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{49C54E18B71CEE08}" {
+             Name "NoticeBody"
+             Slot LayoutSlot "{9D1A106621301828}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{DCE8124F17226808}" {
+   Name "ActionSlip"
+   Slot FrameWidgetSlot "{6079BE0A0A6A0052}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -180
+    OffsetLeft -180
+    PositionY 120
+    OffsetTop 120
+    SizeX 360
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{673BFDF739500C27}" {
+     Name "ActionSlipPaper"
+     Slot OverlayWidgetSlot "{51D012385B05CBFC}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{6F70209937C07ACB}" {
+     Name "ActionSlipContent"
+     Slot OverlayWidgetSlot "{76F172E29F4407AA}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{C36AC7930696D863}" {
+             Name "ActionLabel"
+             Slot LayoutSlot "{7C4434FE65A7ACCC}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{F438889E6C8098D4}" {
+             Name "ActionBar"
+             Slot LayoutSlot "{28C3210E1952998F}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{632345613834F293}" {
+   Name "WavePanel"
+   Slot FrameWidgetSlot "{01606D8101DC496D}" {
+    Anchor 1 0.5 1 0.5
+    PositionX -340
+    OffsetLeft -340
+    PositionY -80
+    OffsetTop -80
+    SizeX 300
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{CAC072A4302651A2}" {
+     Name "WavePanelPaper"
+     Slot OverlayWidgetSlot "{47447D033671EEE9}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{D37B2EE198D86163}" {
+     Name "WavePanelContent"
+     Slot OverlayWidgetSlot "{02EFB42F424A99F0}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{5A256F2B4DED2BE7}" {
+             Name "WaveTitle"
+             Slot LayoutSlot "{DCFF2D5DE3AD9ACD}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "AWAITING REINFORCEMENT"
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{EBF44487B4280254}" {
+             Name "WaveCountdown"
+             Slot LayoutSlot "{4C693F4D5ED10829}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 24
+             "Min Font Size" 24
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{5FB2D67AEC53240A}" {
+             Name "WaveDetail"
+             Slot LayoutSlot "{6C43982C329A5F14}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{B02BE7211E74C662}" {
+   Name "DecodedOrder"
+   Slot FrameWidgetSlot "{89CE963D02AC68B8}" {
+    Anchor 0 0.5 0 0.5
+    PositionX 40
+    OffsetLeft 40
+    PositionY -60
+    OffsetTop -60
+    SizeX 340
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{06DC67C5C2B71D06}" {
+     Name "DecodedOrderPaper"
+     Slot OverlayWidgetSlot "{0B16CFFD48812A3A}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{8945E8EF7E27BCE4}" {
+     Name "DecodedOrderContent"
+     Slot OverlayWidgetSlot "{2AD97D39E1CD4D6A}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{C51D19E6B65E842F}" {
+             Name "DecodedOrderTitle"
+             Slot LayoutSlot "{3475C6D52C8F0EB5}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "DECODED ORDER"
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{3ACB2D3DD57B4CE6}" {
+             Name "DecodedOrderBody"
+             Slot LayoutSlot "{F23186EFC4C702C9}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{5D91A24924F78239}" {
+             Name "DecodedOrderHint"
+             Slot LayoutSlot "{E84DCADC5E6D6311}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "[K] dismiss"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{B397B8564AD991C1}" {
+   Name "TransmissionLog"
+   Slot FrameWidgetSlot "{ECB005103134047B}" {
+    Anchor 1 1 1 1
+    PositionX -400
+    OffsetLeft -400
+    PositionY -170
+    OffsetTop -170
+    SizeX 360
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{1BCE60CDE9BAFA8D}" {
+     Name "TransmissionLogPaper"
+     Slot OverlayWidgetSlot "{BB39F67EEEF3C90A}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{1374ED999EB64A64}" {
+     Name "TransmissionLogContent"
+     Slot OverlayWidgetSlot "{623F6AF8A1465616}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{2E8A133C0D32A352}" {
+             Name "TransmissionTitle"
+             Slot LayoutSlot "{CF062C2E28EAEDD1}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{ADDA59755D5C33A5}" {
+             Name "TransmissionBar"
+             Slot LayoutSlot "{160CB6D92BC9C363}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{CEE8A8E1EC99281D}" {
+             Name "TransmissionDetail"
+             Slot LayoutSlot "{8C054B460A5AD3E7}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{2C604456838EB9C3}" {
+             Name "TransmissionHint"
+             Slot LayoutSlot "{F6C3FD4D4016D44F}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "[T] hide"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{BAC9E947421F1E07}" {
+   Name "SpectatorStrip"
+   Slot FrameWidgetSlot "{54D51698165F0689}" {
+    Anchor 0.5 1 0.5 1
+    PositionX -260
+    OffsetLeft -260
+    PositionY -80
+    OffsetTop -80
+    SizeX 520
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{AE86F65CFA34245D}" {
+     Name "SpectatorStripPaper"
+     Slot OverlayWidgetSlot "{7A5C589042B85AB5}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{C9C69665F06F905B}" {
+     Name "SpectatorStripContent"
+     Slot OverlayWidgetSlot "{A48E1BB151991AC2}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{1F48505467940CE2}" {
+             Name "SpectatorText"
+             Slot LayoutSlot "{6C175552FBDAA1BB}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{BDF62AF3F67609E6}" {
+             Name "SpectatorHint"
+             Slot LayoutSlot "{1172B655ADDAEE96}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "[<] [>] switch · [U] hide"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{0C9824E673913605}" {
+   Name "ResultSheet"
+   Slot FrameWidgetSlot "{14BDDF80D61FF1A0}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -220
+    OffsetLeft -220
+    PositionY -120
+    OffsetTop -120
+    SizeX 440
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{4CB87D02D19D00DF}" {
+     Name "ResultSheetPaper"
+     Slot OverlayWidgetSlot "{8BE0F21CA0C3DE4E}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{1D3053C6915678BA}" {
+     Name "ResultSheetContent"
+     Slot OverlayWidgetSlot "{E2F4EAF3BC03BD94}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{7D3CA7F5A83E968F}" {
+             Name "ResultTitle"
+             Slot LayoutSlot "{B40F74E676B66FB9}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 32
+             "Min Font Size" 32
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{055BCC583D339F8C}" {
+             Name "ResultBody"
+             Slot LayoutSlot "{B8CC0343B7310EAA}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+  OverlayWidgetClass "{1D88F0D3F7A8BAE9}" {
+   Name "FieldLog"
+   Slot FrameWidgetSlot "{0634CDF35919EEB4}" {
+    Anchor 0.5 0.5 0.5 0.5
+    PositionX -320
+    OffsetLeft -320
+    PositionY -260
+    OffsetTop -260
+    SizeX 640
+    SizeY 60
+    SizeToContent 1
+   }
+   "Is Visible" 0
+   {
+    ImageWidgetClass "{E7A13EF224D282D9}" {
+     Name "FieldLogPaper"
+     Slot OverlayWidgetSlot "{4C8E09B9D96AF094}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+     }
+     Color 0.93 0.9 0.82 0.96
+    }
+    VerticalLayoutWidgetClass "{1F05374AE4E2FEE6}" {
+     Name "FieldLogContent"
+     Slot OverlayWidgetSlot "{6CCED3B4C980A26F}" {
+      HorizontalAlign 3
+      VerticalAlign 3
+      Padding 14 10 14 12
+     }
+     {
+            TextWidgetClass "{74AC195ABCD78D17}" {
+             Name "FieldLogTitle"
+             Slot LayoutSlot "{EFACD66F56E1B742}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "FIELD LOG"
+             "Font Size" 15
+             "Min Font Size" 15
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{D513A414E782DEF6}" {
+             Name "FieldLogBody"
+             Slot LayoutSlot "{BB63A56FCC29999A}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text ""
+             "Font Size" 13
+             "Min Font Size" 13
+             "Horizontal Alignment" Left
+            }
+            TextWidgetClass "{098F98AB421441D1}" {
+             Name "FieldLogHint"
+             Slot LayoutSlot "{7FF1F2BB9E61CB18}" {
+              HorizontalAlign 3
+              SizeMode Auto
+             }
+             Color 0.12 0.11 0.1 1
+             Text "[J] close"
+             "Font Size" 11
+             "Min Font Size" 11
+             "Horizontal Alignment" Left
+            }
+     }
+    }
+   }
+  }
+ }
+}

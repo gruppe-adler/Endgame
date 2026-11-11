@@ -80,7 +80,12 @@ class GRAD_Endgame_CipherComponent : ScriptComponent
 		if (m_iLastCarrierId > 0)
 			GRAD_Endgame_MatchLog.Write("cipher", GRAD_Endgame_InfoService.GetFactionKey(m_iLastCarrierId), m_iLastCarrierId, GetOwner().GetOrigin(), "dropped or carrier died");
 		if (carrierId > 0)
-			GRAD_Endgame_MatchLog.Write("cipher", GRAD_Endgame_InfoService.GetFactionKey(carrierId), carrierId, GetOwner().GetOrigin(), "picked up");
+		{
+			string carrierKey = GRAD_Endgame_InfoService.GetFactionKey(carrierId);
+			GRAD_Endgame_MatchLog.Write("cipher", carrierKey, carrierId, GetOwner().GetOrigin(), "picked up");
+			// The side that went for it has it now: its "Recover the cipher" objective is done.
+			GRAD_Endgame_InfoService.RemoveMarker(carrierKey, "cipher", true);
+		}
 
 		m_iLastCarrierId = carrierId;
 	}

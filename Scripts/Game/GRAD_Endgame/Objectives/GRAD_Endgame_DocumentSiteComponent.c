@@ -34,6 +34,12 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	[RplProp()]
 	protected int m_iUserId;
 
+	//! When the current copy started, on the synced server clock. Lets every client draw the same
+	//! progress bar for the copying player and his team without per-frame replication: the bar is
+	//! (now - start) / copy duration, computed locally (see GetCopyFraction).
+	[RplProp()]
+	protected WorldTimestamp m_CopyStartTs;
+
 	//! Chosen for this match (GRAD_Endgame_SiteSelection). Inactive sites show no action and their
 	//! garrison does not spawn.
 	[RplProp()]
@@ -152,6 +158,21 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! 0..1 progress of the copy running now, or -1 when nobody copies. Any machine.
+	float GetCopyFraction()
+	{
+		if (m_iUserId == 0 || m_CopyStartTs == null)
+			return -1;
+
+		ChimeraWorld world = GetGame().GetWorld();
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!world || !cfg || cfg.GetCopySeconds() <= 0)
+			return -1;
+
+		return Math.Clamp(world.GetServerTimestamp().DiffSeconds(m_CopyStartTs) / cfg.GetCopySeconds(), 0, 1);
+	}
+
+	//------------------------------------------------------------------------------------------------
 	//! Server: a player started the hold. Returns false if someone else is at it.
 	bool Lock(int playerId)
 	{
@@ -163,6 +184,9 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 			return true;
 
 		m_iUserId = playerId;
+		ChimeraWorld world = GetGame().GetWorld();
+		if (world)
+			m_CopyStartTs = world.GetServerTimestamp();
 		Replication.BumpMe();
 
 		GetGame().GetCallqueue().Remove(DropStaleLock);

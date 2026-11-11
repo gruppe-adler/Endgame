@@ -312,6 +312,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 
 		SetState(GRAD_Endgame_ETransmissionState.INTERRUPTED);
 
+		RemoveEnemyFix();
 		GRAD_Endgame_MatchLog.Write("transmission", m_sProgressFaction, m_iOperatorId, GetOwner().GetOrigin(), string.Format("interrupted (%1) at %2 s", cause, Math.Round(m_fProgress)));
 		GRAD_Endgame_InfoService.HintFaction(m_sProgressFaction, "Radio", "Transmission interrupted: " + cause);
 		m_iOperatorId = 0;
@@ -345,6 +346,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 		float step = TICK_MS * 0.001;
 		m_fProgress += step;
 		Replication.BumpMe();
+		GRAD_Endgame_TaskService.SetProgress(m_sProgressFaction, GetMarkerId(), GetProgressFraction());
 
 		if (cfg.GetDirectionFinding() != GRAD_Endgame_EDirectionFinding.OFF)
 		{
@@ -383,6 +385,24 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	protected string GetEnemyKey()
+	{
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg)
+			return string.Empty;
+		if (m_sProgressFaction == cfg.GetFactionKeyOne())
+			return cfg.GetFactionKeyTwo();
+		return cfg.GetFactionKeyOne();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! The other side's "stop the transmission" objective goes when the transmission stops.
+	protected void RemoveEnemyFix()
+	{
+		GRAD_Endgame_InfoService.RemoveMarker(GetEnemyKey(), "df_" + GetMarkerId());
+	}
+
+	//------------------------------------------------------------------------------------------------
 	protected void SendDirectionFinding(notnull GRAD_Endgame_Config cfg)
 	{
 		string enemyKey = cfg.GetFactionKeyOne();
@@ -393,7 +413,7 @@ class GRAD_Endgame_RadioSiteComponent : ScriptComponent
 		// send a search area for now.
 		float radius = cfg.GetDfAreaRadius();
 		vector fix = GRAD_Endgame_InfoService.Blur(GetOwner().GetOrigin(), radius);
-		GRAD_Endgame_InfoService.SetMarker(enemyKey, "df_" + GetMarkerId(), fix, radius, "Enemy transmission");
+		GRAD_Endgame_InfoService.SetMarker(enemyKey, "df_" + GetMarkerId(), fix, radius, "Stop the enemy transmission", string.Format("Direction finding: the enemy transmits within %1 m of this point. Kill the operator or take the cipher.", Math.Round(radius)));
 		GRAD_Endgame_MatchLog.Write("df_sent", enemyKey, 0, GetOwner().GetOrigin(), string.Format("radius %1", Math.Round(radius)));
 	}
 
