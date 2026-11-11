@@ -96,12 +96,27 @@ class GRAD_Endgame_FobComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void OnGarrisonCleared(GRAD_Endgame_GarrisonComponent garrison)
 	{
+		MarkTaken("garrison cleared");
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: the FOB counts as taken, e.g. because its side has no players to take it.
+	void ForceTaken(string cause)
+	{
+		if (!Replication.IsServer())
+			return;
+		MarkTaken(cause);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void MarkTaken(string cause)
+	{
 		if (m_bTaken)
 			return;
 
 		m_bTaken = true;
 		Replication.BumpMe();
-		GRAD_Endgame_MatchLog.Write("fob_state", m_sFactionKey, 0, GetOwner().GetOrigin(), "taken");
+		GRAD_Endgame_MatchLog.Write("fob_state", m_sFactionKey, 0, GetOwner().GetOrigin(), "taken (" + cause + ")");
 
 		MoveSpawnPoints();
 

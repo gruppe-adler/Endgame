@@ -146,6 +146,8 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
 		if (gameMode && gameMode.GetPhase() != GRAD_Endgame_EPhase.DOCUMENTS)
 			return "Not in this phase";
+		if (gameMode && !GRAD_Endgame_GameModeComponent.IsDocumentsOpenFor(factionKey))
+			return "Take your FOB first";
 
 		int limit = cfg.GetCopiesPerSitePerFaction();
 		if (limit > 0 && GetCopyCount(factionKey) >= limit)

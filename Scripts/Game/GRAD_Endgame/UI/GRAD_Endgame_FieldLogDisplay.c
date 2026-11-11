@@ -100,7 +100,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
 		if (!gameMode)
 		{
-			HideAll();
+			HideAllCards();
 			return;
 		}
 
@@ -157,33 +157,33 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		m_wResultBody = TextWidget.Cast(m_wRoot.FindAnyWidget("ResultBody"));
 		m_wFieldLogBody = TextWidget.Cast(m_wRoot.FindAnyWidget("FieldLogBody"));
 
-		HideAll();
+		HideAllCards();
 		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void HideAll()
+	protected void HideAllCards()
 	{
-		Show(m_wOrdersCard, false);
-		Show(m_wNotice, false);
-		Show(m_wActionSlip, false);
-		Show(m_wWavePanel, false);
-		Show(m_wDecodedOrder, false);
-		Show(m_wTransmissionLog, false);
-		Show(m_wSpectatorStrip, false);
-		Show(m_wResultSheet, false);
-		Show(m_wFieldLog, false);
+		ShowWidget(m_wOrdersCard, false);
+		ShowWidget(m_wNotice, false);
+		ShowWidget(m_wActionSlip, false);
+		ShowWidget(m_wWavePanel, false);
+		ShowWidget(m_wDecodedOrder, false);
+		ShowWidget(m_wTransmissionLog, false);
+		ShowWidget(m_wSpectatorStrip, false);
+		ShowWidget(m_wResultSheet, false);
+		ShowWidget(m_wFieldLog, false);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected static void Show(Widget w, bool visible)
+	protected static void ShowWidget(Widget w, bool visible)
 	{
 		if (w)
 			w.SetVisible(visible);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected static void SetText(TextWidget w, string text)
+	protected static void SetWidgetText(TextWidget w, string text)
 	{
 		if (w)
 			w.SetText(text);
@@ -201,19 +201,19 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 			if (phase != GRAD_Endgame_EPhase.WAITING && phase != GRAD_Endgame_EPhase.ENDED)
 			{
 				m_fOrdersLeft = ORDERS_SECONDS;
-				SetText(m_wOrdersTitle, GRAD_Endgame_HudText.PhaseTitle(phase));
+				SetWidgetText(m_wOrdersTitle, GRAD_Endgame_HudText.PhaseTitle(phase));
 				m_TypedOrders.SetText(GRAD_Endgame_HudText.Orders(phase, gameMode));
 			}
 		}
 
 		m_fOrdersLeft -= timeSlice;
 		bool visible = m_fOrdersLeft > 0;
-		Show(m_wOrdersCard, visible);
+		ShowWidget(m_wOrdersCard, visible);
 		if (!visible)
 			return;
 
 		m_TypedOrders.Update(timeSlice);
-		SetText(m_wOrdersBody, m_TypedOrders.GetShown());
+		SetWidgetText(m_wOrdersBody, m_TypedOrders.GetShown());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -227,19 +227,19 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 			m_iSeenNotice = latest;
 			string title, text;
 			GRAD_Endgame_ClientInfo.GetLatestNotice(title, text);
-			SetText(m_wNoticeTitle, title);
+			SetWidgetText(m_wNoticeTitle, title);
 			m_TypedNotice.SetText(text);
 			m_fNoticeLeft = NOTICE_SECONDS;
 		}
 
 		m_fNoticeLeft -= timeSlice;
 		bool visible = m_fNoticeLeft > 0;
-		Show(m_wNotice, visible);
+		ShowWidget(m_wNotice, visible);
 		if (!visible)
 			return;
 
 		m_TypedNotice.Update(timeSlice);
-		SetText(m_wNoticeBody, m_TypedNotice.GetShown());
+		SetWidgetText(m_wNoticeBody, m_TypedNotice.GetShown());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		IEntity me = SCR_PlayerController.GetLocalControlledEntity();
 		if (!me)
 		{
-			Show(m_wActionSlip, false);
+			ShowWidget(m_wActionSlip, false);
 			return;
 		}
 
@@ -270,13 +270,13 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 			if (GRAD_Endgame_DocumentSiteComponent.GetFactionKeyOfPlayer(site.GetUserId()) != myKey)
 				continue;
 
-			Show(m_wActionSlip, true);
-			SetText(m_wActionLabel, "COPYING DOCUMENTS");
-			SetText(m_wActionBar, m_ActionBar.Update(fraction));
+			ShowWidget(m_wActionSlip, true);
+			SetWidgetText(m_wActionLabel, "COPYING DOCUMENTS");
+			SetWidgetText(m_wActionBar, m_ActionBar.Update(fraction));
 			return;
 		}
 
-		Show(m_wActionSlip, false);
+		ShowWidget(m_wActionSlip, false);
 		m_ActionBar.Reset();
 	}
 
@@ -287,26 +287,26 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	{
 		COA_RespawnManager respawn = COA_RespawnManager.GetInstance();
 		bool waiting = respawn && respawn.IsLocalRespawnPending() && !gameMode.IsPermadeathActive();
-		Show(m_wWavePanel, waiting);
+		ShowWidget(m_wWavePanel, waiting);
 		if (!waiting)
 			return;
 
 		float seconds = respawn.GetWaveSecondsRemaining();
 		if (respawn.EndgameIsLocalReleased())
 		{
-			SetText(m_wWaveCountdown, "RELEASED");
-			SetText(m_wWaveDetail, "Choose your spawn point.");
+			SetWidgetText(m_wWaveCountdown, "RELEASED");
+			SetWidgetText(m_wWaveDetail, "Choose your spawn point.");
 		}
 		else if (seconds > 0)
 		{
-			SetText(m_wWaveCountdown, GRAD_Endgame_HudText.Clock(seconds));
+			SetWidgetText(m_wWaveCountdown, GRAD_Endgame_HudText.Clock(seconds));
 			// TODO (M3): replicate "waiting / wave size" per faction, then show "2 / 3 waiting" here.
-			SetText(m_wWaveDetail, "Next wave");
+			SetWidgetText(m_wWaveDetail, "Next wave");
 		}
 		else
 		{
-			SetText(m_wWaveCountdown, "--:--");
-			SetText(m_wWaveDetail, "Waiting for more players");
+			SetWidgetText(m_wWaveCountdown, "--:--");
+			SetWidgetText(m_wWaveDetail, "Waiting for more players");
 		}
 	}
 
@@ -324,12 +324,12 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		}
 
 		bool visible = !order.IsEmpty() && !m_bOrderDismissed;
-		Show(m_wDecodedOrder, visible);
+		ShowWidget(m_wDecodedOrder, visible);
 		if (!visible)
 			return;
 
 		m_TypedOrder.Update(timeSlice);
-		SetText(m_wOrderBody, m_TypedOrder.GetShown());
+		SetWidgetText(m_wOrderBody, m_TypedOrder.GetShown());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -350,7 +350,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		}
 
 		bool visible = active && !m_bTxHidden;
-		Show(m_wTransmissionLog, visible);
+		ShowWidget(m_wTransmissionLog, visible);
 		if (!visible)
 		{
 			if (!active)
@@ -367,8 +367,8 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 			title = "OUR TRANSMISSION";
 		if (!running)
 			title += " · PAUSED";
-		SetText(m_wTxTitle, title);
-		SetText(m_wTxBar, m_TxBar.Update(active.GetProgressFraction(), running));
+		SetWidgetText(m_wTxTitle, title);
+		SetWidgetText(m_wTxBar, m_TxBar.Update(active.GetProgressFraction(), running));
 
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
 		if (cfg)
@@ -377,7 +377,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 			string detail = GRAD_Endgame_HudText.Clock(left) + " to go";
 			if (own && running)
 				detail += " · the enemy can direction-find you";
-			SetText(m_wTxDetail, detail);
+			SetWidgetText(m_wTxDetail, detail);
 		}
 	}
 
@@ -389,9 +389,9 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		COA_SlottingManager slotting = COA_SlottingManager.GetInstance();
 		bool dead = slotting && slotting.IsPlayerConsideredDead(SCR_PlayerController.GetLocalPlayerId());
 		bool visible = dead && gameMode.IsPermadeathActive() && !m_bSpectatorHidden;
-		Show(m_wSpectatorStrip, visible);
+		ShowWidget(m_wSpectatorStrip, visible);
 		if (visible)
-			SetText(m_wSpectatorText, "SPECTATING · NO RESPAWN IN PHASE 3");
+			SetWidgetText(m_wSpectatorText, "SPECTATING · NO RESPAWN IN PHASE 3");
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -402,7 +402,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		if (gameMode.GetPhase() != GRAD_Endgame_EPhase.ENDED)
 		{
 			m_fResultLeft = -1;
-			Show(m_wResultSheet, false);
+			ShowWidget(m_wResultSheet, false);
 			return;
 		}
 
@@ -416,18 +416,18 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 				title = "VICTORY";
 			else if (!winner.IsEmpty())
 				title = "DEFEAT";
-			SetText(m_wResultTitle, title);
+			SetWidgetText(m_wResultTitle, title);
 			m_TypedResult.SetText(GRAD_Endgame_HudText.ResultLine(winner, myKey));
 		}
 
 		m_fResultLeft -= timeSlice;
 		bool visible = m_fResultLeft > 0;
-		Show(m_wResultSheet, visible);
+		ShowWidget(m_wResultSheet, visible);
 		if (!visible)
 			return;
 
 		m_TypedResult.Update(timeSlice);
-		SetText(m_wResultBody, m_TypedResult.GetShown());
+		SetWidgetText(m_wResultBody, m_TypedResult.GetShown());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -435,9 +435,9 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	//------------------------------------------------------------------------------------------------
 	protected void UpdateFieldLog(notnull GRAD_Endgame_GameModeComponent gameMode)
 	{
-		Show(m_wFieldLog, m_bFieldLogOpen);
+		ShowWidget(m_wFieldLog, m_bFieldLogOpen);
 		if (m_bFieldLogOpen)
-			SetText(m_wFieldLogBody, GRAD_Endgame_HudText.FieldLog(gameMode));
+			SetWidgetText(m_wFieldLogBody, GRAD_Endgame_HudText.FieldLog(gameMode));
 	}
 
 	//------------------------------------------------------------------------------------------------

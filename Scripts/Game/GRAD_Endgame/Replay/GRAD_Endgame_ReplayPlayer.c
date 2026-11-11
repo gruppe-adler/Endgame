@@ -100,7 +100,7 @@ class GRAD_Endgame_ReplayPlayer
 				break;
 			frame = candidate;
 		}
-		Show(frame);
+		ShowFrame(frame);
 
 		while (s_iNextEvent < s_Data.m_aEventTimes.Count() && s_Data.m_aEventTimes[s_iNextEvent] <= s_fTime)
 		{
@@ -110,7 +110,7 @@ class GRAD_Endgame_ReplayPlayer
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected static void Show(notnull GRAD_Endgame_ReplayFrame frame)
+	protected static void ShowFrame(notnull GRAD_Endgame_ReplayFrame frame)
 	{
 		SCR_MapMarkerManagerComponent manager = SCR_MapMarkerManagerComponent.GetInstance();
 		if (!manager)

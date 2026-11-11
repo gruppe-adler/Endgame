@@ -1,0 +1,13 @@
+COA_PlayerController : "{225E51284CC95CFA}Prefabs/Characters/Core/DefaultPlayerControllerMP.et" {
+ ID "1A9BA6BEFA06E3B1"
+ components {
+  SCR_HUDManagerComponent "{2FDC275D9EBCDB8B}" {
+   InfoDisplays {
+    GRAD_Endgame_FieldLogDisplay "{6AD731A79A8C80DF}" {
+     m_LayoutPath "{44137775BCE1A8F5}UI/layouts/GRAD_Endgame_FieldLog.layout"
+     m_eLayer MEDIUM
+    }
+   }
+  }
+ }
+}

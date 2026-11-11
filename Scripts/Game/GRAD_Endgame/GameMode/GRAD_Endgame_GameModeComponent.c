@@ -55,6 +55,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	protected bool m_bRespawnDisabledByUs;
 	protected int m_iEliminationTicksOne;
 	protected int m_iEliminationTicksTwo;
+	[RplProp()]
+	bool m_bDocumentsForced;   //!< an admin advanced the phase: both sides may copy regardless of their FOB
 	protected bool m_bEliminationArmed;   //!< both sides had players when the radio phase began; with one side empty (solo test) nobody can be eliminated
 	protected int m_iLoadLogCountdown;
 
@@ -281,7 +283,11 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			ShowFobMarkers(cfg);
 
 		if (phase == GRAD_Endgame_EPhase.DOCUMENTS && cfg)
-			RevealDocumentSites(cfg);
+		{
+			m_bDocumentsForced = cause == "admin";
+			Replication.BumpMe();
+			RevealDocumentSitesToReadySides(cfg, m_bDocumentsForced);
+		}
 
 		if (phase == GRAD_Endgame_EPhase.RADIO && cfg)
 		{
@@ -540,22 +546,39 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	// SERVER: FOBs and site selection
 	//------------------------------------------------------------------------------------------------
-	//! Called by a FOB when its garrison has been wiped out. Both taken: phase DOCUMENTS.
+	//! Called by a FOB when its garrison has been wiped out. The FIRST FOB taken starts phase
+	//! DOCUMENTS (decided 2026-11-11), so the other side knows it has to hurry. Each side only
+	//! learns where the documents are, and may copy them, once ITS OWN FOB is taken.
 	void OnFobTaken(GRAD_Endgame_FobComponent fob)
 	{
-		if (!Replication.IsServer() || m_ePhase != GRAD_Endgame_EPhase.FOB)
+		if (!Replication.IsServer())
+			return;
+		if (m_ePhase != GRAD_Endgame_EPhase.FOB && m_ePhase != GRAD_Endgame_EPhase.DOCUMENTS)
 			return;
 
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
 		if (!cfg)
 			return;
 
-		GRAD_Endgame_InfoService.RemoveMarker(fob.GetFactionKey(), "fob_" + fob.GetFactionKey(), true);
+		string key = fob.GetFactionKey();
+		GRAD_Endgame_InfoService.RemoveMarker(key, "fob_" + key, true);
 
-		GRAD_Endgame_FobComponent fobOne = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyOne());
-		GRAD_Endgame_FobComponent fobTwo = GRAD_Endgame_FobComponent.GetForFaction(cfg.GetFactionKeyTwo());
-		if (fobOne && fobTwo && fobOne.IsTaken() && fobTwo.IsTaken())
-			SetPhase(GRAD_Endgame_EPhase.DOCUMENTS, "rule");
+		if (m_ePhase == GRAD_Endgame_EPhase.FOB)
+		{
+			// SetPhase reveals the documents to every side whose FOB is taken, that is this one.
+			SetPhase(GRAD_Endgame_EPhase.DOCUMENTS, "first FOB taken");
+
+			string otherKey = cfg.GetFactionKeyOne();
+			if (key == otherKey)
+				otherKey = cfg.GetFactionKeyTwo();
+			GRAD_Endgame_FobComponent otherFob = GRAD_Endgame_FobComponent.GetForFaction(otherKey);
+			if (otherFob && !otherFob.IsTaken())
+				GRAD_Endgame_InfoService.HintFaction(otherKey, "The other side has its FOB", "Take yours to learn where the documents are.");
+			return;
+		}
+
+		// Second FOB, phase already running: this side learns the documents now.
+		RevealDocumentSites(cfg, key);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -614,22 +637,43 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Phase 2 start (decided 2026-11-10: no restriction radius in phase 1; instead the document
-	//! sites stay hidden until phase 2). Both sides learn where the active sites are: an area, or
-	//! the exact spot.
-	protected void RevealDocumentSites(notnull GRAD_Endgame_Config cfg)
+	//! Phase 2 start: reveal the documents to every side that may see them, that is every side whose
+	//! FOB is taken (or that has no FOB placed). An admin advance reveals them to both sides.
+	protected void RevealDocumentSitesToReadySides(notnull GRAD_Endgame_Config cfg, bool everyone)
+	{
+		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
+		foreach (string key : keys)
+		{
+			GRAD_Endgame_FobComponent fob = GRAD_Endgame_FobComponent.GetForFaction(key);
+			if (everyone || !fob || fob.IsTaken())
+				RevealDocumentSites(cfg, key);
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! True if the side may see and copy documents: phase DOCUMENTS or later and its own FOB taken.
+	static bool IsDocumentsOpenFor(string factionKey)
+	{
+		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
+		if (!gameMode || gameMode.GetPhase() != GRAD_Endgame_EPhase.DOCUMENTS)
+			return false;
+
+		GRAD_Endgame_FobComponent fob = GRAD_Endgame_FobComponent.GetForFaction(factionKey);
+		return !fob || fob.IsTaken() || gameMode.m_bDocumentsForced;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Tell one side where the active document sites are: an area, or the exact spot. Each side
+	//! gets its own parent task with the progress and one child task per site.
+	protected void RevealDocumentSites(notnull GRAD_Endgame_Config cfg, string factionKey)
 	{
 		float areaRadius = cfg.GetDocumentAreaRadius();
 		if (cfg.GetExactDocumentPositions())
 			areaRadius = 0;
 
-		// One parent task per side carries the progress towards the threshold; the sites are its
-		// children.
 		string docsDesc = string.Format("Copy the documents at %1 of the marked sites. One copy per site.", GetDocumentThreshold());
-		GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), "docs", vector.Zero, 0, "Secure the documents", docsDesc);
-		GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), "docs", vector.Zero, 0, "Secure the documents", docsDesc);
-		GRAD_Endgame_TaskService.SetProgress(cfg.GetFactionKeyOne(), "docs", 0);
-		GRAD_Endgame_TaskService.SetProgress(cfg.GetFactionKeyTwo(), "docs", 0);
+		GRAD_Endgame_InfoService.SetMarker(factionKey, "docs", vector.Zero, 0, "Secure the documents", docsDesc);
+		GRAD_Endgame_TaskService.SetProgress(factionKey, "docs", 0);
 
 		foreach (GRAD_Endgame_DocumentSiteComponent site : GRAD_Endgame_DocumentSiteComponent.GetAll())
 		{
@@ -637,13 +681,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 				continue;
 
 			vector shown = GRAD_Endgame_InfoService.Blur(site.GetOwner().GetOrigin(), areaRadius);
-			string id = site.GetMarkerId();
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyOne(), id, shown, areaRadius, "Documents", "", "docs");
-			GRAD_Endgame_InfoService.SetMarker(cfg.GetFactionKeyTwo(), id, shown, areaRadius, "Documents", "", "docs");
+			GRAD_Endgame_InfoService.SetMarker(factionKey, site.GetMarkerId(), shown, areaRadius, "Documents", "", "docs");
 		}
 
-		GRAD_Endgame_InfoService.HintFaction(cfg.GetFactionKeyOne(), "Documents located", "Copy documents at the marked sites.");
-		GRAD_Endgame_InfoService.HintFaction(cfg.GetFactionKeyTwo(), "Documents located", "Copy documents at the marked sites.");
+		GRAD_Endgame_InfoService.HintFaction(factionKey, "Documents located", "Copy documents at the marked sites.");
 	}
 
 	//------------------------------------------------------------------------------------------------
