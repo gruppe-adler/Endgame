@@ -1,0 +1,7 @@
+GenericEntity : "{D7EB24176E5CEAA6}Prefabs/Weapons/Core/Grenade_Base.et" {
+ ID "51FC8327BE43FED2"
+ components {
+  GRAD_Endgame_GrenadeTracker "{6B1E0A00D5A00005}" {
+  }
+ }
+}

@@ -1,0 +1,7 @@
+Projectile {
+ ID "DA5C6308000CDEF2"
+ components {
+  GRAD_Endgame_RocketTracker "{6B1E0A00D5A00002}" {
+  }
+ }
+}

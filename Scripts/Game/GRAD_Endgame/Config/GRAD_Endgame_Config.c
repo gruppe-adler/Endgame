@@ -313,31 +313,31 @@ class GRAD_Endgame_SettingsDebug
 [BaseContainerProps()]
 class GRAD_Endgame_Settings
 {
-	[Attribute(desc: "Wave respawn rules.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Wave respawn rules.")]
 	ref GRAD_Endgame_SettingsRespawn m_Respawn = new GRAD_Endgame_SettingsRespawn();
 
-	[Attribute(desc: "Faction keys, as in COALITION's registry.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Faction keys, as in COALITION's registry.")]
 	ref GRAD_Endgame_SettingsFactions m_Factions = new GRAD_Endgame_SettingsFactions();
 
-	[Attribute(desc: "FOB and the vehicles at it.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "FOB and the vehicles at it.")]
 	ref GRAD_Endgame_SettingsFob m_Fob = new GRAD_Endgame_SettingsFob();
 
-	[Attribute(desc: "Document sites and copying.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Document sites and copying.")]
 	ref GRAD_Endgame_SettingsDocuments m_Documents = new GRAD_Endgame_SettingsDocuments();
 
-	[Attribute(desc: "FIA militia: scaling, garrisons, vehicle patrols.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "FIA militia: scaling, garrisons, vehicle patrols.")]
 	ref GRAD_Endgame_SettingsFia m_Fia = new GRAD_Endgame_SettingsFia();
 
-	[Attribute(desc: "Cipher, radio sites and transmission.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Cipher, radio sites and transmission.")]
 	ref GRAD_Endgame_SettingsRadio m_Radio = new GRAD_Endgame_SettingsRadio();
 
-	[Attribute(desc: "HUD sound (typewriter).")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "HUD sound (typewriter).")]
 	ref GRAD_Endgame_SettingsHud m_Hud = new GRAD_Endgame_SettingsHud();
 
-	[Attribute(desc: "Phase limits, end conditions, replay.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Phase limits, end conditions, replay.")]
 	ref GRAD_Endgame_SettingsMatch m_Match = new GRAD_Endgame_SettingsMatch();
 
-	[Attribute(desc: "Test aids. Must be off for a release.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "Test aids. Must be off for a release.")]
 	ref GRAD_Endgame_SettingsDebug m_Debug = new GRAD_Endgame_SettingsDebug();
 }
 
@@ -354,7 +354,7 @@ class GRAD_Endgame_Settings
 [BaseContainerProps()]
 class GRAD_Endgame_Config : SCR_MissionHeader
 {
-	[Attribute(desc: "All Endgame settings, grouped: Respawn, Factions, Fob, Documents, Fia, Radio, Hud, Match, Debug.")]
+	[Attribute(uiwidget: UIWidgets.Object, desc: "All Endgame settings, grouped: Respawn, Factions, Fob, Documents, Fia, Radio, Hud, Match, Debug.")]
 	protected ref GRAD_Endgame_Settings m_GRAD_Endgame = new GRAD_Endgame_Settings();
 
 	//------------------------------------------------------------------------------------------------
@@ -430,7 +430,14 @@ class GRAD_Endgame_Config : SCR_MissionHeader
 	ResourceName GetCipherPrefab() { return S().m_Radio.m_sCipherPrefab; }
 	float GetOperatorRange() { return S().m_Radio.m_fOperatorRange; }
 	int GetActiveRadioSites() { return S().m_Radio.m_iActiveRadioSites; }
-	float GetTransmissionSeconds() { return Scaled(S().m_Radio.m_fTransmissionSeconds); }
+	float GetTransmissionSeconds()
+	{
+		float seconds = Scaled(S().m_Radio.m_fTransmissionSeconds);
+#ifdef WORKBENCH
+		seconds *= 0.1;   // local Workbench play only: transmissions run ten times shorter, for testing
+#endif
+		return seconds;
+	}
 	GRAD_Endgame_ETransmissionInterrupt GetTransmissionInterrupt() { return S().m_Radio.m_eTransmissionInterrupt; }
 	GRAD_Endgame_ETransmissionRole GetTransmissionRole() { return S().m_Radio.m_eTransmissionRole; }
 	GRAD_Endgame_EDirectionFinding GetDirectionFinding() { return S().m_Radio.m_eDirectionFinding; }

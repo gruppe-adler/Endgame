@@ -64,6 +64,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	protected bool m_bSpawned;      //!< the one spawn has happened (or failed for good)
 	protected bool m_bHadAgents;    //!< the groups have had at least one member
 	protected bool m_bCleared;
+	protected int m_iLoggedStragglers = -1;   //!< last agent count written to the match log by LogStragglers
 	protected int m_iLastAgentCount;
 
 	protected ref ScriptInvoker m_OnCleared = new ScriptInvoker();   //!< (GRAD_Endgame_GarrisonComponent garrison)
@@ -280,6 +281,12 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		if (agents > 0)
 		{
 			m_bHadAgents = true;
+			// The last few soldiers keep a FOB from being taken: say where they are.
+			if (agents <= 3 && agents != m_iLoggedStragglers)
+			{
+				m_iLoggedStragglers = agents;
+				LogStragglers(agents);
+			}
 			return;
 		}
 
@@ -291,6 +298,29 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		GetGame().GetCallqueue().Remove(Check);
 		GRAD_Endgame_MatchLog.Write("garrison_cleared", "", 0, GetOwner().GetOrigin(), string.Format("groups left %1, agents left %2", s_iActiveGroups, s_iActiveAgents));
 		m_OnCleared.Invoke(this);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Match log: the few soldiers left in this garrison, with their positions, so a FOB that "will
+	//! not fall" can be found.
+	protected void LogStragglers(int agentCount)
+	{
+		string where;
+		foreach (SCR_AIGroup group : m_aGroups)
+		{
+			if (!group)
+				continue;
+
+			array<AIAgent> agents = {};
+			group.GetAgents(agents);
+			foreach (AIAgent agent : agents)
+			{
+				IEntity entity = agent.GetControlledEntity();
+				if (entity)
+					where += string.Format("[%1 %2 %3] ", Math.Round(entity.GetOrigin()[0]), Math.Round(entity.GetOrigin()[1]), Math.Round(entity.GetOrigin()[2]));
+			}
+		}
+		GRAD_Endgame_MatchLog.Write("garrison_left", "", 0, GetOwner().GetOrigin(), string.Format("%1 agent(s) left: %2", agentCount, where));
 	}
 
 	//------------------------------------------------------------------------------------------------

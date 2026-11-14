@@ -182,6 +182,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		{
 			m_wOverlay.SetZOrder(OVERLAY_ZORDER);
 			root = m_wOverlay;
+			HideHudCopy();
 		}
 
 		m_wOrdersCard = root.FindAnyWidget("OrdersCard");
@@ -219,6 +220,25 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 
 		HideAllCards();
 		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! The layout ships with every card visible (sample text, so the sizes show in the editor). The
+	//! HUD copy is no longer driven, so nothing would ever hide its cards: hide them here, and the
+	//! copy as a whole.
+	protected void HideHudCopy()
+	{
+		if (!m_wRoot)
+			return;
+
+		array<string> cards = {"OrdersCard", "Notice", "ActionSlip", "WavePanel", "DecodedOrder", "TransmissionLog", "SpectatorStrip", "ResultSheet", "FieldLog"};
+		foreach (string card : cards)
+		{
+			Widget w = m_wRoot.FindAnyWidget(card);
+			if (w)
+				w.SetVisible(false);
+		}
+		m_wRoot.SetVisible(false);
 	}
 
 	//------------------------------------------------------------------------------------------------

@@ -119,8 +119,7 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
    2 is 3.3 km from the OPFOR FOB. A minimum distance from start spawns for site selection (and a
    validator warning) is proposed, not built.
 5. **Replay end to end:** check recording starts, playback, the after-action hand-off, and that the
-   normal map still works. Trackers for projectiles and explosives (`GRAD_BC_ExplosionTracker`,
-   `GrenadeTracker`, `RocketTracker`, `WeaponFireTracker`, `DetonationWatcher`) are not ported.
+   normal map still works. The trackers for shots, grenades, smoke and rockets are now ported (2026-11-14: `GRAD_Endgame_WeaponFireTracker`, `GrenadeTracker`, `RocketTracker`, `DetonationWatcher`, `ExplosionTracker`, `ExplosiveCatalog` in `Scripts/.../Replay/`; hooked in by minimal overrides of `Character_Base`, `Ammo_Rocket_Base`, `FragGrenade_Base`, `SmokeGrenade_Base`, and the tracker on the lobby entity). Not run yet.
 6. **Task visibility may be a client-side filter only.** If the task system replicates every task
    to every client, exact positions (cipher) leak to a modified client. Check the wiki; fall back
    to owner RPCs for the cipher if needed.
