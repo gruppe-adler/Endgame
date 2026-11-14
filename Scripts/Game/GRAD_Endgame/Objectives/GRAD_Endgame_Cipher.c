@@ -114,6 +114,27 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 	{
 		super.OnPostInit(owner);
 		s_aAll.Insert(this);
+
+		if (!System.IsConsoleApp())
+			SetEventMask(owner, EntityEvent.FRAME);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Debug marker for the Game Master while the editor is open: an orange sphere and a tall line
+	//! where the cipher may lie. (The site prefab is not a Game Master editable: adding that
+	//! component moved the site to 0 0 0 in the 2026-11-14 test.)
+	override void EOnFrame(IEntity owner, float timeSlice)
+	{
+		SCR_EditorManagerEntity editorManager = SCR_EditorManagerEntity.GetInstance();
+		if (!editorManager || editorManager.IsLimited() || !editorManager.IsOpened())
+			return;
+
+		vector position = owner.GetOrigin();
+		Shape.CreateSphere(Color.ORANGE, ShapeFlags.WIREFRAME | ShapeFlags.NOZBUFFER | ShapeFlags.ONCE, position, 0.35);
+		vector points[2];
+		points[0] = position;
+		points[1] = position + Vector(0, 25, 0);
+		Shape.CreateLines(Color.ORANGE, ShapeFlags.NOZBUFFER | ShapeFlags.ONCE, points, 2);
 	}
 
 	//------------------------------------------------------------------------------------------------

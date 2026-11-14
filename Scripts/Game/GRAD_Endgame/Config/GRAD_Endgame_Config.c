@@ -138,6 +138,12 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint prefab the patrol drives to, one stop after the other.", params: "et", category: "AI")]
 	protected ResourceName m_sFiaPatrolWaypoint;
 
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint that makes the crew get out of the vehicle (vanilla AIWaypoint_GetOut).", params: "et", category: "AI")]
+	protected ResourceName m_sFiaPatrolGetOut;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint that makes the crew get into the nearest vehicle (vanilla AIWaypoint_GetInNearest).", params: "et", category: "AI")]
+	protected ResourceName m_sFiaPatrolGetIn;
+
 	[Attribute(defvalue: "25", desc: "Metres around a stop that count as arrived.", params: "5 100 1", category: "AI")]
 	protected float m_fFiaPatrolRadius;
 
@@ -287,6 +293,8 @@ class GRAD_Endgame_Config
 	ResourceName GetFiaPatrolVehicle() { return m_sFiaPatrolVehicle; }
 	ResourceName GetFiaPatrolCrewGroup() { return m_sFiaPatrolCrewGroup; }
 	ResourceName GetFiaPatrolWaypoint() { return m_sFiaPatrolWaypoint; }
+	ResourceName GetFiaPatrolGetOut() { return m_sFiaPatrolGetOut; }
+	ResourceName GetFiaPatrolGetIn() { return m_sFiaPatrolGetIn; }
 	float GetFiaPatrolRadius() { return m_fFiaPatrolRadius; }
 
 	// Cipher and radio
