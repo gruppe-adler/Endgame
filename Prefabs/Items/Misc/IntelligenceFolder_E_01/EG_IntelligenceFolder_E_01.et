@@ -6,6 +6,9 @@ GenericEntity : "{6D56FED1E55A8F84}Prefabs/Items/Misc/IntelligenceFolder_E_01/In
   GRAD_Endgame_GarrisonComponent "{6ADD1BA43EAA5928}" {
    m_eTier LIGHT
   }
+  InventoryItemComponent "{5222EB4D0C73006B}" {
+   Enabled 0
+  }
   SCR_EditableEntityComponent "{6ADD1BA437C10BCD}" {
    m_EntityType SYSTEM
    m_UIInfo SCR_EditableEntityUIInfo "{6ADD1BA4745580E2}" {

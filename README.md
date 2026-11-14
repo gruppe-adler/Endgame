@@ -86,6 +86,7 @@ The final phase is where the mode is decided, so it has the most rules.
 | **Shift + K** | Dismiss the decoded order card |
 | **Shift + T** | Show or hide the transmission card |
 | **Shift + U** | Spectator card (dead in phase 3) |
+| **Shift + O** | Join in progress: late arrivals without a slot open the slotting menu (in phases 1 and 2, closed from phase 3) |
 
 Objectives are also in the vanilla task list and on the map. Each side only sees its own.
 

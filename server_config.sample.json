@@ -102,6 +102,8 @@
 					"m_Match": {
 						"m_fPhase3TimeLimitMinutes": 0.0,
 						"m_bEliminationEndsMatch": true,
+						"m_bLateJoinSlotting": true,
+						"m_eLateJoinClosesAt": 3,
 						"m_bReplayEnabled": true
 					},
 					"m_Debug": {

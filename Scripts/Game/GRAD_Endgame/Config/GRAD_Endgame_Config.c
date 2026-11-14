@@ -283,6 +283,12 @@ class GRAD_Endgame_SettingsMatch
 	[Attribute(defvalue: "1", desc: "A side with no living players in the radio phase loses; the other side wins (decided 2026-11-10).")]
 	bool m_bEliminationEndsMatch = true;
 
+	[Attribute(defvalue: "1", desc: "Join in progress: a player who connects after the match went live may pick a free slot (Shift+O, or the hint) until the phase below begins. Off: COALITION's own behaviour (only during safestart).")]
+	bool m_bLateJoinSlotting = true;
+
+	[Attribute(defvalue: "3", uiwidget: UIWidgets.ComboBox, desc: "Late joiners may take a slot until this phase begins. RADIO (default) = open in phases 1 and 2, closed from phase 3 on (decided 2026-11-10; phase 3 also locks every open slot). DOCUMENTS = phase 1 only.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_EPhase))]
+	GRAD_Endgame_EPhase m_eLateJoinClosesAt = GRAD_Endgame_EPhase.RADIO;
+
 	[Attribute(defvalue: "1", desc: "Record the match and play it back on the map (BreakingContact's replay, copied) before the after-action screen. Recording interval and maximum replay length are attributes of the GRAD_Endgame_ReplayManager component on the lobby entity.")]
 	bool m_bReplayEnabled = true;
 }
@@ -468,6 +474,8 @@ class GRAD_Endgame_Config : SCR_MissionHeader
 	// Match
 	float GetPhase3TimeLimitSeconds() { return Scaled(S().m_Match.m_fPhase3TimeLimitMinutes * 60); }
 	bool GetEliminationEndsMatch() { return S().m_Match.m_bEliminationEndsMatch; }
+	bool GetLateJoinSlotting() { return S().m_Match.m_bLateJoinSlotting; }
+	GRAD_Endgame_EPhase GetLateJoinClosesAt() { return S().m_Match.m_eLateJoinClosesAt; }
 
 	// Debug
 	float GetDebugTimeScale() { return S().m_Debug.m_fDebugTimeScale; }

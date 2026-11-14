@@ -44,7 +44,13 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	protected const float RESULT_SECONDS = 15;
 	protected const float SITE_RANGE = 15;   //!< metres: you see a site's action slip within this
 
+	//! The HUD layout, drawn a second time in a layer above the menus. The HUD manager draws under
+	//! COALITION's spectator menu and the replay map, so cards in the HUD copy are covered there.
+	protected static const ResourceName OVERLAY_LAYOUT = "{44137775BCE1A8F5}UI/layouts/GRAD_Endgame_FieldLog.layout";
+	protected static const int OVERLAY_ZORDER = 1000;
+
 	protected bool m_bInitialized;
+	protected Widget m_wOverlay;
 	protected static GRAD_Endgame_FieldLogDisplay s_Instance;
 
 	// Widgets
@@ -71,6 +77,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	protected bool m_bOrderDismissed;
 	protected bool m_bTxHidden;
 	protected bool m_bSpectatorHidden;
+	protected bool m_bLateJoinHinted;
 	protected GRAD_Endgame_EPhase m_eShownPhase = GRAD_Endgame_EPhase.WAITING;
 	protected string m_sShownOrder;
 	protected int m_iSeenNotice;
@@ -113,12 +120,18 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		UpdateSpectator(gameMode);
 		UpdateResult(gameMode, timeSlice);
 		UpdateFieldLog(gameMode);
+		UpdateLateJoinHint();
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override void DisplayStopDraw(IEntity owner)
 	{
 		RemoveKeyListeners();
+		if (m_wOverlay)
+		{
+			m_wOverlay.RemoveFromHierarchy();
+			m_wOverlay = null;
+		}
 		if (s_Instance == this)
 			s_Instance = null;
 		super.DisplayStopDraw(owner);
@@ -130,32 +143,42 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		if (!m_wRoot)
 			return false;
 
-		m_wOrdersCard = m_wRoot.FindAnyWidget("OrdersCard");
-		m_wNotice = m_wRoot.FindAnyWidget("Notice");
-		m_wActionSlip = m_wRoot.FindAnyWidget("ActionSlip");
-		m_wWavePanel = m_wRoot.FindAnyWidget("WavePanel");
-		m_wDecodedOrder = m_wRoot.FindAnyWidget("DecodedOrder");
-		m_wTransmissionLog = m_wRoot.FindAnyWidget("TransmissionLog");
-		m_wSpectatorStrip = m_wRoot.FindAnyWidget("SpectatorStrip");
-		m_wResultSheet = m_wRoot.FindAnyWidget("ResultSheet");
-		m_wFieldLog = m_wRoot.FindAnyWidget("FieldLog");
+		// Drive a copy of the layout that sits above the menus; fall back to the HUD copy if it
+		// cannot be made. The HUD copy keeps all its cards hidden, nothing writes to it.
+		Widget root = m_wRoot;
+		m_wOverlay = GetGame().GetWorkspace().CreateWidgets(OVERLAY_LAYOUT);
+		if (m_wOverlay)
+		{
+			m_wOverlay.SetZOrder(OVERLAY_ZORDER);
+			root = m_wOverlay;
+		}
 
-		m_wOrdersTitle = TextWidget.Cast(m_wRoot.FindAnyWidget("OrdersTitle"));
-		m_wOrdersBody = TextWidget.Cast(m_wRoot.FindAnyWidget("OrdersBody"));
-		m_wNoticeTitle = TextWidget.Cast(m_wRoot.FindAnyWidget("NoticeTitle"));
-		m_wNoticeBody = TextWidget.Cast(m_wRoot.FindAnyWidget("NoticeBody"));
-		m_wActionLabel = TextWidget.Cast(m_wRoot.FindAnyWidget("ActionLabel"));
-		m_wActionBar = TextWidget.Cast(m_wRoot.FindAnyWidget("ActionBar"));
-		m_wWaveCountdown = TextWidget.Cast(m_wRoot.FindAnyWidget("WaveCountdown"));
-		m_wWaveDetail = TextWidget.Cast(m_wRoot.FindAnyWidget("WaveDetail"));
-		m_wOrderBody = TextWidget.Cast(m_wRoot.FindAnyWidget("DecodedOrderBody"));
-		m_wTxTitle = TextWidget.Cast(m_wRoot.FindAnyWidget("TransmissionTitle"));
-		m_wTxBar = TextWidget.Cast(m_wRoot.FindAnyWidget("TransmissionBar"));
-		m_wTxDetail = TextWidget.Cast(m_wRoot.FindAnyWidget("TransmissionDetail"));
-		m_wSpectatorText = TextWidget.Cast(m_wRoot.FindAnyWidget("SpectatorText"));
-		m_wResultTitle = TextWidget.Cast(m_wRoot.FindAnyWidget("ResultTitle"));
-		m_wResultBody = TextWidget.Cast(m_wRoot.FindAnyWidget("ResultBody"));
-		m_wFieldLogBody = TextWidget.Cast(m_wRoot.FindAnyWidget("FieldLogBody"));
+		m_wOrdersCard = root.FindAnyWidget("OrdersCard");
+		m_wNotice = root.FindAnyWidget("Notice");
+		m_wActionSlip = root.FindAnyWidget("ActionSlip");
+		m_wWavePanel = root.FindAnyWidget("WavePanel");
+		m_wDecodedOrder = root.FindAnyWidget("DecodedOrder");
+		m_wTransmissionLog = root.FindAnyWidget("TransmissionLog");
+		m_wSpectatorStrip = root.FindAnyWidget("SpectatorStrip");
+		m_wResultSheet = root.FindAnyWidget("ResultSheet");
+		m_wFieldLog = root.FindAnyWidget("FieldLog");
+
+		m_wOrdersTitle = TextWidget.Cast(root.FindAnyWidget("OrdersTitle"));
+		m_wOrdersBody = TextWidget.Cast(root.FindAnyWidget("OrdersBody"));
+		m_wNoticeTitle = TextWidget.Cast(root.FindAnyWidget("NoticeTitle"));
+		m_wNoticeBody = TextWidget.Cast(root.FindAnyWidget("NoticeBody"));
+		m_wActionLabel = TextWidget.Cast(root.FindAnyWidget("ActionLabel"));
+		m_wActionBar = TextWidget.Cast(root.FindAnyWidget("ActionBar"));
+		m_wWaveCountdown = TextWidget.Cast(root.FindAnyWidget("WaveCountdown"));
+		m_wWaveDetail = TextWidget.Cast(root.FindAnyWidget("WaveDetail"));
+		m_wOrderBody = TextWidget.Cast(root.FindAnyWidget("DecodedOrderBody"));
+		m_wTxTitle = TextWidget.Cast(root.FindAnyWidget("TransmissionTitle"));
+		m_wTxBar = TextWidget.Cast(root.FindAnyWidget("TransmissionBar"));
+		m_wTxDetail = TextWidget.Cast(root.FindAnyWidget("TransmissionDetail"));
+		m_wSpectatorText = TextWidget.Cast(root.FindAnyWidget("SpectatorText"));
+		m_wResultTitle = TextWidget.Cast(root.FindAnyWidget("ResultTitle"));
+		m_wResultBody = TextWidget.Cast(root.FindAnyWidget("ResultBody"));
+		m_wFieldLogBody = TextWidget.Cast(root.FindAnyWidget("FieldLogBody"));
 
 		// The layout carries sample text so the sizes are visible in the editor; the script owns
 		// these texts at runtime, so start every one of them empty.
@@ -458,6 +481,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		input.AddActionListener("GRAD_Endgame_DismissOrder", EActionTrigger.DOWN, OnDismissOrder);
 		input.AddActionListener("GRAD_Endgame_ToggleTransmission", EActionTrigger.DOWN, OnToggleTransmission);
 		input.AddActionListener("GRAD_Endgame_ToggleSpectator", EActionTrigger.DOWN, OnToggleSpectator);
+		input.AddActionListener("GRAD_Endgame_OpenSlotting", EActionTrigger.DOWN, OnOpenSlotting);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -470,6 +494,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		input.RemoveActionListener("GRAD_Endgame_DismissOrder", EActionTrigger.DOWN, OnDismissOrder);
 		input.RemoveActionListener("GRAD_Endgame_ToggleTransmission", EActionTrigger.DOWN, OnToggleTransmission);
 		input.RemoveActionListener("GRAD_Endgame_ToggleSpectator", EActionTrigger.DOWN, OnToggleSpectator);
+		input.RemoveActionListener("GRAD_Endgame_OpenSlotting", EActionTrigger.DOWN, OnOpenSlotting);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -494,6 +519,27 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	protected void OnToggleSpectator(float value = 0.0, EActionTrigger reason = 0)
 	{
 		m_bSpectatorHidden = !m_bSpectatorHidden;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! [Shift+O] Join in progress: open (or close again) the slotting menu for a slotless late joiner.
+	protected void OnOpenSlotting(float value = 0.0, EActionTrigger reason = 0)
+	{
+		GRAD_Endgame_LateJoin.Toggle();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Once per session: tell a late joiner without a slot that he may pick one, and how.
+	protected void UpdateLateJoinHint()
+	{
+		if (m_bLateJoinHinted)
+			return;
+
+		if (!GRAD_Endgame_LateJoin.IsMatchLive() || !GRAD_Endgame_LateJoin.IsOpen() || !GRAD_Endgame_LateJoin.LocalPlayerIsSlotless())
+			return;
+
+		m_bLateJoinHinted = true;
+		GRAD_Endgame_ClientInfo.PushNotice("Join in progress", "No slot yet. Press [Shift+O] to choose one.", 12);
 	}
 }
 

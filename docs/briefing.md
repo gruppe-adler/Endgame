@@ -75,6 +75,7 @@ You always know the current phase and the time left from the map status line, an
 | **Shift+K** | Dismiss the decoded order card |
 | **Shift+T** | Show or hide the transmission card |
 | **Shift+U** | Spectator card (dead in phase 3) |
+| **Shift+O** | Join in progress: if you connected after the match started and have no slot, open the slotting menu (press again to go back). Possible in phases 1 and 2, closed once phase 3 begins |
 
 Your objectives are also in the vanilla **task list** and on the map. Only your side sees its own objectives.
 

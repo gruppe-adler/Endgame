@@ -48,7 +48,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 
 	//! Chosen for this match (GRAD_Endgame_SiteSelection). Inactive sites show no action and their
 	//! garrison does not spawn.
-	[RplProp()]
+	[RplProp(onRplName: "OnActiveChanged")]
 	protected bool m_bActive = true;
 
 	//! Put the documents on a table that is already in the world near the placed position, instead
@@ -124,11 +124,35 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 
 		m_bActive = active;
 		Replication.BumpMe();
+		ApplyActive();
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Server: find the nearest suitable free table around the placed position and put the documents
-	//! on it. Without a table the documents stay where they are.
+	//! A site that is not part of this match must not lie around as a prop: hide it. (The prop
+	//! stays where it was placed; only the rendering is switched off.)
+	protected void ApplyActive()
+	{
+		IEntity owner = GetOwner();
+		if (!owner)
+			return;
+
+		if (m_bActive)
+			owner.SetFlags(EntityFlags.VISIBLE, true);
+		else
+			owner.ClearFlags(EntityFlags.VISIBLE, true);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Client: the server switched this site on or off.
+	protected void OnActiveChanged()
+	{
+		ApplyActive();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: pick a RANDOM suitable free table around the placed position and put the documents on
+	//! it (the nearest table would be the same one every match). Without a table the documents stay
+	//! where they are.
 	protected void PlaceOnTable()
 	{
 		if (m_bPlaced)
@@ -137,6 +161,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		array<ref GRAD_Endgame_TableHit> hits = {};
 		GRAD_Endgame_TableScan.Find(GetOwner().GetOrigin(), m_fPlaceRadius, hits);
 
+		array<ref GRAD_Endgame_TableHit> candidates = {};
 		foreach (GRAD_Endgame_TableHit hit : hits)
 		{
 			if (!GRAD_Endgame_TableScan.IsSuitable(hit))
@@ -156,17 +181,23 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 			if (crowded)
 				continue;
 
-			s_aUsedTables.Insert(hit.m_Entity);
-			// A little above the surface: the site is a physics prop, gravity sets it down on the table.
-			m_vPlaced = hit.m_vTop + Vector(0, TABLE_DROP_HEIGHT, 0);
-			m_bPlaced = true;
-			Replication.BumpMe();
-			ApplyPlaced();
-			GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, m_vPlaced, string.Format("on %1, %2 m from the placed spot", FilePath.StripPath(hit.m_sName), Math.Round(hit.m_fDistance)));
+			candidates.Insert(hit);
+		}
+
+		if (candidates.IsEmpty())
+		{
+			GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, GetOwner().GetOrigin(), "no free table in reach, documents stay where placed");
 			return;
 		}
 
-		GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, GetOwner().GetOrigin(), "no free table in reach, documents stay where placed");
+		GRAD_Endgame_TableHit chosen = candidates.GetRandomElement();
+		s_aUsedTables.Insert(chosen.m_Entity);
+		// A little above the surface: the site is a physics prop, gravity sets it down on the table.
+		m_vPlaced = chosen.m_vTop + Vector(0, TABLE_DROP_HEIGHT, 0);
+		m_bPlaced = true;
+		Replication.BumpMe();
+		ApplyPlaced();
+		GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, m_vPlaced, string.Format("on %1, %2 m from the placed spot, one of %3 free tables", FilePath.StripPath(chosen.m_sName), Math.Round(chosen.m_fDistance), candidates.Count()));
 	}
 
 	protected vector m_vLastOrigin;
@@ -223,6 +254,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void ApplyPlaced()
 	{
+		ApplyActive();
 		if (m_bPlaced)
 		{
 			GetOwner().SetOrigin(m_vPlaced);
@@ -255,12 +287,6 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		{
 			m_vLastOrigin = owner.GetOrigin();
 			GetGame().GetCallqueue().CallLater(WatchMoved, 1000, true);
-
-			// The prefab is a vanilla inventory item: lock it so nobody can pick it up or move it
-			// in the inventory screen (the actions are refused in GRAD_Endgame_NoPickup).
-			InventoryItemComponent item = InventoryItemComponent.Cast(owner.FindComponent(InventoryItemComponent));
-			if (item)
-				item.RequestUserLock(null, true);
 		}
 	}
 
