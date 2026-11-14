@@ -72,6 +72,42 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
    m_eRespawnPoolType PER_SLOT
    m_iGroupRespawns -1
   }
+  COA_SlottingGroup "{6A190A84AAFF7103}" {
+   m_sCallsign "1-3"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7104}" {
+   m_sCallsign "1-4"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7105}" {
+   m_sCallsign "1-5"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
  }
  m_OPFORSlots {
   COA_SlottingGroup "{6A190A84AAFF7201}" {
@@ -89,6 +125,42 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
   }
   COA_SlottingGroup "{6A190A84AAFF7202}" {
    m_sCallsign "2-2"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7203}" {
+   m_sCallsign "2-3"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7204}" {
+   m_sCallsign "2-4"
+   m_FlagType INFANTRY
+   m_aSlots {
+    SQUAD_LEAD
+    MEDIC
+    RIFLEMAN_ANTITANK
+    GRENADIER
+   }
+   m_eRespawnPoolType PER_SLOT
+   m_iGroupRespawns -1
+  }
+  COA_SlottingGroup "{6A190A84AAFF7205}" {
+   m_sCallsign "2-5"
    m_FlagType INFANTRY
    m_aSlots {
     SQUAD_LEAD
@@ -118,7 +190,7 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
  }
 }
 COA_StaticSpawnPoint "6AD556E33B9D8B6F" : "{0B3312C6940005B9}PrefabsMissionMaking/SpawnPoints/SpawnPoints/OPFOR_Spawn.et" {
- coords 4206.199 44.841 7779.609
+ coords 4444.6 69.8 7899
  {
   COA_ManualMarker {
    ID "68682AC1849E53AF"
@@ -134,11 +206,11 @@ $grp GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
   coords 4407.722 9.383 9472.038
  }
  {
-  coords 5607.021 27.728 9823.284
+  coords 5607.021 34.261 9823.284
  }
 }
 COA_StaticSpawnPoint "6AD556E33B9D8980" : "{62865C82AB534D91}PrefabsMissionMaking/SpawnPoints/SpawnPoints/BLUFOR_Spawn.et" {
- coords 4917.543 28 11763.395
+ coords 4744.1 19.7 11558.2
 }
 $grp GenericEntity : "{811A1448CC521C45}Prefabs/GRAD_Endgame_DocumentSite_Auto.et" {
  {

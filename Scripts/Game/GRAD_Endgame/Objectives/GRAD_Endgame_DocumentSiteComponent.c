@@ -82,6 +82,13 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	protected const int STALE_LOCK_MS = 30000;   //!< a lock nobody released is dropped after this
 
 	//------------------------------------------------------------------------------------------------
+	//! True if a document site already put its documents on this table.
+	static bool IsTableUsed(IEntity table)
+	{
+		return s_aUsedTables.Contains(table);
+	}
+
+	//------------------------------------------------------------------------------------------------
 	static array<GRAD_Endgame_DocumentSiteComponent> GetAll()
 	{
 		return s_aAll;

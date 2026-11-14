@@ -103,6 +103,39 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 {
 	protected static ref array<GRAD_Endgame_CipherSiteComponent> s_aAll = {};
 
+	[Attribute(defvalue: "1", desc: "Automatic: the cipher lies on a free table near this site. Off: it lies exactly where the site is placed.")]
+	protected bool m_bAutoPlace;
+
+	[Attribute(defvalue: "100", desc: "Metres around the site to look for a table.", params: "5 300 1")]
+	protected float m_fPlaceRadius;
+
+	protected static const float MAX_TABLE_HEIGHT_DIFF = 2.5;   //!< metres above or below the site
+	protected static const float TABLE_DROP_HEIGHT = 0.05;      //!< metres above the table top
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: top of the nearest suitable table that no document site uses, on the site's floor.
+	//! Returns false if there is none (the cipher then lies at the site).
+	protected bool FindTable(out vector position, out string description)
+	{
+		array<ref GRAD_Endgame_TableHit> hits = {};
+		GRAD_Endgame_TableScan.Find(GetOwner().GetOrigin(), m_fPlaceRadius, hits);
+
+		foreach (GRAD_Endgame_TableHit hit : hits)
+		{
+			if (!GRAD_Endgame_TableScan.IsSuitable(hit))
+				continue;
+			if (Math.AbsFloat(hit.m_vTop[1] - GetOwner().GetOrigin()[1]) > MAX_TABLE_HEIGHT_DIFF)
+				continue;
+			if (GRAD_Endgame_DocumentSiteComponent.IsTableUsed(hit.m_Entity))
+				continue;
+
+			position = hit.m_vTop + Vector(0, TABLE_DROP_HEIGHT, 0);
+			description = string.Format("on %1, %2 m from the site", FilePath.StripPath(hit.m_sName), Math.Round(hit.m_fDistance));
+			return true;
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------------------------
 	static array<GRAD_Endgame_CipherSiteComponent> GetAll()
 	{
@@ -156,6 +189,20 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 		GetOwner().GetWorldTransform(params.Transform);
 		params.Transform[3][1] = params.Transform[3][1] + 0.5;   // let physics drop it, so it cannot start below the surface
 
+		string where = "at the site";
+		if (m_bAutoPlace)
+		{
+			vector onTable;
+			string description;
+			if (FindTable(onTable, description))
+			{
+				params.Transform[3] = onTable;
+				where = description;
+			}
+			else
+				where = "no free table in reach, at the site";
+		}
+
 		IEntity item = GetGame().SpawnEntityPrefab(Resource.Load(prefab), GetGame().GetWorld(), params);
 		if (!item || !item.FindComponent(GRAD_Endgame_CipherComponent))
 		{
@@ -163,7 +210,7 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 			return item;
 		}
 
-		GRAD_Endgame_MatchLog.Write("cipher", "", 0, GetOwner().GetOrigin(), "spawned");
+		GRAD_Endgame_MatchLog.Write("cipher", "", 0, item.GetOrigin(), "spawned " + where);
 		return item;
 	}
 }

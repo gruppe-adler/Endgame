@@ -7,13 +7,14 @@ class GRAD_Endgame_FobVehicleSpawnerComponentClass : ScriptComponentClass
 //! A parking spot for one light vehicle at a FOB (decided 2026-11-10: FOBs provide light vehicles
 //! that respawn when taken away).
 //!
-//! Rules (Sugar Lake's transport respawn):
+//! Rules (changed 2026-11-14 from Sugar Lake's 400 s / 500 m to a quick replacement):
 //!  - The vehicle is there from game start (decided 2026-11-10: the FOB's AI guards it anyway).
-//!  - When the vehicle is destroyed, or has been driven more than m_fTransportRespawnRadius (500 m)
-//!    from the spot, a timer of m_fTransportRespawnSeconds (400 s) starts.
-//!  - When the timer is up and the spot is clear, a new vehicle spawns. A wreck of the spot's own
-//!    vehicle standing on the spot is removed first. The old one, if it still
-//!    exists, stays where it is: whoever took it keeps it.
+//!  - When the vehicle is destroyed, or has left the spot (more than m_fTransportRespawnRadius,
+//!    20 m), a timer of m_fTransportRespawnSeconds (10 s, real seconds) starts.
+//!  - When the timer is up and the spot is free of any vehicle, a new one spawns. If the spot is
+//!    blocked it waits and tries every tick. A wreck of the spot's own vehicle standing on the spot
+//!    is removed first. The old vehicle, if it still exists, stays where it is: whoever took it
+//!    keeps it.
 //!  - A vehicle brought back within the radius before the timer is up cancels the respawn.
 //!
 //! Place one entity with this component per parking spot near a FOB and set the faction key to
@@ -37,7 +38,7 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	protected bool m_bEnabled;
 	protected float m_fRespawnAt = -1;   //!< world time in seconds, -1 = no respawn pending
 
-	protected const int TICK_MS = 5000;
+	protected const int TICK_MS = 2000;
 
 	//------------------------------------------------------------------------------------------------
 	static array<GRAD_Endgame_FobVehicleSpawnerComponent> GetAll()
@@ -126,7 +127,7 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Server, every 5 s while enabled.
+	//! Server, every 2 s while enabled.
 	protected void ServerTick()
 	{
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
@@ -171,17 +172,26 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! No vehicle stands on the spot (a wreck, or one parked there by players).
+	protected bool m_bSpotBlocked;
+
+	//------------------------------------------------------------------------------------------------
+	//! No vehicle of any kind stands on the spot (a wreck, one parked there by players, a captured
+	//! enemy jeep): a world query around the spot.
 	protected bool IsSpotClear()
 	{
-		vector spot = GetOwner().GetOrigin();
-		foreach (GRAD_Endgame_FobVehicleSpawnerComponent other : s_aAll)
+		m_bSpotBlocked = false;
+		GetGame().GetWorld().QueryEntitiesBySphere(GetOwner().GetOrigin(), m_fClearRadius, OnSpotEntity, null, EQueryEntitiesFlags.ALL);
+		return !m_bSpotBlocked;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool OnSpotEntity(IEntity entity)
+	{
+		if (Vehicle.Cast(entity))
 		{
-			if (other.m_Vehicle && vector.Distance(other.m_Vehicle.GetOrigin(), spot) < m_fClearRadius)
-				return false;
+			m_bSpotBlocked = true;
+			return false;   // found one, stop the query
 		}
-		// TODO (Workbench): also check for vehicles that no spawner owns (a captured enemy jeep
-		// parked on the spot), with a world query around the spot.
 		return true;
 	}
 

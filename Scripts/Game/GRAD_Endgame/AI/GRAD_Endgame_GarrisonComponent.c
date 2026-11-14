@@ -106,6 +106,32 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Server, before the garrison has spawned: set its tier at run time (player-count scaling).
+	void SetTierOverride(GRAD_Endgame_EGarrisonTier tier)
+	{
+		if (!m_bSpawned)
+			m_eTier = tier;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server, before the garrison has spawned: this garrison is not wanted in this match.
+	void Suppress()
+	{
+		if (m_bSpawned)
+			return;
+
+		m_bSpawned = true;
+		GetGame().GetCallqueue().Remove(Check);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! True if this garrison belongs to a document site.
+	bool IsOnDocumentSite()
+	{
+		return GetOwner().FindComponent(GRAD_Endgame_DocumentSiteComponent) != null;
+	}
+
+	//------------------------------------------------------------------------------------------------
 	bool IsSpawned()
 	{
 		return m_bSpawned;

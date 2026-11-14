@@ -5,12 +5,13 @@ class GRAD_Endgame_WaveTestConfig : GRAD_Endgame_Config
 {
 	void GRAD_Endgame_WaveTestConfig()
 	{
-		m_fWaveSeconds = 270;
-		m_fMinPlayerWaitSeconds = 0;
-		m_iWaveSizeDivisor = 3;
-		m_fMaxWaitSeconds = 1200;
-		m_fLateJoinSeconds = 0;
-		m_fDebugTimeScale = 1;
+		GRAD_Endgame_Settings settings = S();
+		settings.m_Respawn.m_fWaveSeconds = 270;
+		settings.m_Respawn.m_fMinPlayerWaitSeconds = 0;
+		settings.m_Respawn.m_iWaveSizeDivisor = 3;
+		settings.m_Respawn.m_fMaxWaitSeconds = 1200;
+		settings.m_Respawn.m_fLateJoinSeconds = 0;
+		settings.m_Debug.m_fDebugTimeScale = 1;
 	}
 }
 

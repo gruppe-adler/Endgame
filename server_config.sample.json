@@ -1,0 +1,115 @@
+{
+	"game": {
+		"gameProperties": {
+			"missionHeader": {
+				"m_sName": "Endgame 1989",
+				"m_GRAD_Endgame": {
+					"m_Respawn": {
+						"m_fWaveSeconds": 270.0,
+						"m_fMinPlayerWaitSeconds": 0.0,
+						"m_iWaveSizeDivisor": 3,
+						"m_fMaxWaitSeconds": 1200.0,
+						"m_fLateJoinSeconds": 0.0,
+						"m_bFreeRespawnOnFob": true,
+						"m_bFreeRespawnOnRadioPhase": true,
+						"m_bEndPhasePermadeath": true,
+						"m_fRadioPhaseGraceSeconds": 30.0,
+						"m_bSpectateWhileWaiting": false
+					},
+					"m_Factions": {
+						"m_sFactionKeyOne": "BLUFOR",
+						"m_sFactionKeyTwo": "OPFOR",
+						"m_sMilitiaFactionKey": "FIA"
+					},
+					"m_Fob": {
+						"m_eRestrictionMode": 0,
+						"m_fTransportRespawnSeconds": 10.0,
+						"m_fTransportRespawnRadius": 20.0
+					},
+					"m_Documents": {
+						"m_fCopySeconds": 10.0,
+						"m_iActiveDocumentSites": 5,
+						"m_fSiteBalanceTolerance": 0.1,
+						"m_iCopiesPerSitePerFaction": 1,
+						"m_iDocumentThreshold": 3,
+						"m_fDocumentAreaRadius": 150.0,
+						"m_bExactDocumentPositions": false,
+						"m_bShowEnemyProgress": false
+					},
+					"m_Fia": {
+						"m_bFiaScaleEnabled": true,
+						"m_fFiaPerPlayer": 3.0,
+						"m_fFiaDifficulty": 1.0,
+						"m_iFiaMaxDocumentSoldiers": 80,
+						"m_iFiaSoldiersLight": 8,
+						"m_iFiaSoldiersMedium": 12,
+						"m_iFiaSoldiersHeavy": 16,
+						"m_bFiaAllowNoneAtDocuments": false,
+						"m_iFiaPatrolCount": 2,
+						"m_sFiaPatrolVehicle": "{22B327C6752EC4D4}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_PKM_FIA.et",
+						"m_sFiaPatrolCrewGroup": "Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et",
+						"m_sFiaPatrolWaypoint": "{FFF9518F73279473}PrefabsEditable/Auto/AI/Waypoints/E_AIWaypoint_Move.et",
+						"m_sFiaPatrolGetOut": "{C40316EE26846CAB}Prefabs/AI/Waypoints/AIWaypoint_GetOut.et",
+						"m_sFiaPatrolGetIn": "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et",
+						"m_fFiaPatrolRadius": 25.0,
+						"m_aGarrisonLight": [
+							"Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et",
+							"Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et"
+						],
+						"m_aGarrisonMedium": [
+							"Prefabs/Groups/INDFOR/Group_FIA_RifleSquad.et",
+							"Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et"
+						],
+						"m_aGarrisonHeavy": [
+							"Prefabs/Groups/INDFOR/Group_FIA_RifleSquad.et",
+							"Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et",
+							"Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et"
+						],
+						"m_bGarrisonSpawnOnApproach": false
+					},
+					"m_Radio": {
+						"m_sCipherPrefab": "{6F70209937C07ACB}Prefabs/GRAD_Endgame_CipherItem.et",
+						"m_fOperatorRange": 5.0,
+						"m_bCipherRevealToDefenders": false,
+						"m_iActiveRadioSites": 2,
+						"m_fTransmissionSeconds": 720.0,
+						"m_eTransmissionInterrupt": 0,
+						"m_eTransmissionRole": 1,
+						"m_eDirectionFinding": 1,
+						"m_eDirectionFindingAccuracy": 0,
+						"m_fDfIntervalSeconds": 60.0,
+						"m_fDfAreaRadius": 300.0,
+						"m_sRadioLoopProject": "{EFFB3D8065A486E3}",
+						"m_sRadioLoopEvent": "SOUND_DEPLOYED_RADIO_CHATTER",
+						"m_bMilitiaAtRadioSites": true
+					},
+					"m_Hud": {
+						"m_bTypewriterSound": true,
+						"m_aTypewriterKeyProjects": [
+							"{C3002D39994A65CC}Sounds/key1.acp",
+							"{5A1E94A084AD545C}Sounds/key2.acp",
+							"{2D14FC28700FBB2C}Sounds/key3.acp",
+							"{2AD30679168901EF}Sounds/key4.acp",
+							"{5DD96EF1E22BEE9F}Sounds/key5.acp"
+						],
+						"m_sTypewriterKeyEvent": "EG_key",
+						"m_sTypewriterBellProject": "{2B0A510098FF0ED0}Sounds/bing.acp",
+						"m_sTypewriterBellEvent": "EG_bing",
+						"m_sTypewriterReturnProject": "{5AA445FF0824C807}Sounds/return.acp",
+						"m_sTypewriterReturnEvent": "EG_return"
+					},
+					"m_Match": {
+						"m_fPhase3TimeLimitMinutes": 0.0,
+						"m_bEliminationEndsMatch": true,
+						"m_bReplayEnabled": true
+					},
+					"m_Debug": {
+						"m_fDebugTimeScale": 10.0,
+						"m_bDebugLog": true,
+						"m_bRunSelfTests": true
+					}
+				}
+			}
+		}
+	}
+}

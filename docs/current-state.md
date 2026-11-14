@@ -26,7 +26,7 @@ players is `docs/briefing.md`.
 | `.../UI/` | `FieldLogDisplay` (HUD info display), `MapStatusLine`, `Typewriter` sounds, `AdminMenu`, `MapJournalGuard` |
 | `.../Replay/` | **Copy of BreakingContact's replay** (`GRAD_BC_*` renamed `GRAD_Endgame_*`) + `ReplayStubs` |
 | `.../Config/`, `.../Log/` | `GRAD_Endgame_Config` (all tunables), match log (`$profile:GRAD_Endgame/match_*.log`) |
-| `Configs/GRAD_Endgame_Config.conf` | The live config. Currently a TEST config (see "Before a real match") |
+| `Missions/Endgame89.conf` + `Scripts/.../Config/GRAD_Endgame_Config.c` | **The options.** `GRAD_Endgame_Config` is a `SCR_MissionHeader` subclass: all values live in the mission file (currently a TEST config, see "Before a real match"); a server overrides any of them under `game.gameProperties.missionHeader` (`server_config.sample.json` lists all 70). There is no separate config file |
 | `Configs/System/chimeraInputCommon.conf` | Input actions: Shift+J/K/T/U, plus V/C on the replay map |
 | `Configs/Map/MapFullscreen.conf` | Adds the replay map layer to the fullscreen map (same GUID as vanilla, partial override like BreakingContact) |
 | `Configs/Gearscripts/` | US 80s and USSR 80s gearscripts (copied from BreakingContact) |
@@ -113,11 +113,7 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
    `COA_SpectatorMenu.OnMenuClose` NULL pointers at exit, in COALITION's own code) (earlier: `SCR_MapEntity.UpdateViewPort`, NULL pointer
    every frame). Unknown whether our `Configs/Map/MapFullscreen.conf` causes it. A/B test: remove
    that file, reload, die in phase 3.
-3. **Arsenal ammo greyed out.** A script override now makes arsenals use no supplies
-   (`GRAD_Endgame_ArsenalFree.c`, untested, may not compile if the method is not overridable).
-   The entity catalog manager problem below is still open. Server log: `SCR_BaseResupplySupportStationComponent needs a entity
-   catalog manager`. Add the vanilla entity catalog manager to the world; check the arsenal
-   component's enabled / supply-cost / faction settings.
+3. ~~Arsenal ammo greyed out~~ done: ammunition supply works (confirmed 2026-11-14, with the `ArsenalFree` override).
 4. **Layout:** OPFOR start spawn is 54 m from a document site (garrison next to spawn); document
    sites are skewed towards the BLUFOR FOB; the first radio site is 444 m from a FOB; cipher site
    2 is 3.3 km from the OPFOR FOB. A minimum distance from start spawns for site selection (and a
@@ -150,7 +146,7 @@ started). Use `SetRespawnEnabled(false)` for permadeath (already done).
 
 ## Before a real match
 
-The live config is a test config. Set in `Configs/GRAD_Endgame_Config.conf`:
+The live config is a test config. Set in `Missions/Endgame89.conf` (or in the server config's `missionHeader`):
 `m_fDebugTimeScale 1` (it is 10: waves 27 s, transmission 72 s), `m_bDebugLog 0`,
 `m_bRunSelfTests 0`. Check the document site prefab `Duration` (copy time). Remove or re-place
 test objects  (`GRAD_Endgame_Garrison` on the first document site).

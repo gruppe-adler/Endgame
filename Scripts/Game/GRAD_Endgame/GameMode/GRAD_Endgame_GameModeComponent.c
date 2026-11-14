@@ -347,6 +347,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (phase == GRAD_Endgame_EPhase.FOB && cfg)
 		{
 			ShowFobMarkers(cfg);
+			ScaleDocumentGarrisons(cfg);
 			GRAD_Endgame_FiaPatrols.Start(cfg);
 		}
 
@@ -631,6 +632,81 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Server, at the start of phase 1 (before the garrisons spawn): size the FIA garrisons of the
+	//! document sites that are in this match from the number of slotted players. FOB, radio and
+	//! cipher garrisons and the vehicle patrols are not touched.
+	//! Budget = players x FIA per player x difficulty, capped; each site gets LIGHT, MEDIUM or HEAVY
+	//! by its share of it (below LIGHT: LIGHT, or none if the config allows).
+	protected void ScaleDocumentGarrisons(notnull GRAD_Endgame_Config cfg)
+	{
+		if (!cfg.GetFiaScaleEnabled())
+			return;
+
+		COA_SlottingManager slottingManager = COA_SlottingManager.GetInstance();
+		if (!slottingManager)
+			return;
+
+		int players;
+		array<int> playerIds = {};
+		GetGame().GetPlayerManager().GetPlayers(playerIds);
+		foreach (int playerId : playerIds)
+		{
+			if (slottingManager.IsPlayerInASlot(playerId))
+				players++;
+		}
+
+		array<GRAD_Endgame_GarrisonComponent> sites = {};
+		foreach (GRAD_Endgame_GarrisonComponent garrison : GRAD_Endgame_GarrisonComponent.GetAll())
+		{
+			if (!garrison.IsOnDocumentSite())
+				continue;
+
+			GRAD_Endgame_DocumentSiteComponent site = GRAD_Endgame_DocumentSiteComponent.Cast(garrison.GetOwner().FindComponent(GRAD_Endgame_DocumentSiteComponent));
+			if (site && site.IsSiteActive())
+				sites.Insert(garrison);
+		}
+		if (sites.IsEmpty())
+			return;
+
+		int budget = Math.Round(players * cfg.GetFiaPerPlayer() * cfg.GetFiaDifficulty());
+		budget = Math.Min(budget, cfg.GetFiaMaxDocumentSoldiers());
+		float perSite = budget / sites.Count();
+
+		GRAD_Endgame_EGarrisonTier tier;
+		bool none;
+		if (perSite >= cfg.GetFiaSoldiersHeavy())
+			tier = GRAD_Endgame_EGarrisonTier.HEAVY;
+		else if (perSite >= cfg.GetFiaSoldiersMedium())
+			tier = GRAD_Endgame_EGarrisonTier.MEDIUM;
+		else if (perSite >= cfg.GetFiaSoldiersLight())
+			tier = GRAD_Endgame_EGarrisonTier.LIGHT;
+		else
+		{
+			tier = GRAD_Endgame_EGarrisonTier.LIGHT;
+			none = cfg.GetFiaAllowNoneAtDocuments();
+		}
+
+		// With "none" allowed and a budget for fewer sites than there are, keep as many LIGHT
+		// garrisons as the budget pays for and drop the rest (the last ones in the list).
+		int keep = sites.Count();
+		if (none)
+		{
+			int affordable = budget / Math.Max(cfg.GetFiaSoldiersLight(), 1);   // integer division
+			keep = Math.Min(sites.Count(), affordable);
+		}
+
+		for (int i = 0; i < sites.Count(); i++)
+		{
+			if (i >= keep)
+				sites[i].Suppress();
+			else
+				sites[i].SetTierOverride(tier);
+		}
+
+		GRAD_Endgame_MatchLog.Write("fia_scale", "", 0, vector.Zero, string.Format("%1 players, budget %2 soldiers, %3 document sites: tier %4 at %5 of them", players, budget, sites.Count(), SCR_Enum.GetEnumName(GRAD_Endgame_EGarrisonTier, tier), keep));
+	}
+
+	//------------------------------------------------------------------------------------------------
 	//! Phase 2 start: reveal the documents to every side that may see them, that is every side whose
 	//! FOB is taken (or that has no FOB placed). An admin advance reveals them to both sides.
 	protected void RevealDocumentSitesToReadySides(notnull GRAD_Endgame_Config cfg, bool everyone)
@@ -786,8 +862,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		}
 
 		GRAD_Endgame_CipherSiteComponent cipherSite = cipherSites.GetRandomElement();
-		cipherSite.SpawnCipher(cfg.GetCipherPrefab());
+		IEntity cipherItem = cipherSite.SpawnCipher(cfg.GetCipherPrefab());
 		vector cipherPos = cipherSite.GetOwner().GetOrigin();
+		if (cipherItem)
+			cipherPos = cipherItem.GetOrigin();   // may be on a table, not at the site
 
 		// Who learns where it is: the side that reached the threshold. Advanced by an admin, the side
 		// with more copies; even, both.

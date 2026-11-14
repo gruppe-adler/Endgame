@@ -21,6 +21,8 @@ class GRAD_Endgame_FiaPatrol : Managed
 {
 	protected const int BOARD_DELAY_MS = 2500;      //!< the crew soldiers arrive a moment after their group
 	protected const int ROUTE_CHECK_MS = 5000;
+	protected const float ROAD_SEARCH_MIN = 60;     //!< metres: first search square around the first stop
+	protected const float ROAD_SEARCH_MAX = 400;    //!< widest search
 	protected const float SPAWN_OFFSET = 10;        //!< metres from the first site, so the vehicle is not inside it
 	protected const int BOARD_ROUNDS = 5;           //!< the soldiers of a group appear one after the other: board again
 	protected const float NEAR_STOP_METRES = 60;    //!< a vehicle cannot enter a building: this close counts as arrived
@@ -32,10 +34,16 @@ class GRAD_Endgame_FiaPatrol : Managed
 	protected const float DISMOUNT_MAX_SECONDS = 25; //!< at most, if the waypoint never ends
 	protected const float CHECK_MIN_SECONDS = 20;   //!< at least this long on foot at the site
 	protected const float CHECK_MAX_SECONDS = 60;   //!< and at most, if they never get there
-	protected const float AT_SITE_METRES = 12;
+	protected const float FOOT_RADIUS = 1.5;        //!< completion radius of the walk to the documents
+	protected const float AT_SITE_METRES = 3;
 	protected const float RETURN_MAX_SECONDS = 90;
 	protected const float AT_VEHICLE_METRES = 10;
-	protected const float STOP_TIMEOUT_S = 240;     //!< a stop not reached in this time (blocked, no road) is skipped
+	protected const float STOP_TIMEOUT_BASE_S = 120;   //!< a stop not reached in this time plus the distance allowance is skipped
+	protected const float STOP_TIMEOUT_PER_M = 0.4;    //!< seconds allowed per metre of the leg (about 9 km/h: slow but sure)
+	protected const float PARKED_SECONDS = 10;      //!< stood still this long ...
+	protected const float PARKED_NEAR_METRES = 150; //!< ... within this of the stop: it is as close as the road gets, get out
+	protected const float STUCK_SECONDS = 90;       //!< stood still this long far from the stop: stuck, give the stop up
+	protected const float STILL_SPEED = 0.5;        //!< m/s
 
 	protected Vehicle m_Vehicle;
 	protected SCR_AIGroup m_Group;
@@ -52,6 +60,9 @@ class GRAD_Endgame_FiaPatrol : Managed
 	protected float m_fStateAt;         //!< world time (s) the state began
 	protected bool m_bFirstStop = true; //!< the first stop is the spawn spot: no dismount there
 	protected vector m_vStop;           //!< the stop the vehicle is driving to
+	protected float m_fStillSince = -1;   //!< world time (s) the vehicle stopped moving, -1 while it moves
+	protected float m_fLegTimeout;        //!< seconds allowed for the current leg
+	protected bool m_bVehicleLost;        //!< destroyed: the crew goes on on foot
 	protected float m_fAssignedAt;      //!< world time (s) when it got that stop
 
 	//------------------------------------------------------------------------------------------------
@@ -66,12 +77,26 @@ class GRAD_Endgame_FiaPatrol : Managed
 		m_sWaypointPrefab = waypointPrefab;
 		m_fRadius = radius;
 
-		vector start = route[firstStop] + Vector(SPAWN_OFFSET, 0, 0);
-		start[1] = GetGame().GetWorld().GetSurfaceY(start[0], start[2]);
+		// On the road nearest to the first stop, facing along it. Without a road in reach the vehicle
+		// stands beside the stop, as before (logged, so a bad spot is easy to find).
+		vector start;
+		vector roadDirection;
+		bool onRoad = FindRoadSpot(route[firstStop], start, roadDirection);
+		if (!onRoad)
+		{
+			start = route[firstStop] + Vector(SPAWN_OFFSET, 0, 0);
+			start[1] = GetGame().GetWorld().GetSurfaceY(start[0], start[2]);
+			GRAD_Endgame_MatchLog.Write("fia_patrol", "", 0, route[firstStop], string.Format("patrol %1: no road within %2 m of the first stop, spawns beside it", index, ROAD_SEARCH_MAX));
+		}
 
 		EntitySpawnParams params = new EntitySpawnParams();
 		params.TransformMode = ETransformMode.WORLD;
 		Math3D.MatrixIdentity4(params.Transform);
+		if (onRoad)
+		{
+			vector angles = roadDirection.VectorToAngles();
+			Math3D.AnglesToMatrix(Vector(angles[0], 0, 0), params.Transform);
+		}
 		params.Transform[3] = start;
 
 		Resource vehicleResource = Resource.Load(vehiclePrefab);
@@ -108,6 +133,61 @@ class GRAD_Endgame_FiaPatrol : Managed
 		GetGame().GetCallqueue().CallLater(BoardCrew, BOARD_DELAY_MS, false);
 		GRAD_Endgame_MatchLog.Write("fia_patrol", "", 0, start, string.Format("patrol %1 spawned, %2 stops", index, route.Count()));
 		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! The point of the nearest road to a position, and the direction of the road there. Searches
+	//! in growing squares up to ROAD_SEARCH_MAX metres. False if there is no road (or no road
+	//! network) in reach.
+	protected bool FindRoadSpot(vector position, out vector spot, out vector direction)
+	{
+		SCR_AIWorld aiWorld = SCR_AIWorld.Cast(GetGame().GetAIWorld());
+		if (!aiWorld)
+			return false;
+		RoadNetworkManager roadManager = aiWorld.GetRoadNetworkManager();
+		if (!roadManager)
+			return false;
+
+		array<float> radii = {ROAD_SEARCH_MIN, ROAD_SEARCH_MIN * 3, ROAD_SEARCH_MAX};
+		foreach (float radius : radii)
+		{
+			array<BaseRoad> roads = {};
+			roadManager.GetRoadsInAABB(position - Vector(radius, radius, radius), position + Vector(radius, radius, radius), roads);
+			if (roads.IsEmpty())
+				continue;
+
+			// the closest road point of all roads found
+			float bestDistance = float.MAX;
+			foreach (BaseRoad road : roads)
+			{
+				array<vector> points = {};
+				road.GetPoints(points);
+				if (points.Count() < 2)
+					continue;
+
+				for (int i = 0; i < points.Count(); i++)
+				{
+					float distance = vector.DistanceXZ(position, points[i]);
+					if (distance >= bestDistance)
+						continue;
+
+					bestDistance = distance;
+					spot = points[i];
+					if (i < points.Count() - 1)
+						direction = vector.Direction(points[i], points[i + 1]);
+					else
+						direction = vector.Direction(points[i - 1], points[i]);
+				}
+			}
+
+			if (bestDistance < float.MAX)
+			{
+				direction.Normalize();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -190,6 +270,30 @@ class GRAD_Endgame_FiaPatrol : Managed
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! True once the vehicle is gone or wrecked.
+	protected bool IsVehicleLost()
+	{
+		if (!m_Vehicle)
+			return true;
+
+		DamageManagerComponent damage = DamageManagerComponent.Cast(m_Vehicle.FindComponent(DamageManagerComponent));
+		return damage && damage.GetState() == EDamageState.DESTROYED;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected float GetVehicleSpeed()
+	{
+		if (!m_Vehicle)
+			return 0;
+
+		Physics physics = m_Vehicle.GetPhysics();
+		if (!physics)
+			return 0;
+
+		return physics.GetVelocity().Length();
+	}
+
+	//------------------------------------------------------------------------------------------------
 	protected float Now()
 	{
 		return GetGame().GetWorld().GetWorldTime() * 0.001;
@@ -206,6 +310,26 @@ class GRAD_Endgame_FiaPatrol : Managed
 		float now = Now();
 		float inState = now - m_fStateAt;
 
+		// A wrecked vehicle ends the driving: the survivors walk the route (no dismount, no boarding).
+		if (!m_bVehicleLost && IsVehicleLost())
+		{
+			m_bVehicleLost = true;
+			GRAD_Endgame_MatchLog.Write("fia_patrol", "", 0, vector.Zero, string.Format("patrol %1: vehicle destroyed, the crew goes on on foot", m_iIndex));
+			RemoveCurrentWaypoint();
+			DriveToNextStop(now);
+			return;
+		}
+		if (m_bVehicleLost)
+		{
+			// on foot: next stop when the group has none or got there
+			if (!m_Group.GetCurrentWaypoint() || now - m_fAssignedAt > STOP_TIMEOUT_BASE_S + m_fLegTimeout)
+			{
+				RemoveCurrentWaypoint();
+				DriveToNextStop(now);
+			}
+			return;
+		}
+
 		switch (m_iState)
 		{
 			case STATE_DRIVE:
@@ -214,10 +338,36 @@ class GRAD_Endgame_FiaPatrol : Managed
 				{
 					// Still driving. A vehicle cannot enter a building: near enough counts as arrived;
 					// too long on the way and the stop is skipped.
-					bool near = m_Vehicle && vector.Distance(m_Vehicle.GetOrigin(), m_vStop) < NEAR_STOP_METRES;
-					bool late = now - m_fAssignedAt > STOP_TIMEOUT_S;
-					if (!near && !late)
+					float toStop = vector.Distance(m_Vehicle.GetOrigin(), m_vStop);
+					bool near = toStop < NEAR_STOP_METRES;
+
+					// Standing still: close to the stop it has parked as near as the road gets (the
+					// crew walks the rest); far from it, it is stuck and the stop is given up.
+					if (GetVehicleSpeed() < STILL_SPEED)
+					{
+						if (m_fStillSince < 0)
+							m_fStillSince = now;
+					}
+					else
+					{
+						m_fStillSince = -1;
+					}
+					float still = 0;
+					if (m_fStillSince >= 0)
+						still = now - m_fStillSince;
+
+					bool parked = still >= PARKED_SECONDS && toStop < PARKED_NEAR_METRES;
+					bool stuck = still >= STUCK_SECONDS && !parked;
+					bool late = now - m_fAssignedAt > m_fLegTimeout;
+					if (!near && !parked && !late && !stuck)
 						return;
+
+					string reason = "too long on the way";
+					if (stuck)
+						reason = "stuck";
+					if (stuck || late)
+						GRAD_Endgame_MatchLog.Write("fia_patrol", "", 0, m_Vehicle.GetOrigin(), string.Format("patrol %1 gives up the stop %2: %3, %4 m away", m_iIndex, m_vStop, reason, Math.Round(toStop)));
+					near = near || parked;
 
 					RemoveCurrentWaypoint();
 					if (near && !m_bFirstStop)
@@ -242,7 +392,7 @@ class GRAD_Endgame_FiaPatrol : Managed
 
 				// on foot to the site
 				RemoveCurrentWaypoint();
-				GoTo(m_vStop, 6, m_sWaypointPrefab);
+				GoTo(m_vStop, FOOT_RADIUS, m_sWaypointPrefab);
 				m_iState = STATE_CHECK;
 				m_fStateAt = now;
 				GRAD_Endgame_MatchLog.Debug(string.Format("FIA patrol %1 checks the site at %2", m_iIndex, m_vStop));
@@ -251,7 +401,7 @@ class GRAD_Endgame_FiaPatrol : Managed
 
 			case STATE_CHECK:
 			{
-				bool atSite = AllNear(m_vStop, AT_SITE_METRES);
+				bool atSite = !m_Group.GetCurrentWaypoint() || AllNear(m_vStop, AT_SITE_METRES);   // waypoint done (1.5 m), or all within 3 m
 				if ((atSite && inState >= CHECK_MIN_SECONDS) || inState >= CHECK_MAX_SECONDS)
 				{
 					RemoveCurrentWaypoint();
@@ -385,6 +535,10 @@ class GRAD_Endgame_FiaPatrol : Managed
 		m_fStateAt = now;
 		m_vStop = m_aRoute[m_iNext];
 		m_fAssignedAt = now;
+		m_fStillSince = -1;
+		m_fLegTimeout = STOP_TIMEOUT_BASE_S;
+		if (m_Vehicle)
+			m_fLegTimeout += STOP_TIMEOUT_PER_M * vector.Distance(m_Vehicle.GetOrigin(), m_vStop);
 		m_iNext = (m_iNext + 1) % m_aRoute.Count();
 
 		if (GoTo(m_vStop, m_fRadius, m_sWaypointPrefab))

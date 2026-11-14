@@ -43,7 +43,7 @@ Calls to look at first if something does not compile:
 2. Open `worlds/endgame.ent`.
 3. Optional, for the phase checks: add `GRAD_Endgame_GameModeComponent` to the `COA_Lobby` entity
    in the world. Without it the respawn, garrison and document checks still work.
-4. In `Configs/GRAD_Endgame_Config.conf`: `m_fDebugTimeScale 10` (a wave is then 27 s), and turn
+4. In `Missions/Endgame89.conf` (the options live in the mission header): `m_fDebugTimeScale 10` (a wave is then 27 s), and turn
    `m_bDebugLog` on so every match log line is also printed to the console.
 5. Start a local server with one extra client (peer tool). Slot both players on BLUFOR unless a
    check says otherwise, and go through briefing and slotting into the game.
