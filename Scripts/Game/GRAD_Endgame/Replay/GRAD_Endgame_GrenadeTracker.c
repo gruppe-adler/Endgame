@@ -27,8 +27,14 @@ class GRAD_Endgame_GrenadeTracker : ScriptComponent
 	// A grenade is considered at rest once it moves less than this per poll, in metres.
 	protected const float REST_THRESHOLD_M = 0.15;
 
-	// Safety cap so a stuck entity cannot poll forever.
+	// Safety cap so a stuck entity cannot poll forever. Counted only while the grenade is loose in
+	// the world: a grenade still in an inventory must keep being watched however long the carrier
+	// holds on to it, or one thrown later than this after spawning would never be recorded.
 	protected const int MAX_LIFETIME_MS = 180000;
+
+	// While a grenade is still carried it only has to be noticed when it is thrown, so it is
+	// polled slowly. (Every soldier carries several.)
+	protected const int CARRIED_POLL_INTERVAL_MS = 1000;
 
 	protected EGradEndgameExplosiveKind m_eKind;
 	protected string m_sPrefabPath;
@@ -119,7 +125,9 @@ class GRAD_Endgame_GrenadeTracker : ScriptComponent
 			return;
 		}
 
-		m_iElapsedMs += POLL_INTERVAL_MS;
+		bool deployed = IsDeployedInWorld(owner);
+		if (deployed)
+			m_iElapsedMs += POLL_INTERVAL_MS;
 
 		if (m_iElapsedMs >= MAX_LIFETIME_MS)
 		{
@@ -140,7 +148,7 @@ class GRAD_Endgame_GrenadeTracker : ScriptComponent
 		// Skip the recording work while it is still carried, but KEEP POLLING: this is the state
 		// every grenade starts in, so returning early here without rescheduling stops the chain
 		// after a single tick and the grenade is never seen once it is actually thrown.
-		if (IsDeployedInWorld(owner))
+		if (deployed)
 		{
 			// First frame in the world - reset the movement baseline so the throw is not measured
 			// against the carrier's last position.
@@ -156,7 +164,10 @@ class GRAD_Endgame_GrenadeTracker : ScriptComponent
 				PollExplosive(owner, currentPos);
 		}
 
-		GetGame().GetCallqueue().CallLater(Poll, POLL_INTERVAL_MS, false, owner);
+		int nextPoll = POLL_INTERVAL_MS;
+		if (!deployed)
+			nextPoll = CARRIED_POLL_INTERVAL_MS;
+		GetGame().GetCallqueue().CallLater(Poll, nextPoll, false, owner);
 	}
 
 	//------------------------------------------------------------------------------------------------
