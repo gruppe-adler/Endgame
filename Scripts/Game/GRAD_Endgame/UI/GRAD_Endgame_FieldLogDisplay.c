@@ -157,6 +157,12 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		m_wResultBody = TextWidget.Cast(m_wRoot.FindAnyWidget("ResultBody"));
 		m_wFieldLogBody = TextWidget.Cast(m_wRoot.FindAnyWidget("FieldLogBody"));
 
+		// The layout carries sample text so the sizes are visible in the editor; the script owns
+		// these texts at runtime, so start every one of them empty.
+		array<TextWidget> dynamicTexts = {m_wOrdersBody, m_wNoticeTitle, m_wNoticeBody, m_wActionLabel, m_wActionBar, m_wWaveCountdown, m_wWaveDetail, m_wOrderBody, m_wTxTitle, m_wTxBar, m_wTxDetail, m_wSpectatorText, m_wResultTitle, m_wResultBody, m_wFieldLogBody};
+		foreach (TextWidget textWidget : dynamicTexts)
+			SetWidgetText(textWidget, "");
+
 		HideAllCards();
 		return true;
 	}

@@ -4,20 +4,18 @@
 //!
 //! Client only; the sounds are local, nobody else hears them.
 //!
-//! The sounds come from an audio project (.acp) with two events, named in the config:
-//!   m_sTypewriterSoundProject, m_sTypewriterKeyEvent ("GRAD_Endgame_TypeKey"),
-//!   m_sTypewriterBellEvent ("GRAD_Endgame_TypeBell").
-//! TODO (Workbench): create Sounds/GRAD_Endgame_Typewriter.acp with those two events. The key
-//! event should pick at random from 4 to 6 short strike samples with a little pitch variation, so a
-//! long line does not sound like a machine gun. Use samples you are allowed to ship (recorded
-//! yourself, or CC0).
+//! The sounds are the audio projects in Sounds/, set in the config:
+//!   key1.acp to key5.acp  five key strikes, one picked at random per strike (event EG_key)
+//!   return.acp            the carriage return when a typed line ends (event EG_return)
+//!   bing.acp              the bell when a bar reaches 100 % (event EG_bing)
+//! Each project holds one sample; the events are named in the config.
 //!
 //! The widgets use the two helper classes below:
 //!   GRAD_Endgame_TypedText  reveals a line character by character, one strike per character
 //!   GRAD_Endgame_TypedBar   draws "[######....]  60 %", one strike per new #, a bell at 100 %
 //!
-//! WRITTEN WITHOUT WORKBENCH (2026-11-10): not compiled, not run. AudioSystem.PlayEvent with a
-//! transform is the call BreakingContact uses; playing it at the camera position is the guess.
+//! AudioSystem.PlayEvent(project, event, transform) is the call BreakingContact uses; playing it at
+//! the camera position is the guess. Not run in a match yet.
 class GRAD_Endgame_Typewriter
 {
 	protected static const float MIN_KEY_INTERVAL = 0.045;   //!< at most ~22 strikes a second
@@ -36,7 +34,23 @@ class GRAD_Endgame_Typewriter
 			return;
 		s_fLastKey = now;
 
-		Play(cfg.GetTypewriterSoundProject(), cfg.GetTypewriterKeyEvent());
+		array<ResourceName> projects = {};
+		cfg.GetTypewriterKeyProjects(projects);
+		if (projects.IsEmpty())
+			return;
+
+		Play(projects.GetRandomElement(), cfg.GetTypewriterKeyEvent());
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! The carriage return at the end of a typed line.
+	static void PlayReturn()
+	{
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg || !cfg.GetTypewriterSound())
+			return;
+
+		Play(cfg.GetTypewriterReturnProject(), cfg.GetTypewriterReturnEvent());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -47,7 +61,7 @@ class GRAD_Endgame_Typewriter
 		if (!cfg || !cfg.GetTypewriterSound())
 			return;
 
-		Play(cfg.GetTypewriterSoundProject(), cfg.GetTypewriterBellEvent());
+		Play(cfg.GetTypewriterBellProject(), cfg.GetTypewriterBellEvent());
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -129,8 +143,10 @@ class GRAD_Endgame_TypedText
 			string c = m_sTarget.Get(m_iShown);
 			m_iShown++;
 
-			// Spaces and line breaks make no strike, as on a real machine.
-			if (m_bSound && c != " " && c != "\n")
+			// Spaces make no strike, as on a real machine; a line break is the carriage return.
+			if (m_bSound && c == "\n")
+				GRAD_Endgame_Typewriter.PlayReturn();
+			else if (m_bSound && c != " ")
 				GRAD_Endgame_Typewriter.PlayKey();
 		}
 	}

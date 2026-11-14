@@ -13,7 +13,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{F8240469B94EF8E5}" {
      Name "OrdersCardPaper"
@@ -31,30 +30,36 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{2A75B46D915A90F4}" {
-             Name "OrdersTitle"
-             Slot LayoutSlot "{1C2314054063193B}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "ORDERS"
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{D2F81EC66F3B5A5E}" {
-             Name "OrdersBody"
-             Slot LayoutSlot "{8CB7E485E9D08D1E}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{2A75B46D915A90F4}" {
+       Name "OrdersTitle"
+       Slot LayoutSlot "{1C2314054063193B}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "ORDERS"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{1C80317FA3B1799D}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{D2F81EC66F3B5A5E}" {
+       Name "OrdersBody"
+       Slot LayoutSlot "{8CB7E485E9D08D1E}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Clear the militia from your FOB. Your spawn moves there when it is yours."
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{BDD640FB06671AD1}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -71,7 +76,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{7874FFD2EA461252}" {
      Name "NoticePaper"
@@ -89,30 +93,36 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{CA5DE314ACB59BA8}" {
-             Name "NoticeTitle"
-             Slot LayoutSlot "{49B4F61BBDA219DD}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{49C54E18B71CEE08}" {
-             Name "NoticeBody"
-             Slot LayoutSlot "{9D1A106621301828}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{CA5DE314ACB59BA8}" {
+       Name "NoticeTitle"
+       Slot LayoutSlot "{49B4F61BBDA219DD}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "DOCUMENTS LOCATED"
+       "Font Size" 32
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{3EB13B9046685257}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{49C54E18B71CEE08}" {
+       Name "NoticeBody"
+       Slot LayoutSlot "{9D1A106621301828}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Copy documents at the marked sites."
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{23B8C1E9392456DE}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -129,7 +139,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{673BFDF739500C27}" {
      Name "ActionSlipPaper"
@@ -147,30 +156,36 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{C36AC7930696D863}" {
-             Name "ActionLabel"
-             Slot LayoutSlot "{7C4434FE65A7ACCC}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{F438889E6C8098D4}" {
-             Name "ActionBar"
-             Slot LayoutSlot "{28C3210E1952998F}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{C36AC7930696D863}" {
+       Name "ActionLabel"
+       Slot LayoutSlot "{7C4434FE65A7ACCC}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "COPYING DOCUMENTS"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{1A3D1FA7BC8960A9}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{F438889E6C8098D4}" {
+       Name "ActionBar"
+       Slot LayoutSlot "{28C3210E1952998F}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[#######.............]  35 %"
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{BD9C66B3AD3C2D6D}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -187,7 +202,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{CAC072A4302651A2}" {
      Name "WavePanelPaper"
@@ -205,42 +219,51 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{5A256F2B4DED2BE7}" {
-             Name "WaveTitle"
-             Slot LayoutSlot "{DCFF2D5DE3AD9ACD}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "AWAITING REINFORCEMENT"
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{EBF44487B4280254}" {
-             Name "WaveCountdown"
-             Slot LayoutSlot "{4C693F4D5ED10829}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 24
-             "Min Font Size" 24
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{5FB2D67AEC53240A}" {
-             Name "WaveDetail"
-             Slot LayoutSlot "{6C43982C329A5F14}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{5A256F2B4DED2BE7}" {
+       Name "WaveTitle"
+       Slot LayoutSlot "{DCFF2D5DE3AD9ACD}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "AWAITING REINFORCEMENT"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{8B9D2434E465E150}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{EBF44487B4280254}" {
+       Name "WaveCountdown"
+       Slot LayoutSlot "{4C693F4D5ED10829}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "02:15"
+       "Font Size" 24
+       "Min Font Size" 24
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{972A846916419F82}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{5FB2D67AEC53240A}" {
+       Name "WaveDetail"
+       Slot LayoutSlot "{6C43982C329A5F14}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Next wave"
+       "Font Size" 13
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{0822E8F36C031199}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -257,7 +280,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{06DC67C5C2B71D06}" {
      Name "DecodedOrderPaper"
@@ -275,42 +297,51 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{C51D19E6B65E842F}" {
-             Name "DecodedOrderTitle"
-             Slot LayoutSlot "{3475C6D52C8F0EB5}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "DECODED ORDER"
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{3ACB2D3DD57B4CE6}" {
-             Name "DecodedOrderBody"
-             Slot LayoutSlot "{F23186EFC4C702C9}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{5D91A24924F78239}" {
-             Name "DecodedOrderHint"
-             Slot LayoutSlot "{E84DCADC5E6D6311}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "[K] dismiss"
-             "Font Size" 11
-             "Min Font Size" 11
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{C51D19E6B65E842F}" {
+       Name "DecodedOrderTitle"
+       Slot LayoutSlot "{3475C6D52C8F0EB5}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "DECODED ORDER"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{17FC695A07A0CA6E}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{3ACB2D3DD57B4CE6}" {
+       Name "DecodedOrderBody"
+       Slot LayoutSlot "{F23186EFC4C702C9}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Cipher at grid 047 112. Bring it to a radio site."
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{3B8FAA1837F8A88B}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{5D91A24924F78239}" {
+       Name "DecodedOrderHint"
+       Slot LayoutSlot "{E84DCADC5E6D6311}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[K] dismiss"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{9A1DE644815EF6D1}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -327,7 +358,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{1BCE60CDE9BAFA8D}" {
      Name "TransmissionLogPaper"
@@ -345,54 +375,66 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{2E8A133C0D32A352}" {
-             Name "TransmissionTitle"
-             Slot LayoutSlot "{CF062C2E28EAEDD1}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{ADDA59755D5C33A5}" {
-             Name "TransmissionBar"
-             Slot LayoutSlot "{160CB6D92BC9C363}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{CEE8A8E1EC99281D}" {
-             Name "TransmissionDetail"
-             Slot LayoutSlot "{8C054B460A5AD3E7}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{2C604456838EB9C3}" {
-             Name "TransmissionHint"
-             Slot LayoutSlot "{F6C3FD4D4016D44F}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "[T] hide"
-             "Font Size" 11
-             "Min Font Size" 11
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{2E8A133C0D32A352}" {
+       Name "TransmissionTitle"
+       Slot LayoutSlot "{CF062C2E28EAEDD1}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "TRANSMITTING - RADIO SITE 1"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{8FADC1A606CB0FB3}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{ADDA59755D5C33A5}" {
+       Name "TransmissionBar"
+       Slot LayoutSlot "{160CB6D92BC9C363}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[######..............]  30 %"
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{B74D0FB132E70629}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{CEE8A8E1EC99281D}" {
+       Name "TransmissionDetail"
+       Slot LayoutSlot "{8C054B460A5AD3E7}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Operator on the set - 8:24 left"
+       "Font Size" 13
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{B38A088CA65ED389}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{2C604456838EB9C3}" {
+       Name "TransmissionHint"
+       Slot LayoutSlot "{F6C3FD4D4016D44F}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[T] hide"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{6B65A6A48B8148F6}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -409,7 +451,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{AE86F65CFA34245D}" {
      Name "SpectatorStripPaper"
@@ -427,30 +468,36 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{1F48505467940CE2}" {
-             Name "SpectatorText"
-             Slot LayoutSlot "{6C175552FBDAA1BB}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{BDF62AF3F67609E6}" {
-             Name "SpectatorHint"
-             Slot LayoutSlot "{1172B655ADDAEE96}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "[<] [>] switch · [U] hide"
-             "Font Size" 11
-             "Min Font Size" 11
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{1F48505467940CE2}" {
+       Name "SpectatorText"
+       Slot LayoutSlot "{6C175552FBDAA1BB}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "SPECTATING - NO RESPAWN IN PHASE 3"
+       "Font Size" 18
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{72FF5D2A386ECBE0}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{BDF62AF3F67609E6}" {
+       Name "SpectatorHint"
+       Slot LayoutSlot "{1172B655ADDAEE96}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[<] [>] switch · [U] hide"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{4737819096DA1DAC}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -467,7 +514,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{4CB87D02D19D00DF}" {
      Name "ResultSheetPaper"
@@ -485,30 +531,36 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{7D3CA7F5A83E968F}" {
-             Name "ResultTitle"
-             Slot LayoutSlot "{B40F74E676B66FB9}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 32
-             "Min Font Size" 32
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{055BCC583D339F8C}" {
-             Name "ResultBody"
-             Slot LayoutSlot "{B8CC0343B7310EAA}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{7D3CA7F5A83E968F}" {
+       Name "ResultTitle"
+       Slot LayoutSlot "{B40F74E676B66FB9}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "BLUFOR WINS"
+       "Font Size" 32
+       "Min Font Size" 32
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{DE8A774BCF36D58B}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{055BCC583D339F8C}" {
+       Name "ResultBody"
+       Slot LayoutSlot "{B8CC0343B7310EAA}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Transmission completed after 41 minutes."
+       "Font Size" 15
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{C241330B01A9E71F}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }
@@ -525,7 +577,6 @@ FrameWidgetClass {
     SizeY 60
     SizeToContent 1
    }
-   "Is Visible" 0
    {
     ImageWidgetClass "{E7A13EF224D282D9}" {
      Name "FieldLogPaper"
@@ -543,42 +594,51 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{74AC195ABCD78D17}" {
-             Name "FieldLogTitle"
-             Slot LayoutSlot "{EFACD66F56E1B742}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "FIELD LOG"
-             "Font Size" 15
-             "Min Font Size" 15
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{D513A414E782DEF6}" {
-             Name "FieldLogBody"
-             Slot LayoutSlot "{BB63A56FCC29999A}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
-            TextWidgetClass "{098F98AB421441D1}" {
-             Name "FieldLogHint"
-             Slot LayoutSlot "{7FF1F2BB9E61CB18}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text "[J] close"
-             "Font Size" 11
-             "Min Font Size" 11
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{74AC195ABCD78D17}" {
+       Name "FieldLogTitle"
+       Slot LayoutSlot "{EFACD66F56E1B742}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "FIELD LOG"
+       "Font Size" 18
+       "Min Font Size" 15
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{28DF6EC4CE4A2BBD}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{D513A414E782DEF6}" {
+       Name "FieldLogBody"
+       Slot LayoutSlot "{BB63A56FCC29999A}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "Phase 2 - DOCUMENTS   Time left 34:12   Copies 2 of 3   Order: none"
+       "Font Size" 13
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{6C307511B2B9437A}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
+      TextWidgetClass "{098F98AB421441D1}" {
+       Name "FieldLogHint"
+       Slot LayoutSlot "{7FF1F2BB9E61CB18}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "[J] close"
+       "Font Size" 11
+       "Min Font Size" 11
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{47229389571AA876}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }

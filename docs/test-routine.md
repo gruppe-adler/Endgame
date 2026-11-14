@@ -161,12 +161,14 @@ If every list reads 0 although the prefabs are placed, reload the world once and
 
 ## Typewriter sound
 
-Needs `Sounds/GRAD_Endgame_Typewriter.acp` with the events `GRAD_Endgame_TypeKey` and `GRAD_Endgame_TypeBell`, set in the config. Until the HUD exists, test from the script console on a client:
+The sounds are the audio projects in `Sounds/` (`key1`..`key5`, `return`, `bing`), set in the config (`m_aTypewriterKeyProjects`, `m_sTypewriterReturnProject`, `m_sTypewriterBellProject`; events `EG_key`, `EG_return`, `EG_bing`). Test in play, no console needed:
 
 | # | Do | Expect |
 | --- | --- | --- |
-| 45 | `GRAD_Endgame_Typewriter.PlayKey(); GRAD_Endgame_Typewriter.PlayBell();` | One strike, one bell |
-| 46 | `GRAD_Endgame_TypedBar b = new GRAD_Endgame_TypedBar(10); b.Update(0, false); Print(b.Update(0.5)); Print(b.Update(1));` | Prints `[#####.....]  50 %` then `[##########]  100 %`; 5 strikes, then 5 strikes and the bell |
+| 45 | Start a match and read the orders card at the start of a phase | One strike per typed character, varying between the five samples, none for spaces |
+| 46 | Start a transmission and watch the transmission card | One strike for each new `#` of the bar, the bell once at 100 % |
+| 47a | Open the field log on [J] (several lines) | A carriage return sound at each line break |
+| 47b | Set `m_bTypewriterSound 0` | Silence |
 
 ## Garrison tiers and lobby threshold
 

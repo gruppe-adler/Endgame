@@ -186,17 +186,26 @@ class GRAD_Endgame_Config
 	protected bool m_bGarrisonSpawnOnApproach;
 
 	// --- HUD sound ---
-	[Attribute(defvalue: "1", desc: "Typewriter strike for each character typed in a HUD widget, bell at 100 %.", category: "HUD")]
+	[Attribute(defvalue: "1", desc: "Typewriter strike for each character typed in a HUD widget, a return at the end of a line, a bell at 100 %.", category: "HUD")]
 	protected bool m_bTypewriterSound;
 
-	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the typewriter events.", params: "acp", category: "HUD")]
-	protected ResourceName m_sTypewriterSoundProject;
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio projects with one key strike each (Sounds/key1.acp to key5.acp). One is picked at random per strike.", params: "acp", category: "HUD")]
+	protected ref array<ResourceName> m_aTypewriterKeyProjects;
 
-	[Attribute(defvalue: "GRAD_Endgame_TypeKey", desc: "Event in the audio project for one key strike.", category: "HUD")]
+	[Attribute(defvalue: "EG_key", desc: "Event name inside every key audio project.", category: "HUD")]
 	protected string m_sTypewriterKeyEvent;
 
-	[Attribute(defvalue: "GRAD_Endgame_TypeBell", desc: "Event in the audio project for the bell.", category: "HUD")]
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the bell that rings when a bar reaches 100 % (Sounds/bing.acp).", params: "acp", category: "HUD")]
+	protected ResourceName m_sTypewriterBellProject;
+
+	[Attribute(defvalue: "EG_bing", desc: "Event name inside the bell audio project.", category: "HUD")]
 	protected string m_sTypewriterBellEvent;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the carriage return at the end of a typed line (Sounds/return.acp).", params: "acp", category: "HUD")]
+	protected ResourceName m_sTypewriterReturnProject;
+
+	[Attribute(defvalue: "EG_return", desc: "Event name inside the return audio project.", category: "HUD")]
+	protected string m_sTypewriterReturnEvent;
 
 	// --- Match ---
 	[Attribute(defvalue: "0", desc: "Extra time limit of the radio phase in minutes. 0 = none; the whole match is limited by COALITION's m_iTimeLimitMinutes (60, decided 2026-11-10), which ends as a draw.", category: "Match")]
@@ -297,7 +306,15 @@ class GRAD_Endgame_Config
 
 	// HUD sound
 	bool GetTypewriterSound() { return m_bTypewriterSound; }
-	ResourceName GetTypewriterSoundProject() { return m_sTypewriterSoundProject; }
+	void GetTypewriterKeyProjects(notnull array<ResourceName> projects)
+	{
+		projects.Clear();
+		if (m_aTypewriterKeyProjects)
+			projects.InsertAll(m_aTypewriterKeyProjects);
+	}
+	ResourceName GetTypewriterBellProject() { return m_sTypewriterBellProject; }
+	ResourceName GetTypewriterReturnProject() { return m_sTypewriterReturnProject; }
+	string GetTypewriterReturnEvent() { return m_sTypewriterReturnEvent; }
 	string GetTypewriterKeyEvent() { return m_sTypewriterKeyEvent; }
 	string GetTypewriterBellEvent() { return m_sTypewriterBellEvent; }
 

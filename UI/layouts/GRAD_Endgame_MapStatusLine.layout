@@ -9,8 +9,10 @@ FrameWidgetClass {
     OffsetLeft -420
     PositionY -50
     OffsetTop -50
-    SizeX 840
-    SizeY 60
+    SizeX 520
+    OffsetRight -100
+    SizeY 80
+    OffsetBottom -30
     SizeToContent 1
    }
    "Is Visible" 1
@@ -31,18 +33,21 @@ FrameWidgetClass {
       Padding 14 10 14 12
      }
      {
-            TextWidgetClass "{4A85B34DB626DA63}" {
-             Name "StatusLineText"
-             Slot LayoutSlot "{317209D96C77F449}" {
-              HorizontalAlign 3
-              SizeMode Auto
-             }
-             Color 0.12 0.11 0.1 1
-             Text ""
-             "Font Size" 13
-             "Min Font Size" 13
-             "Horizontal Alignment" Left
-            }
+      TextWidgetClass "{4A85B34DB626DA63}" {
+       Name "StatusLineText"
+       Slot LayoutSlot "{317209D96C77F449}" {
+        HorizontalAlign 3
+        SizeMode Auto
+       }
+       Color 0.12 0.11 0.1 1
+       Text "PHASE 2 - DOCUMENTS   34:12   TRANSMISSION: NONE   [J] LOG"
+       "Font Size" 32
+       "Min Font Size" 13
+       "Horizontal Alignment" Left
+       FontProperties FontProperties "{6ADC9BDE0DA8AFE6}" {
+        Font "{0E041C5B1F27DCEA}ui/fonts/robotomono_msdf_28.fnt"
+       }
+      }
      }
     }
    }

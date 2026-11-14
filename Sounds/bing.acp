@@ -1,0 +1,35 @@
+AudioClass {
+ sounds {
+  SoundClass "2057" {
+   id 2057
+   name "EG_bing"
+   version 5
+   tl -16.922 -65.963
+   ins {
+    ConnectionsClass "con:64" {
+     id 64
+     links {
+      ConnectionClass "1028:65" {
+       id 1028
+       port 65
+      }
+     }
+    }
+   }
+  }
+ }
+ banks_local {
+  BankLocalClass "1028" {
+   id 1028
+   name "Bank 1"
+   version 7
+   tl -309.195 -76.542
+   Samples {
+    AudioBankSampleClass "bing.wav" {
+     Filename "{884ACAC9ABC9B46C}Sounds/bing.wav"
+    }
+   }
+  }
+ }
+ version 2
+}
