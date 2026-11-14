@@ -164,31 +164,31 @@ class GRAD_Endgame_SettingsFia
 	int m_iFiaPatrolCount = 2;
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Vehicle prefab of an FIA patrol. Suggestion: UAZ469_PKM_FIA.", params: "et")]
-	ResourceName m_sFiaPatrolVehicle = "";
+	ResourceName m_sFiaPatrolVehicle = "{22B327C6752EC4D4}Prefabs/Vehicles/Wheeled/UAZ469/UAZ469_PKM_FIA.et";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefab that crews the vehicle (soldiers beyond the seats are removed). Suggestion: FIA fire team.", params: "et")]
-	ResourceName m_sFiaPatrolCrewGroup = "";
+	ResourceName m_sFiaPatrolCrewGroup = "Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint prefab the patrol drives to, one stop after the other.", params: "et")]
-	ResourceName m_sFiaPatrolWaypoint = "";
+	ResourceName m_sFiaPatrolWaypoint = "{FFF9518F73279473}PrefabsEditable/Auto/AI/Waypoints/E_AIWaypoint_Move.et";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint that makes the crew get out of the vehicle (vanilla AIWaypoint_GetOut).", params: "et")]
-	ResourceName m_sFiaPatrolGetOut = "";
+	ResourceName m_sFiaPatrolGetOut = "{C40316EE26846CAB}Prefabs/AI/Waypoints/AIWaypoint_GetOut.et";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint that makes the crew get into the nearest vehicle (vanilla AIWaypoint_GetInNearest).", params: "et")]
-	ResourceName m_sFiaPatrolGetIn = "";
+	ResourceName m_sFiaPatrolGetIn = "{B049D4C74FBC0C4D}Prefabs/AI/Waypoints/AIWaypoint_GetInNearest.et";
 
 	[Attribute(defvalue: "25", desc: "Metres around a stop that count as arrived.", params: "5 100 1")]
 	float m_fFiaPatrolRadius = 25.0;
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a light garrison, all spawned together. Suggestion: FIA sentry team + FIA fire team.", params: "et")]
-	ref array<ResourceName> m_aGarrisonLight = {};
+	ref array<ResourceName> m_aGarrisonLight = { "Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et", "Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et" };
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a medium garrison. Suggestion: FIA rifle squad + FIA fire team.", params: "et")]
-	ref array<ResourceName> m_aGarrisonMedium = {};
+	ref array<ResourceName> m_aGarrisonMedium = { "Prefabs/Groups/INDFOR/Group_FIA_RifleSquad.et", "Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et" };
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefabs of a heavy garrison. Suggestion: FIA rifle squad + FIA machine-gun team + FIA fire team.", params: "et")]
-	ref array<ResourceName> m_aGarrisonHeavy = {};
+	ref array<ResourceName> m_aGarrisonHeavy = { "Prefabs/Groups/INDFOR/Group_FIA_RifleSquad.et", "Prefabs/Groups/INDFOR/Group_FIA_FireTeam.et", "Prefabs/Groups/INDFOR/Group_FIA_Team_AT.et" };
 
 	[Attribute(defvalue: "0", desc: "0 = every garrison spawns at game start (decided 2026-11-10). 1 = each spawns when the first player comes near.")]
 	bool m_bGarrisonSpawnOnApproach = false;
@@ -200,13 +200,16 @@ class GRAD_Endgame_SettingsFia
 class GRAD_Endgame_SettingsRadio
 {
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Inventory item prefab carrying GRAD_Endgame_CipherComponent.", params: "et")]
-	ResourceName m_sCipherPrefab = "";
+	ResourceName m_sCipherPrefab = "{6F70209937C07ACB}Prefabs/GRAD_Endgame_CipherItem.et";
 
 	[Attribute(defvalue: "5", desc: "Metres the operator may move away from the radio set before the transmission is interrupted.")]
 	float m_fOperatorRange = 5.0;
 
 	[Attribute(defvalue: "0", desc: "Defenders are told where the cipher lies.")]
 	bool m_bCipherRevealToDefenders = false;
+
+	[Attribute(defvalue: "25", desc: "When the cipher carrier goes down (dead or unconscious) both sides get a task and a HUD notice with the last known position, blurred to within this many metres. 0 = off.", params: "0 200 1")]
+	float m_fCipherLastKnownRadius = 25;
 
 	[Attribute(defvalue: "2", desc: "Radio sites the server activates per match.")]
 	int m_iActiveRadioSites = 2;
@@ -251,19 +254,19 @@ class GRAD_Endgame_SettingsHud
 	bool m_bTypewriterSound = true;
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio projects with one key strike each (Sounds/key1.acp to key5.acp). One is picked at random per strike.", params: "acp")]
-	ref array<ResourceName> m_aTypewriterKeyProjects = {};
+	ref array<ResourceName> m_aTypewriterKeyProjects = { "{C3002D39994A65CC}Sounds/key1.acp", "{5A1E94A084AD545C}Sounds/key2.acp", "{2D14FC28700FBB2C}Sounds/key3.acp", "{2AD30679168901EF}Sounds/key4.acp", "{5DD96EF1E22BEE9F}Sounds/key5.acp" };
 
 	[Attribute(defvalue: "EG_key", desc: "Event name inside every key audio project.")]
 	string m_sTypewriterKeyEvent = "EG_key";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the bell that rings when a bar reaches 100 % (Sounds/bing.acp).", params: "acp")]
-	ResourceName m_sTypewriterBellProject = "";
+	ResourceName m_sTypewriterBellProject = "{2B0A510098FF0ED0}Sounds/bing.acp";
 
 	[Attribute(defvalue: "EG_bing", desc: "Event name inside the bell audio project.")]
 	string m_sTypewriterBellEvent = "EG_bing";
 
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Audio project with the carriage return at the end of a typed line (Sounds/return.acp).", params: "acp")]
-	ResourceName m_sTypewriterReturnProject = "";
+	ResourceName m_sTypewriterReturnProject = "{5AA445FF0824C807}Sounds/return.acp";
 
 	[Attribute(defvalue: "EG_return", desc: "Event name inside the return audio project.")]
 	string m_sTypewriterReturnEvent = "EG_return";
@@ -417,6 +420,7 @@ class GRAD_Endgame_Config : SCR_MissionHeader
 
 	// Cipher and radio
 	bool GetCipherRevealToDefenders() { return S().m_Radio.m_bCipherRevealToDefenders; }
+	float GetCipherLastKnownRadius() { return S().m_Radio.m_fCipherLastKnownRadius; }
 	ResourceName GetCipherPrefab() { return S().m_Radio.m_sCipherPrefab; }
 	float GetOperatorRange() { return S().m_Radio.m_fOperatorRange; }
 	int GetActiveRadioSites() { return S().m_Radio.m_iActiveRadioSites; }

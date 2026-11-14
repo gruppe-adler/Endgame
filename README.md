@@ -71,6 +71,7 @@ The final phase is where the mode is decided, so it has the most rules.
 - **Anyone can transmit.** Whoever carries the cipher can start a transmission, whatever their role. The cipher can be taken from a dead body.
 - **The operator must stay put.** The transmission runs for 12 minutes, and the operator has to stay within 5 m of the set. If they leave, die or lose the cipher, the transmission **pauses**. Whoever restarts it continues from where it stopped.
 - **Progress belongs to a side.** If the other side transmits at the same set, they start at zero.
+- **Carrier down.** If the carrier dies or is knocked out, both sides get a task and a HUD notice with the last known position, blurred to within 25 m.
 - **Direction finding.** The enemy gets a fresh 300 m search area around a transmitting site every minute.
 - **Radio sites are contested.** Both sides may transmit at any site, so you can defend one, or attack and take over another.
 - **Permadeath.** One free respawn per side, then no returns. If a side has no living players left, it loses.
@@ -146,7 +147,7 @@ Endgame is a small set of prefabs and one game-mode component. You can drop it o
 | Prefab | Purpose |
 | --- | --- |
 | FOB (one per side) | The garrisoned starting objective; clearing it moves the side's spawn |
-| `DocumentSite_Auto` | A document prop, placed on a free table near where you put it. Turn auto placement off to keep your own position |
+| `EG_IntelligenceFolder_E_01` | A document prop, placed on a free table near where you put it. Turn auto placement off to keep your own position |
 | Radio site | A transmitter with the transmit action |
 | Cipher site | A place where the cipher may appear, one chosen at random. It lies on a table nearby if one is free |
 | Vehicle spots | Where FOB vehicles stand and where they are replaced when lost |

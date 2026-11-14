@@ -71,6 +71,7 @@
 						"m_sCipherPrefab": "{6F70209937C07ACB}Prefabs/GRAD_Endgame_CipherItem.et",
 						"m_fOperatorRange": 5.0,
 						"m_bCipherRevealToDefenders": false,
+						"m_fCipherLastKnownRadius": 25.0,
 						"m_iActiveRadioSites": 2,
 						"m_fTransmissionSeconds": 720.0,
 						"m_eTransmissionInterrupt": 0,

@@ -255,6 +255,12 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		{
 			m_vLastOrigin = owner.GetOrigin();
 			GetGame().GetCallqueue().CallLater(WatchMoved, 1000, true);
+
+			// The prefab is a vanilla inventory item: lock it so nobody can pick it up or move it
+			// in the inventory screen (the actions are refused in GRAD_Endgame_NoPickup).
+			InventoryItemComponent item = InventoryItemComponent.Cast(owner.FindComponent(InventoryItemComponent));
+			if (item)
+				item.RequestUserLock(null, true);
 		}
 	}
 

@@ -17,6 +17,7 @@ class GRAD_Endgame_CipherComponent : ScriptComponent
 {
 	protected static GRAD_Endgame_CipherComponent s_Instance;
 	protected int m_iLastCarrierId;   //!< server: for the "cipher" log lines
+	protected bool m_bDownReported;   //!< server: the carrier is down and the last known position was sent
 
 	//------------------------------------------------------------------------------------------------
 	static GRAD_Endgame_CipherComponent GetInstance()
@@ -66,7 +67,7 @@ class GRAD_Endgame_CipherComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Server: log pickups and drops, once per second.
+	//! Server: log pickups and drops, and watch the carrier, once per second.
 	protected void WatchCarrier()
 	{
 		IEntity carrier = GetCarrier();
@@ -74,20 +75,94 @@ class GRAD_Endgame_CipherComponent : ScriptComponent
 		if (carrier)
 			carrierId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(carrier);
 
-		if (carrierId == m_iLastCarrierId)
-			return;
-
-		if (m_iLastCarrierId > 0)
-			GRAD_Endgame_MatchLog.Write("cipher", GRAD_Endgame_InfoService.GetFactionKey(m_iLastCarrierId), m_iLastCarrierId, GetOwner().GetOrigin(), "dropped or carrier died");
-		if (carrierId > 0)
+		if (carrierId != m_iLastCarrierId)
 		{
-			string carrierKey = GRAD_Endgame_InfoService.GetFactionKey(carrierId);
-			GRAD_Endgame_MatchLog.Write("cipher", carrierKey, carrierId, GetOwner().GetOrigin(), "picked up");
-			// The side that went for it has it now: its "Recover the cipher" objective is done.
-			GRAD_Endgame_InfoService.RemoveMarker(carrierKey, "cipher", true);
+			if (m_iLastCarrierId > 0)
+				GRAD_Endgame_MatchLog.Write("cipher", GRAD_Endgame_InfoService.GetFactionKey(m_iLastCarrierId), m_iLastCarrierId, GetOwner().GetOrigin(), "dropped or carrier died");
+			if (carrierId > 0)
+			{
+				string carrierKey = GRAD_Endgame_InfoService.GetFactionKey(carrierId);
+				GRAD_Endgame_MatchLog.Write("cipher", carrierKey, carrierId, GetOwner().GetOrigin(), "picked up");
+				// The side that went for it has it now: its "Recover the cipher" objective is done.
+				GRAD_Endgame_InfoService.RemoveMarker(carrierKey, "cipher", true);
+				// The other side's marker (the leader's order) points at the old spot: it is stale now.
+				GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+				if (cfg)
+				{
+					string otherKey = cfg.GetFactionKeyOne();
+					if (otherKey == carrierKey)
+						otherKey = cfg.GetFactionKeyTwo();
+					GRAD_Endgame_InfoService.RemoveMarker(otherKey, "cipher", false);
+				}
+			}
+
+			m_iLastCarrierId = carrierId;
 		}
 
-		m_iLastCarrierId = carrierId;
+		CheckCarrierDown(carrier);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: when the carrier goes down (dead or unconscious) both sides get the last known
+	//! position, blurred to within m_fCipherLastKnownRadius metres, as a task and a HUD notice.
+	//! It is cleared when a living character carries the cipher again (a revived carrier, or a
+	//! pickup). While the cipher lies on the ground without a carrier the marker stays.
+	protected void CheckCarrierDown(IEntity carrier)
+	{
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg || cfg.GetCipherLastKnownRadius() <= 0)
+			return;
+
+		bool down;
+		SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(carrier);
+		if (character)
+		{
+			CharacterControllerComponent controller = character.GetCharacterController();
+			if (controller)
+				down = controller.GetLifeState() != ECharacterLifeState.ALIVE;
+		}
+
+		if (down)
+		{
+			if (!m_bDownReported)
+				ReportDown(cfg, carrier.GetOrigin());
+			return;
+		}
+
+		if (carrier && m_bDownReported)
+			ClearDown(cfg);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void ReportDown(notnull GRAD_Endgame_Config cfg, vector position)
+	{
+		m_bDownReported = true;
+
+		float radius = cfg.GetCipherLastKnownRadius();
+		vector shown = GRAD_Endgame_InfoService.Blur(position, radius);
+		string title = "Cipher carrier down";
+		string text = string.Format("Last known position: grid %1 / %2, within %3 m.", Math.Round(shown[0]), Math.Round(shown[2]), Math.Round(radius));
+
+		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
+		foreach (string key : keys)
+		{
+			GRAD_Endgame_InfoService.SetMarker(key, "cipher_last", shown, radius, "Cipher: last known position", string.Format("The cipher carrier went down within %1 m of this point. Find the cipher and bring it to a radio site.", Math.Round(radius)));
+			GRAD_Endgame_InfoService.HintFaction(key, title, text);
+		}
+
+		GRAD_Endgame_MatchLog.Write("cipher_last", "", 0, position, string.Format("carrier down, shown within %1 m of %2 %3", Math.Round(radius), Math.Round(shown[0]), Math.Round(shown[2])));
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void ClearDown(notnull GRAD_Endgame_Config cfg)
+	{
+		m_bDownReported = false;
+
+		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
+		foreach (string key : keys)
+			GRAD_Endgame_InfoService.RemoveMarker(key, "cipher_last", false);
+
+		GRAD_Endgame_MatchLog.Write("cipher_last", "", 0, GetOwner().GetOrigin(), "carried again, last known position cleared");
 	}
 }
 

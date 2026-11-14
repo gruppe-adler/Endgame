@@ -45,6 +45,7 @@ You always know the current phase and the time left from the map status line, an
 - The player transmitting (the operator) must stay within **5 m** of the set the whole time. If the operator leaves, dies or loses the cipher, the transmission is **interrupted** and the progress is paused. Starting it again continues from there. The cipher can be taken from a dead body.
 - The progress belongs to the side that made it. If the other side transmits at the same set, it starts at 0.
 - A transmitting radio set can be **heard** at about 150 m.
+- **Carrier down:** when the cipher carrier dies or is knocked unconscious, **both sides** get a task and a notice at the top of the screen with the last known position, blurred to within 25 m. It is cleared when a living player carries the cipher again.
 - **Direction finding:** the enemy gets a search area of about 300 m around a transmitting site every minute. Expect them to come.
 - When a transmission reaches its end, the transmitting side wins.
 

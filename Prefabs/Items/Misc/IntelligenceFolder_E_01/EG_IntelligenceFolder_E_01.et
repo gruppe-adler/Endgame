@@ -1,0 +1,29 @@
+GenericEntity : "{6D56FED1E55A8F84}Prefabs/Items/Misc/IntelligenceFolder_E_01/IntelligenceFolder_E_01.et" {
+ ID "508AB2013EEE1E00"
+ components {
+  GRAD_Endgame_DocumentSiteComponent "{6ADD1BA401164770}" {
+  }
+  GRAD_Endgame_GarrisonComponent "{6ADD1BA43EAA5928}" {
+   m_eTier LIGHT
+  }
+  SCR_EditableEntityComponent "{6ADD1BA437C10BCD}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{6ADD1BA4745580E2}" {
+    Name "Endgame: Document site"
+   }
+   m_bAutoRegister ALWAYS
+  }
+  ActionsManagerComponent "{508AB5952B584B2E}" {
+   additionalActions {
+    GRAD_Endgame_CopyDocumentAction "{6ADD1CB27E104DA8}" {
+     ParentContextList {
+      "default"
+     }
+     ActionTitle "Copy documents"
+     VisibilityRange 1.5
+     Duration 10
+    }
+   }
+  }
+ }
+}

@@ -30,7 +30,7 @@ players is `docs/briefing.md`.
 | `Configs/System/chimeraInputCommon.conf` | Input actions: Shift+J/K/T/U, plus V/C on the replay map |
 | `Configs/Map/MapFullscreen.conf` | Adds the replay map layer to the fullscreen map (same GUID as vanilla, partial override like BreakingContact) |
 | `Configs/Gearscripts/` | US 80s and USSR 80s gearscripts (copied from BreakingContact) |
-| `Prefabs/` | FOB (per side), document site (old, table-based) and `DocumentSite_Auto` (a paper prop, placed on a table by script; the layer uses this one), radio site, cipher item, cipher site, vehicle spots, ammo arsenal boxes, test garrison |
+| `Prefabs/` | FOB (per side), document site (`Items/Misc/IntelligenceFolder_E_01/EG_IntelligenceFolder_E_01`, inherits the vanilla intel folder: placed on a table by script, cannot be picked up; the old table-based prefab and `DocumentSite_Auto` were deleted), radio site, cipher item, cipher site, vehicle spots, ammo arsenal boxes, test garrison |
 | `Prefabs/!Systems/!Characters/Core/COA_PlayerController.et` | Override of COALITION's controller: adds our HUD display (made in Workbench) |
 | `Missions/Endgame89.conf` | The scenario (`{3C7A91E05B2D48F6}Missions/Endgame89.conf`) |
 | `worlds/endgame.ent` + `endgame_Layers/default.layer` | Test world: sub-scene of Eden; lobby, 2 FOBs, 9 document sites, 3 radio sites, 2 cipher sites, vehicle spots |
@@ -105,7 +105,7 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
 0. **Document site action and visibility.** Check on the next run: no `has no RplComponent` error
    for the sites, the papers are there (green marker shows where), "Copy documents" appears. If
    the action does not, add a collision child (a vanilla prop with collision, invisible) to
-   `GRAD_Endgame_DocumentSite_Auto.et`. Also the site at 5507,10551 only has a drill bench in reach.
+   `EG_IntelligenceFolder_E_01.et`. Also the site at 5507,10551 only has a drill bench in reach.
    0b. **Cipher visual:** give `GRAD_Endgame_CipherItem` a real inventory item with a model
    (briefcase, folder, codebook) as parent; no beam (it would reveal the position).
 1. ~~Navmesh~~ fixed by the mapper; garrisons and patrols confirmed moving (2026-11-14).

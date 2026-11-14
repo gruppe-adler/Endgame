@@ -1,11 +1,7 @@
-GenericEntity : "{6D56FED1E55A8F84}Prefabs/Items/Misc/IntelligenceFolder_E_01/IntelligenceFolder_E_01.et" {
+GenericEntity : "{07C703B76CD25499}Prefabs/Items/Misc/Caches/Campaign_CacheNote_FIA.et" {
  ID "673BFDF739500C27"
  components {
   GRAD_Endgame_CipherComponent "{51D012385B05CBFC}" {
-  }
-  RigidBody "{5AB0B9C3C3E4A158}" {
-   LayerPreset "Prop"
-   Active Active
   }
   SCR_EditableEntityComponent "{7C1D9A3E5B2F4850}" {
    m_EntityType ITEM

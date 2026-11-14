@@ -626,6 +626,7 @@ class GRAD_Endgame_ReplayManager : ScriptComponent
 			// Check if vehicle is empty
 			BaseCompartmentManagerComponent compartmentManager = BaseCompartmentManagerComponent.Cast(vehicle.FindComponent(BaseCompartmentManagerComponent));
 			bool isEmpty = true;
+			string occupantFactionKey;
 			if (compartmentManager)
 			{
 				array<BaseCompartmentSlot> compartments = {};
@@ -633,13 +634,23 @@ class GRAD_Endgame_ReplayManager : ScriptComponent
 				isEmpty = true;
 				foreach (BaseCompartmentSlot slot : compartments)
 				{
-					if (slot.GetOccupant())
+					IEntity occupant = slot.GetOccupant();
+					if (occupant)
 					{
 						isEmpty = false;
+						SCR_ChimeraCharacter occupantCharacter = SCR_ChimeraCharacter.Cast(occupant);
+						if (occupantCharacter)
+							occupantFactionKey = occupantCharacter.GetFactionKey();
 						break;
 					}
 				}
 			}
+
+			// A vehicle with no faction of its own (an FIA patrol UAZ) takes the faction of whoever
+			// sits in it. Otherwise it is recorded as "Empty" and shows as an empty (yellow) vehicle
+			// while it is driving.
+			if (!isEmpty && (factionKey == "Empty" || factionKey.IsEmpty()) && !occupantFactionKey.IsEmpty())
+				factionKey = occupantFactionKey;
 
 			// Track vehicles that have ever been used by players
 			RplId vehicleRplId = rpl.Id();

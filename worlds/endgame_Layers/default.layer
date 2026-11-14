@@ -190,7 +190,7 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
  }
 }
 COA_StaticSpawnPoint "6AD556E33B9D8B6F" : "{0B3312C6940005B9}PrefabsMissionMaking/SpawnPoints/SpawnPoints/OPFOR_Spawn.et" {
- coords 4444.6 69.8 7899
+ coords 4546.145 103.221 7857.947
  {
   COA_ManualMarker {
    ID "68682AC1849E53AF"
@@ -210,9 +210,9 @@ $grp GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
  }
 }
 COA_StaticSpawnPoint "6AD556E33B9D8980" : "{62865C82AB534D91}PrefabsMissionMaking/SpawnPoints/SpawnPoints/BLUFOR_Spawn.et" {
- coords 4744.1 19.7 11558.2
+ coords 4678.944 12.731 11531.71
 }
-$grp GenericEntity : "{811A1448CC521C45}Prefabs/GRAD_Endgame_DocumentSite_Auto.et" {
+$grp GenericEntity : "{F8DE521F8961EF5D}Prefabs/Items/Misc/IntelligenceFolder_E_01/EG_IntelligenceFolder_E_01.et" {
  {
   coords 4558.053 22.014 10504.468
   angles 0 -94.6 0

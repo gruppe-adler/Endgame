@@ -336,6 +336,12 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
             if (m_bHideCivilians && effectiveFaction == "CIV")
                 continue;
 
+            // FIA has no icon set of its own: the neutral icons, tinted green (checked after the
+            // civilian filter so the toggle does not hide the militia).
+            bool isFiaVehicle = IsFiaFactionKey(effectiveFaction);
+            if (isFiaVehicle)
+                effectiveFaction = "CIV";
+
             // Get Key based on vehicle state - use effectiveFaction for correct coloring
             string vehicleIconKey = GetVehicleIconKey(vehicleMarker.vehicleType, effectiveFaction, showAsEmpty);
             string texturePath = m_vehicleIconTextures.Get(vehicleIconKey);
@@ -347,7 +353,7 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
             string widgetKey = "VEH_" + vehicleMarker.entityId.ToString();
 
             // Pass 'showAsEmpty' to the update function to tint it Gray if needed
-            UpdateMarkerWidget(widgetKey, texturePath, vehicleMarker.position, vehicleMarker.direction, true, showAsEmpty);
+            UpdateMarkerWidget(widgetKey, texturePath, vehicleMarker.position, vehicleMarker.direction, true, showAsEmpty, false, isFiaVehicle);
         }
 
         // --- 2. Infantry / Players ---
@@ -400,7 +406,7 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
             if (texturePath == "") texturePath = m_unitTypeTextures.Get("Default");
 
             string widgetKey = "PLR_" + playerMarker.playerId.ToString();
-            UpdateMarkerWidget(widgetKey, texturePath, playerMarker.position, playerMarker.direction, false, false, !playerMarker.isAlive);
+            UpdateMarkerWidget(widgetKey, texturePath, playerMarker.position, playerMarker.direction, false, false, !playerMarker.isAlive, IsFiaFactionKey(playerMarker.factionKey));
         }
 
         // --- 3. Transmissions ---
@@ -756,8 +762,24 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
         return replayManager.GetReplayStartTime();
     }
 
+    //! Tint of the FIA militia (soldiers and vehicles): the neutral icons in green.
+    protected static const int FIA_TINT = 0xFF5DBB5D;
+
+    //! True for the AI militia: the key the garrison recording writes ("FIA") or the militia faction
+    //! key of the config.
+    protected bool IsFiaFactionKey(string factionKey)
+    {
+        if (factionKey.IsEmpty())
+            return false;
+        if (factionKey == "FIA")
+            return true;
+
+        GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+        return cfg && factionKey == cfg.GetMilitiaFactionKey();
+    }
+
     // Core function to update a single marker widget
-    protected void UpdateMarkerWidget(string key, string texturePath, vector worldPos, float direction, bool isVehicle, bool isEmptyVehicle, bool isDead = false)
+    protected void UpdateMarkerWidget(string key, string texturePath, vector worldPos, float direction, bool isVehicle, bool isEmptyVehicle, bool isDead = false, bool isFia = false)
     {
         // 1. Get/Create Widget
         ImageWidget w = GetOrCreateMarkerWidget(key, texturePath, isVehicle);
@@ -803,6 +825,7 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
 
         // 4. Color / Opacity
         if (isEmptyVehicle) w.SetColor(Color.Gray); // Example tinting
+        else if (isFia) w.SetColor(Color.FromInt(FIA_TINT));
         else w.SetColor(Color.White);
 
         // Dead units keep their faction colour but render faded, so they stay
