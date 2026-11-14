@@ -50,6 +50,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	protected static const int OVERLAY_ZORDER = 1000;
 
 	protected bool m_bInitialized;
+	protected bool m_bRetired;   //!< a newer instance took over (or the display stopped): this one must do nothing
 	protected Widget m_wOverlay;
 	protected static GRAD_Endgame_FieldLogDisplay s_Instance;
 
@@ -95,8 +96,21 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	{
 		super.DisplayUpdate(owner, timeSlice);
 
+		// The HUD manager makes a new display whenever the controlled entity changes (a late joiner
+		// goes spectator, slot, character, respawn). An old instance must not keep updating: each one
+		// has its own typewriter, so several of them type, and play their sounds, at the same time.
+		if (m_bRetired || (m_bInitialized && s_Instance != this))
+		{
+			Retire();
+			return;
+		}
+
 		if (!m_bInitialized)
 		{
+			// Only one live instance: retire the previous one before this one takes over.
+			if (s_Instance && s_Instance != this)
+				s_Instance.Retire();
+
 			if (!InitWidgets())
 				return;
 			m_bInitialized = true;
@@ -126,6 +140,24 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	//------------------------------------------------------------------------------------------------
 	override void DisplayStopDraw(IEntity owner)
 	{
+		Retire();
+		super.DisplayStopDraw(owner);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	void ~GRAD_Endgame_FieldLogDisplay()
+	{
+		Retire();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Stop for good: no key listeners, no overlay layer, no longer the live instance.
+	protected void Retire()
+	{
+		if (m_bRetired)
+			return;
+
+		m_bRetired = true;
 		RemoveKeyListeners();
 		if (m_wOverlay)
 		{
@@ -134,7 +166,6 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 		}
 		if (s_Instance == this)
 			s_Instance = null;
-		super.DisplayStopDraw(owner);
 	}
 
 	//------------------------------------------------------------------------------------------------
