@@ -43,8 +43,11 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	[Attribute("", UIWidgets.ResourcePickerThumbnail, "Only with tier CUSTOM: the group prefabs to spawn.", params: "et")]
 	protected ref array<ResourceName> m_aCustomGroups;
 
-	[Attribute("", UIWidgets.ResourcePickerThumbnail, "Optional waypoint prefab (for example a defend waypoint), one per group. Without one the groups hold their spawn position.", params: "et")]
+	[Attribute("{93291E72AC23930F}Prefabs/AI/Waypoints/AIWaypoint_Defend.et", UIWidgets.ResourcePickerThumbnail, "Waypoint prefab, one per group, placed at the group's spawn position. Default: the vanilla defend waypoint (GUID taken from GME's garrison code). Empty = no waypoint, the groups just stand where they spawned.", params: "et")]
 	protected ResourceName m_sWaypointPrefab;
+
+	[Attribute("25", UIWidgets.Slider, "Radius in metres of the defend area around each group's position. Sites about 15 to 30, FOBs about 30 to 50 (tuning guess, untested).", "3 100 1")]
+	protected float m_fWaypointRadius;
 
 	[Attribute("200", UIWidgets.Slider, "A player within this distance (m) spawns the garrison, if spawning on approach is on in the config.", "10 2000 10")]
 	protected float m_fSpawnRadius;
@@ -53,6 +56,8 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	protected float m_fGroupSpacing;
 
 	protected const int CHECK_INTERVAL_MS = 1000;
+	protected const int WAYPOINT_DELAY_MS = 2000;   //!< BreakingContact and GRAD-Traffic add waypoints about 2 s after the group spawns, when its soldiers exist
+	protected const int WAYPOINT_CHECK_MS = 6000;   //!< log what the group's current waypoint is, to see that it took
 
 	protected ref array<SCR_AIGroup> m_aGroups = {};
 	protected ref array<AIWaypoint> m_aWaypoints = {};
@@ -114,7 +119,6 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
-		GRAD_Endgame_Terrain.Snap(owner);
 		if (!Replication.IsServer())
 			return;
 
@@ -125,6 +129,8 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	override void OnDelete(IEntity owner)
 	{
 		GetGame().GetCallqueue().Remove(Check);
+		GetGame().GetCallqueue().Remove(AssignWaypoint);
+		GetGame().GetCallqueue().Remove(CheckWaypoint);
 		RemoveGroups();
 		super.OnDelete(owner);
 	}
@@ -306,12 +312,52 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		if (m_sWaypointPrefab.IsEmpty())
 			return;
 
-		AIWaypoint waypoint = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(Resource.Load(m_sWaypointPrefab), GetGame().GetWorld(), params));
-		if (waypoint)
+		// Later, not now: the soldiers of a group arrive a moment after the group entity does.
+		GetGame().GetCallqueue().CallLater(AssignWaypoint, WAYPOINT_DELAY_MS, false, group, params.Transform[3]);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: give the group its own waypoint at its position (defend by default).
+	protected void AssignWaypoint(SCR_AIGroup group, vector position)
+	{
+		if (!group || m_bCleared)
+			return;
+
+		EntitySpawnParams params = new EntitySpawnParams();
+		params.TransformMode = ETransformMode.WORLD;
+		Math3D.MatrixIdentity4(params.Transform);
+		params.Transform[3] = position;
+
+		Resource resource = Resource.Load(m_sWaypointPrefab);
+		if (!resource || !resource.IsValid())
 		{
-			group.AddWaypoint(waypoint);
-			m_aWaypoints.Insert(waypoint);
+			GRAD_Endgame_MatchLog.Error("Garrison: waypoint prefab does not load: " + m_sWaypointPrefab);
+			return;
 		}
+
+		AIWaypoint waypoint = AIWaypoint.Cast(GetGame().SpawnEntityPrefab(resource, GetGame().GetWorld(), params));
+		if (!waypoint)
+		{
+			GRAD_Endgame_MatchLog.Error("Garrison: waypoint prefab is not an AIWaypoint: " + m_sWaypointPrefab);
+			return;
+		}
+
+		waypoint.SetCompletionRadius(m_fWaypointRadius);
+		group.AddWaypoint(waypoint);
+		m_aWaypoints.Insert(waypoint);
+
+		GetGame().GetCallqueue().CallLater(CheckWaypoint, WAYPOINT_CHECK_MS, false, group);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Debug: did the waypoint take? With no navmesh the group has none or stays put.
+	protected void CheckWaypoint(SCR_AIGroup group)
+	{
+		if (!group)
+			return;
+
+		AIWaypoint current = group.GetCurrentWaypoint();
+		GRAD_Endgame_MatchLog.Debug(string.Format("Garrison at %1: group has waypoint %2, agents %3", GetOwner().GetOrigin(), current != null, group.GetAgentsCount()));
 	}
 
 	//------------------------------------------------------------------------------------------------

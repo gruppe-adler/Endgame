@@ -1,0 +1,556 @@
+---------------------------------------------
+Log C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\logs\logs_2026-11-14_11-28-44\console.log started at 2026-11-14 11:28:44 (2026-11-14 10:28:44 UTC)
+
+11:28:44.232   ENGINE       : FileSystem: Adding relative directory 'C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\logs\logs_2026-11-14_11-28-44' to filesystem under name logs
+11:28:44.232   ENGINE       : FileSystem: Adding relative directory 'C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\profile' to filesystem under name profile
+11:28:44.232   ENGINE       : FileSystem: Current working directory: 'C:\SteamLibrary\steamapps\common\Arma Reforger Tools\Workbench\'
+11:28:44.235  PROFILING    : Workbench Create Engine took: 8.905500 ms
+11:28:48.607   INIT         : INIT         : Workbench Init Engine
+11:28:48.607   ENGINE       : Initializing engine, version 193322
+11:28:48.666   ENGINE       : Addon dirs:
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Endgame/'
+11:28:48.666    ENGINE       : dir: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons'
+11:28:48.666    ENGINE       : dir: 'C:/SteamLibrary/steamapps/common/Arma Reforger Tools/Workbench/addons'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BreakingContact/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Shashpul/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD Cam/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/walkerofmarz_enhanced/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/walkersofmarz_6A9D391E11EC88D6/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Haapasaari/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/bastei/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Hangelsberg/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Tunneltest/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Takistan/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Bystrany/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Mogadishu/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Anizay/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Belleau Wood/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD Coop Template/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRADLoadout/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GME_AR/addons/GME/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/ACE-Anvil/addons/unit_markers/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Hari Rud/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Baharak/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD_FF_SpawnDistance/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD-Traffic/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECarryingDev_65AD7C379CBD394D/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECarrying_5DBD560C5148E1DA/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECoreDev_65AD7D0D9941A380/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECore_60C4CE4888FF4621/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalCoreDev_6586079789278413/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalHitzonesDev_65B343F799FB521B/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalHitzones_65860252A17554C7/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedical_60C4C12DAE90727B/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Anizay_6266DCA9193C705E/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ArmaTerrainCore_60B524F7A5AE96A8/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BaconLoadoutEditor_606B100247F5C709/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Baharak/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/bastei/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BC Anizay/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BC Belleau Wood/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BC Bystrany/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BC Mogadishu/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BC Takistan/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BelleauWood_629EDC37CDE3AD35/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BreakingContact/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BRI_Arsenal_663EDB64A6B7CCF7/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BRI_Core_660AE8C6BCA54ADF/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Bystrany_6626CB89B6B9C913/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CDFCinematicScene_69E9116B60415CA8/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/COALITIONLobby_69EA43E490A50DBE/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionSquadInterfaceMANW_65F729D28C705396/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionVON_6624E618B9058265/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoTemplate/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CRXEnfusionA.I._5F268647F8A1A1F4/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Doorlock/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EnfusionDatabaseFramework_5D6EA74A94173EDF/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EnfusionPersistenceFramework_5D6EBC81EB1842EF/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EoH-ModularTunnelPack_698515F5892B7E51/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EoHTexturesPack2_66E759E2C55AF2CB/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists MOAR/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists-Gogland_627AB6E0887D25F1/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists_5F16D7E4A1CBE075/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/FortunesSweep_60E108D10E842BFC/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/FreedomFighters_CAFEBEEFF0CACC1A/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Gogland_623EEDF242F6265E/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Cam/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Coop Template/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD FF SpawnDistance/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Ruha GM/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Ruha GM FIA/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Trenches/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Undead Exp/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Main-Repository/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-On-The-Fly/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Traffic/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Undead/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Undead - Kopie/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRADLoadout/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD_FF_SpawnDistance/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD_Repo/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GTGLiveMapAMPPositionLog_65E90CB6053F2791/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Haapasaari/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Hangelsberg/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Hari Rud/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/IdentityAMPCharacterSelector_64F869693699EEA7/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Kunar/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/MapGeneratorPro_6A3B0A83308240C2/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/MapMarkerExperiment/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Marker/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Mogadishu_5F1D02080409E128/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Mussalo_59CF333B3A309D6E/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/New Enfusion Project/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Novka-MANW2025_65EA9AB31D27B184/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OnTheFly/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OutsideTerrainCore_61F0D506562D9BC9/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OutsideTerrainTool_61F2B96F0D3F27D4/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PeerToolTest/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PlayerMapMarkers_5E92F5A4A1B75A75/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PSCore_1337133713371337/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/RailEnfusionRedux_5DE612963E4B005A/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/RailwayGenerator_5F0D245931200FD1/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_CORE_5EB139459EBF5C16/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_CORE_Pack2_61B8FA7B3BF8656B/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_Exemption_628CE5DB45EFC569/'
+11:28:48.666    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_MorePlayers/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ReforgerLobby_5EAF2B0473DB5A99/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Ruha_653CB36244ADBE0F/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Shashpul/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ShopSystem_5D2D1436D1FA5A13/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/SNKGMVoice_6A2CF36B4BA21E0B/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/SNKRadioPost_69FCF7D0889F65DA/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanLobby/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanPlusNavmeshAMPGM_696D0A6913DA76A7/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanPlus_66BF2B0C3EA6BC9B/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Takistan_615EEBD9BDFEEE9B/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Tunneltest/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/UnitsMapMarkersver2.0_5EF682D62FB99DC8/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/USCombatOps_66A0BC64DBB66527/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/walkerofmarz_enhanced/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/walkersofmarz_6A9D391E11EC88D6/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA25/'
+11:28:48.667    ENGINE       : dir: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA_nov/'
+11:28:48.667    ENGINE       : dir: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/data/'
+11:28:48.667    ENGINE       : dir: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/rally/'
+11:28:48.667   ENGINE       : Available addons:
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Endgame/addon.gproj' guid: '6AD3266E1A154C66'
+11:28:48.667    ENGINE       : gproj: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/core/core.gproj' guid: '5614BBCCBB55ED1C' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/data/ArmaReforger.gproj' guid: '58D0FB3206B6F859' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/rally/RallyDLC.gproj' guid: '6566A2D70498DA6B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BreakingContact/addon.gproj' guid: '5E94F8A105D69A62'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Shashpul/addon.gproj' guid: '6A4C87931189E666'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD Cam/addon.gproj' guid: '697354181B090387'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/walkerofmarz_enhanced/addon.gproj' guid: '6AA54C9404E81A47'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/walkersofmarz_6A9D391E11EC88D6/addon.gproj' guid: '6A9D391E11EC88D6' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Haapasaari/addon.gproj' guid: '6A4A82B012318E65'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/bastei/addon.gproj' guid: '6A4B3386188EC295'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Hangelsberg/addon.gproj' guid: '6A3ED6213806D60F'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Tunneltest/addon.gproj' guid: '6A3C8E8A1595AD2B'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Takistan/addon.gproj' guid: '6A3D0CE50AE61A5B'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Bystrany/addon.gproj' guid: '6A3CF01A11B24C03'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Mogadishu/addon.gproj' guid: '6A3CF01A11B24C02'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Anizay/addon.gproj' guid: '6A3CF01A11B24C01'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/BC Belleau Wood/addon.gproj' guid: '6A3CDEF957B7458C'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD Coop Template/addon.gproj' guid: '6A3C940A13DE1BC7'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRADLoadout/addon.gproj' guid: '699932551921B9F3'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GME_AR/addons/GME/addon.gproj' guid: '5964E0B3BB7410CE'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/ACE-Anvil/addons/unit_markers/addon.gproj' guid: '63A9FD22C7B548A1'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Hari Rud/addon.gproj' guid: '696ABD8C1471BCC1'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Baharak/addon.gproj' guid: '69672543047B55E9'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD_FF_SpawnDistance/addon.gproj' guid: '68FEFDCB3211B42F'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/GRAD-Traffic/addon.gproj' guid: '68675E351689D92E'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECarryingDev_65AD7C379CBD394D/dev.gproj' guid: '65AD7C379CBD394D' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECarrying_5DBD560C5148E1DA/addon.gproj' guid: '5DBD560C5148E1DA' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECoreDev_65AD7D0D9941A380/dev.gproj' guid: '65AD7D0D9941A380' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACECore_60C4CE4888FF4621/addon.gproj' guid: '60C4CE4888FF4621' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalCoreDev_6586079789278413/dev.gproj' guid: '6586079789278413' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalHitzonesDev_65B343F799FB521B/dev.gproj' guid: '65B343F799FB521B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedicalHitzones_65860252A17554C7/addon.gproj' guid: '65860252A17554C7' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ACEMedical_60C4C12DAE90727B/addon.gproj' guid: '60C4C12DAE90727B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Anizay_6266DCA9193C705E/addon.gproj' guid: '6266DCA9193C705E' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ArmaTerrainCore_60B524F7A5AE96A8/addon.gproj' guid: '60B524F7A5AE96A8' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BaconLoadoutEditor_606B100247F5C709/addon.gproj' guid: '606B100247F5C709' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BelleauWood_629EDC37CDE3AD35/addon.gproj' guid: '629EDC37CDE3AD35' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BRI_Arsenal_663EDB64A6B7CCF7/addon.gproj' guid: '663EDB64A6B7CCF7' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/BRI_Core_660AE8C6BCA54ADF/addon.gproj' guid: '660AE8C6BCA54ADF' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Bystrany_6626CB89B6B9C913/addon.gproj' guid: '6626CB89B6B9C913' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CDFCinematicScene_69E9116B60415CA8/addon.gproj' guid: '69E9116B60415CA8' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/COALITIONLobby_69EA43E490A50DBE/addon.gproj' guid: '69EA43E490A50DBE' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionSquadInterfaceMANW_65F729D28C705396/addon.gproj' guid: '65F729D28C705396' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionVON_6624E618B9058265/addon.gproj' guid: '6624E618B9058265' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoTemplate/addon.gproj' guid: '5EB0B31F20BD5B87'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CRXEnfusionA.I._5F268647F8A1A1F4/addon.gproj' guid: '5F268647F8A1A1F4' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Doorlock/addon.gproj' guid: '6328A0EC08046327'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EnfusionDatabaseFramework_5D6EA74A94173EDF/EnfusionDatabaseFramework.gproj' guid: '5D6EA74A94173EDF' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EnfusionPersistenceFramework_5D6EBC81EB1842EF/EnfusionPersistenceFramework.gproj' guid: '5D6EBC81EB1842EF' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EoH-ModularTunnelPack_698515F5892B7E51/addon.gproj' guid: '698515F5892B7E51' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/EoHTexturesPack2_66E759E2C55AF2CB/addon.gproj' guid: '66E759E2C55AF2CB' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists MOAR/addon.gproj' guid: '6592831A195E639F'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists-Gogland_627AB6E0887D25F1/addon.gproj' guid: '627AB6E0887D25F1' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Escapists_5F16D7E4A1CBE075/addon.gproj' guid: '5F16D7E4A1CBE075' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/FortunesSweep_60E108D10E842BFC/addon.gproj' guid: '60E108D10E842BFC' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/FreedomFighters_CAFEBEEFF0CACC1A/addon.gproj' guid: 'CAFEBEEFF0CACC1A' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Gogland_623EEDF242F6265E/addon.gproj' guid: '623EEDF242F6265E' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD FF SpawnDistance/addon.gproj' guid: '68FEFCA13A8D7E36'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Ruha GM/addon.gproj' guid: '65CD3BCF050A1610'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Ruha GM FIA/addon.gproj' guid: '65CD4E5607BF418E'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Trenches/addon.gproj' guid: '60B93B8C012EE428'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD Undead Exp/addon.gproj' guid: '668AA50E02E04B39'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Main-Repository/addon.gproj' guid: '616CD0728FAA85FE'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-On-The-Fly/addon.gproj' guid: '5EE0938694A39CFB'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD-Undead/addon.gproj' guid: '5E68F6FA97DAB5CD'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GRAD_Repo/addon.gproj' guid: '616AB0D41F8A77CF'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/GTGLiveMapAMPPositionLog_65E90CB6053F2791/addon.gproj' guid: '65E90CB6053F2791' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/IdentityAMPCharacterSelector_64F869693699EEA7/addon.gproj' guid: '64F869693699EEA7' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Kunar/addon.gproj' guid: '6166C7B504C24D53'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/MapGeneratorPro_6A3B0A83308240C2/addon.gproj' guid: '6A3B0A83308240C2' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/MapMarkerExperiment/addon.gproj' guid: '646D2B92084858E7'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Marker/addon.gproj' guid: '666100271191B046'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Mogadishu_5F1D02080409E128/addon.gproj' guid: '5F1D02080409E128' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Mussalo_59CF333B3A309D6E/addon.gproj' guid: '59CF333B3A309D6E' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/New Enfusion Project/addon.gproj' guid: '6150EB390D5DCC42'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Novka-MANW2025_65EA9AB31D27B184/addon.gproj' guid: '65EA9AB31D27B184' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OnTheFly/addon.gproj' guid: '5C50CC01058383DA'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OutsideTerrainCore_61F0D506562D9BC9/addon.gproj' guid: '61F0D506562D9BC9' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/OutsideTerrainTool_61F2B96F0D3F27D4/addon.gproj' guid: '61F2B96F0D3F27D4' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PeerToolTest/addon.gproj' guid: '5F3B02D21CEF6D97'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PlayerMapMarkers_5E92F5A4A1B75A75/addon.gproj' guid: '5E92F5A4A1B75A75' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/PSCore_1337133713371337/addon.gproj' guid: '1337133713371337' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/RailEnfusionRedux_5DE612963E4B005A/addon.gproj' guid: '5DE612963E4B005A' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/RailwayGenerator_5F0D245931200FD1/addon.gproj' guid: '5F0D245931200FD1' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_CORE_5EB139459EBF5C16/addon.gproj' guid: '5EB139459EBF5C16' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_CORE_Pack2_61B8FA7B3BF8656B/addon.gproj' guid: '61B8FA7B3BF8656B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_Exemption_628CE5DB45EFC569/addon.gproj' guid: '628CE5DB45EFC569' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/REAPER_MorePlayers/addon.gproj' guid: '6660EC44409C755C'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ReforgerLobby_5EAF2B0473DB5A99/Addon.gproj' guid: '5EAF2B0473DB5A99' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Ruha_653CB36244ADBE0F/addon.gproj' guid: '653CB36244ADBE0F' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/ShopSystem_5D2D1436D1FA5A13/addon.gproj' guid: '5D2D1436D1FA5A13' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/SNKGMVoice_6A2CF36B4BA21E0B/addon.gproj' guid: '6A2CF36B4BA21E0B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/SNKRadioPost_69FCF7D0889F65DA/addon.gproj' guid: '69FCF7D0889F65DA' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanLobby/addon.gproj' guid: '65590CD018C0BCC6'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanPlusNavmeshAMPGM_696D0A6913DA76A7/addon.gproj' guid: '696D0A6913DA76A7' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/TakistanPlus_66BF2B0C3EA6BC9B/addon.gproj' guid: '66BF2B0C3EA6BC9B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/Takistan_615EEBD9BDFEEE9B/addon.gproj' guid: '615EEBD9BDFEEE9B' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/UnitsMapMarkersver2.0_5EF682D62FB99DC8/addon.gproj' guid: '5EF682D62FB99DC8' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/USCombatOps_66A0BC64DBB66527/addon.gproj' guid: '66A0BC64DBB66527' (packed)
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA/addon.gproj' guid: '61DCD215014DD191'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA25/addon.gproj' guid: '6488AC38178D6530'
+11:28:48.667    ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/WITA_nov/addon.gproj' guid: '5AE89A2F8DABA6AA'
+11:28:48.667   ENGINE       : FileSystem: Adding relative directory 'C:\Users\nomisum\Documents\my games\ArmaReforgerWorkbench\addons\Endgame' to filesystem under name Endgame
+11:28:48.668   ENGINE       : FileSystem: Adding package 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/COALITIONLobby_69EA43E490A50DBE/' (pak count: 1) to filesystem under name COALITIONLobby
+11:28:48.668   ENGINE       : FileSystem: Adding package 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionVON_6624E618B9058265/' (pak count: 1) to filesystem under name CoalitionVON
+11:28:48.777   ENGINE       : FileSystem: Adding package 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/data/' (pak count: 15) to filesystem under name ArmaReforger
+11:28:48.780   ENGINE       : FileSystem: Adding package 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/core/' (pak count: 2) to filesystem under name core
+11:28:48.780   ENGINE       : CPU vendor         : AuthenticAMD
+11:28:48.780   ENGINE       : CPU type           : 2
+11:28:48.780   ENGINE       : CPU name           : AMD Ryzen 5 3600XT 6-Core Processor
+11:28:48.780   ENGINE       : CPU cache info     : L1 [Inst 32KB, Data 32KB], L2 [Unif 512KB], L3 [Unif 16384KB]
+11:28:48.780   ENGINE       : CPU count logical  : 12
+11:28:48.780   ENGINE       : CPU count physical : 6
+11:28:48.780   ENGINE       : CPU features       : mmx sse sse2 sse3 ssse3 sse4_1 sse4_2 popcnt aesni pclmulqdq osxsave avx sha avx2
+11:28:48.780   RESOURCES    : ResourceDB: loading cache (id=0 name=Endgame path=C:\Users\nomisum\Documents\my games\ArmaReforgerWorkbench\addons\Endgame/resourceDatabase.rdb)
+11:28:48.781   RESOURCES    : ResourceDB: loading cache (id=1 name=COALITIONLobby path=C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/COALITIONLobby_69EA43E490A50DBE/resourceDatabase.rdb)
+11:28:48.783   RESOURCES    : ResourceDB: loading cache (id=2 name=CoalitionVON path=C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionVON_6624E618B9058265/resourceDatabase.rdb)
+11:28:48.783   RESOURCES    : ResourceDB: loading cache (id=3 name=ArmaReforger path=C:/SteamLibrary/steamapps/common/Arma Reforger/addons/data/resourceDatabase.rdb)
+11:28:48.902   RESOURCES    : ResourceDB: loading cache (id=4 name=core path=C:/SteamLibrary/steamapps/common/Arma Reforger/addons/core/resourceDatabase.rdb)
+11:28:48.903   RESOURCES    : ResourceDB: loading cache (id=5 name=profile path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\profile/resourceDatabase.rdb)
+11:28:48.903   RESOURCES    : ResourceDB: loading cache (id=6 name=logs path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\logs\logs_2026-11-14_11-28-44/resourceDatabase.rdb)
+11:28:49.041    RESOURCES    : RESOURCES    : ResourceDB: full scan
+11:28:49.045     RESOURCES    : RESOURCES    : scanning...
+11:28:49.045      RESOURCES    : RESOURCES    : scanning @"Endgame"
+11:28:49.047      RESOURCES    : RESOURCES    : scanning @"COALITIONLobby"
+11:28:49.050      RESOURCES    : RESOURCES    : scanning @"CoalitionVON"
+11:28:49.052      RESOURCES    : RESOURCES    : scanning @"ArmaReforger"
+11:28:49.185      RESOURCES    : RESOURCES    : scanning @"core"
+11:28:49.189      RESOURCES    : RESOURCES    : scanning @"profile"
+11:28:49.190      RESOURCES    : RESOURCES    : scanning @"logs"
+11:28:49.192     RESOURCES    : RESOURCES    : processing meta-files...
+11:28:49.256     RESOURCES    : 100537 meta-files cached, 0 loaded again
+11:28:49.256     RESOURCES    : RESOURCES    : processing files...
+11:28:49.257 INIT         : Workbench startup
+11:28:49.257  INIT         : Workbench Init Engine
+11:28:49.257   RESOURCES    : ResourceDB: full scan
+11:28:49.257    RESOURCES    : processing files...
+11:28:49.257     RESOURCES (W): resource not registered: @"$COALITIONLobby:Configs/Gearscripts/GearScriptsConfigList.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:AK_loot2.et". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:BreakingContact/FaceSelection.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:COA_PlayerProfile.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:RadioData.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:VONData.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:VONHeartbeat.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:VONServerData.json". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:WITA.conf". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:WITA_nov.ent". Setting null GUID
+11:28:49.264     RESOURCES (W): resource not registered: @"$profile:worlds/PrefabEditingPlugin.ent". Setting null GUID
+11:28:49.264     RESOURCES    : RESOURCES    : processing folders...
+11:28:49.271     RESOURCES    : RESOURCES    : creating GUID-item mapping...
+11:28:49.289     RESOURCES    : RESOURCES    : building tree...
+11:28:49.342   PROFILING    : ResourceDB: full scan took: 300.664300 ms
+11:28:49.342   RESOURCES    : ResourceDB: saving cache (id=0 name=Endgame path=C:\Users\nomisum\Documents\my games\ArmaReforgerWorkbench\addons\Endgame/resourceDatabase.rdb)
+11:28:49.345   RESOURCES    : ResourceDB: written 6951/6951 bytes
+11:28:49.345   RESOURCES    : ResourceDB: cache successfully saved
+11:28:49.345   RESOURCES    : ResourceDB: saving cache (id=5 name=profile path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\profile/resourceDatabase.rdb)
+11:28:49.347   RESOURCES    : ResourceDB: written 3183/3183 bytes
+11:28:49.347   RESOURCES    : ResourceDB: cache successfully saved
+11:28:49.347   RESOURCES    : ResourceDB: saving cache (id=6 name=logs path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\logs\logs_2026-11-14_11-28-44/resourceDatabase.rdb)
+11:28:49.349   RESOURCES    : ResourceDB: written 81/81 bytes
+11:28:49.349   RESOURCES    : ResourceDB: cache successfully saved
+11:28:49.349   ENGINE       : GameProject load
+11:28:49.349    ENGINE       : Loaded addons:
+11:28:49.349     ENGINE       : gproj: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/core/core.gproj' guid: '5614BBCCBB55ED1C'
+11:28:49.349     ENGINE       : gproj: 'C:/SteamLibrary/steamapps/common/Arma Reforger/addons/data/ArmaReforger.gproj' guid: '58D0FB3206B6F859'
+11:28:49.349     ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/CoalitionVON_6624E618B9058265/addon.gproj' guid: '6624E618B9058265'
+11:28:49.349     ENGINE       : gproj: 'C:/Users/nomisum/Documents/My Games/ArmaReforgerWorkbench/addons/COALITIONLobby_69EA43E490A50DBE/addon.gproj' guid: '69EA43E490A50DBE'
+11:28:49.349     ENGINE       : gproj: 'C:/Users/nomisum/Documents/my games/ArmaReforgerWorkbench/addons/Endgame/addon.gproj' guid: '6AD3266E1A154C66'
+11:28:49.350   ENGINE       : Loading custom engine user config '$profile:.save/app1874910_user76561197992511162/settings/ReforgerEngineSettings.conf'
+11:28:49.351   INIT         : GameProject engine user settings load @"$profile:.save/app1874910_user76561197992511162/settings/ReforgerEngineSettings.conf"
+11:28:49.351    ENGINE       : Engine user settings config loaded
+11:28:49.351   PROFILING    : Settings changed took: 0.008400 ms
+11:28:49.409   RENDER       : (OK) Adapter 'AMD Radeon RX 9070' supports feature level 12_0
+11:28:49.416   RENDER       : Basic screen setup:
+11:28:49.416   RENDER       :   Back buffer format	       : TEXFMT_R8G8B8A8_SRGB (29)
+11:28:49.416   RENDER       :   MSAA                      : none
+11:28:49.645   RENDER       : AMD AGS library initialized, version 6.1.0 x DLL 6.1.0
+11:28:49.645   RENDER       :   Extendeded AMD info for AMD Radeon RX 9070 (primary device)
+11:28:49.645   RENDER       :   * architecture unknown, 28 CUs, 0 WGPs (for RDNA), 64 ROPs
+11:28:49.645   RENDER       :   * core clocks 2070 MHz, memory 2518 MHz
+11:28:49.645   RENDER       :   * TFlops 7.4, memory bandwidth (629.5 GB/s)
+11:28:49.645   RENDER       : AMD AGS correctly initialized
+11:28:49.645   RENDER       : Driver for AMD Radeon RX 9070 is from 18.10.2026 (28 days old)
+11:28:49.645   RENDER       : GPU_ATI (0x1002) (AMD Radeon RX 9070) with 1 GPU detected, VRAM 16191MB (fast 0MB), shared 49053MB, driver version 26.20.15.07-261015a-205306C-AMD-Software-Adrenalin-Edition
+11:28:49.645   RENDER       : Detected output devices:
+11:28:49.645   RENDER       :  * 1 device/s connected to AMD Radeon RX 9070:
+11:28:49.645   RENDER       :    ROG SWIFT PG34WCDN (\\.\DISPLAY1), 3440x1440 (offset 0x0), 360Hz
+11:28:49.645   RENDER       :   Concurrent frames limit 2
+11:28:49.780   RENDER       : DX12 device successfully created by AMD AGS library
+11:28:49.780   RENDER       :  * user markers supported
+11:28:49.780   RENDER       : Graphics device features
+11:28:49.780   RENDER       :  Needed:
+11:28:49.780   RENDER       :  * Highest supported shader model: 6.8 (6.0 needed)
+11:28:49.780   RENDER       :  Optional:
+11:28:49.780   RENDER       :  * Allow tearing (VSYNC) : 1
+11:28:49.780   RENDER       :  * 16 bits : 1
+11:28:49.780   RENDER       :  * Resource heap tier : 3
+11:28:49.780   RENDER       :  * Persistent heaps (DRED) : 1
+11:28:49.780   RENDER       :  * DRED 1.2 is supported by compiler
+11:28:49.796   RENDER       : Main RT format setup.
+11:28:49.796   RENDER       :   Main RT format for quality 0	: TEXFMT_R11G11B10_FLOAT (26)
+11:28:49.796   RENDER       :   Main RT format for quality 1	: TEXFMT_R16G16B16A16_FLOAT (10)
+11:28:49.808   ENGINE       : Job system settings: coreCount=12, shortJobContextCount=12, shortJobThreadCount=11, longJobThreadCount=12
+11:28:49.830   PROFILING    : Settings changed took: 0.018100 ms
+11:28:49.860 AUDIO        : Endpoint: Kopfhörer (SteelSeries Arctis Nova 5)
+11:28:49.860 AUDIO        :  Format: Channels: 2, Sample rate: 48kHz, Avg. bytes: 384kB, Sample bits: 32, Block align: 8B
+11:28:49.864 AUDIO        : Audio client:
+11:28:49.864 AUDIO        :  Format: Channels: 2, Sample rate: 48kHz, Buffer size: 1536B, Frame: 512
+11:28:49.866    RENDER       : RENDER       : Reload shaders
+11:28:49.866    RENDER       : Enfusion shader version 37
+11:28:49.866     INIT         : INIT         : ShaderListReload
+11:28:49.866    PROFILING    : ShaderListReload took: 0.001400 ms
+11:28:50.068    RENDER       : Loaded 4592 newer shader binaries
+11:28:50.069   PROFILING    : Reload shaders took: 203.004200 ms
+11:28:50.069   ENGINE       : Initializing inputs.
+11:28:50.073   RENDER       : Super resolution method available: AMD FSR 1
+11:28:50.073   NETWORK      : Initializing networking.
+11:28:50.073   NETWORK      : Using new GameRplScheduler.
+11:28:50.075    SCRIPT       : SCRIPT       : Initializing scripts
+11:28:50.075     SCRIPT       : SCRIPT       : ScriptProjectManager init
+11:28:50.661    PROFILING    : ScriptProjectManager init took: 585.507400 ms
+11:28:50.682   PROFILING    : Initializing scripts took: 606.959000 ms
+11:28:50.697   ENGINE       : Enfusion engine successfully created.
+11:28:50.698  PROFILING    : Workbench Init Engine took: 2090.143700 ms
+11:28:50.698   INIT         : INIT         : Workbench Create Game
+11:28:50.731   GUI          : Using default language (en_us)
+11:28:50.731   GUI          : Loading 'en_us' localization file.
+11:28:50.731    INIT         : INIT         : Loading StringTable
+11:28:50.753   PROFILING    : Loading StringTable took: 21.924100 ms
+11:28:50.753    SCRIPT       : SCRIPT       : Compiling GameLib scripts
+11:28:50.797    SCRIPT       : Module: Workbench; loaded 18x files; 36x classes; used 125K of static memory; defines: "ENF_WB,WORKBENCH,PLATFORM_WINDOWS,ENABLE_DIAG,ENF_ENABLE_RPLCOMPONENT_IN_GAMECODE"; CRC32: 90ce0460
+11:28:50.797    SCRIPT       : Module: GameLib; loaded 512x files; 704x classes; used 887K of static memory; defines: "ENF_WB,WORKBENCH,PLATFORM_WINDOWS,ENABLE_DIAG,ENF_ENABLE_RPLCOMPONENT_IN_GAMECODE"; CRC32: a2fafa86
+11:28:50.798   PROFILING    : Compiling GameLib scripts took: 44.272500 ms
+11:28:50.798    SCRIPT       : SCRIPT       : Compiling Game scripts
+11:28:51.705  INIT         : Workbench Create Game
+11:28:51.705   SCRIPT       : Compiling Game scripts
+11:28:51.705    SCRIPT    (W): @"Scripts/Game/Editor/Components/EditableEntity/SCR_EditableEntityComponent.c,787": 'GetPlayerPlatformKind' is obsolete
+11:28:51.705    SCRIPT    (W): @"Scripts/Game/Editor/Components/EditableEntity/SCR_EditableEntityComponent.c,788": 'GetPlayerPlatformId' is obsolete
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1038": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1038": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1038": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1061": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1061": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.805    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1061": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1673": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1673": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1673": 'SCR_JsonLoadContext' is obsolete: Use JsonLoadContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1676": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1676": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1676": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1713": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1713": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1713": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1882": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1882": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1882": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1995": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1995": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,1995": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2008": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2008": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2008": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2022": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2022": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.806    SCRIPT    (W): @"Scripts/Game/Vanilla Overrides/CVON_SCR_VONController.c,2022": 'SCR_JsonSaveContext' is obsolete: Use JsonSaveContext instead.
+11:28:51.958    SCRIPT    (W): @"Scripts/Game/Workshop/SCR_AddonManager.c,876": 'GetRefCount' is obsolete: Will be removed
+11:28:51.985    SCRIPT    (W): @"Scripts/Game/Campaign/SCR_PlayerProfileManagerComponent.c,142": 'PlayerData' is obsolete
+11:28:52.063    SCRIPT    (W): @"Scripts/Game/Components/Magazines/SCR_MagazineComponent.c,134": Variable 'prefabPath' is not used
+11:28:52.075    SCRIPT    (W): @"Scripts/Game/UI/Backend/CareerBackend.c,159": 'GetDSSession' is obsolete
+11:28:52.075    SCRIPT    (W): @"Scripts/Game/UI/Backend/CareerBackend.c,162": 'RoomID' is obsolete
+11:28:52.075    SCRIPT    (W): @"Scripts/Game/UI/Backend/CareerBackend.c,197": 'GetDSSession' is obsolete
+11:28:52.075    SCRIPT    (W): @"Scripts/Game/UI/Backend/CareerBackend.c,201": 'RoomID' is obsolete
+11:28:52.165    SCRIPT    (W): @"Scripts/Game/DataCollection/SCR_DataCollectorComponent.c,481": 'GetStorage' is obsolete
+11:28:52.165    SCRIPT    (W): @"Scripts/Game/DataCollection/SCR_DataCollectorComponent.c,483": 'GetOnlineWritePrivilege' is obsolete
+11:28:52.166    SCRIPT    (W): @"Scripts/Game/Utilities/SCR_PlayerIdentityUtils.c,20": 'GetPlayerIdentityId' is obsolete
+11:28:52.202    SCRIPT    (W): @"Scripts/Game/UI/Menu/MainMenuUI.c,643": 'GetNotifyCount' is obsolete: Will be substitued by Notification Api.
+11:28:52.202    SCRIPT    (W): @"Scripts/Game/UI/Menu/MainMenuUI.c,645": 'GetNotifyItem' is obsolete: Will be substitued by Notification Api.
+11:28:52.257    SCRIPT    (W): @"Scripts/Game/DataCollection/PlayerData/SCR_PlayerData.c,210": 'PlayerData' is obsolete
+11:28:52.487    SCRIPT       : Module: WorkbenchGame; loaded 199x files; 718x classes; used 2695K of static memory; defines: "ENF_WB,WORKBENCH,PLATFORM_WINDOWS,ENABLE_DIAG,ENF_ENABLE_RPLCOMPONENT_IN_GAMECODE"; CRC32: 4ffddb31
+11:28:52.493    SCRIPT       : Module: Game; loaded 5963x files; 11740x classes; used 35258K of static memory; defines: "ENF_WB,WORKBENCH,PLATFORM_WINDOWS,ENABLE_DIAG,ENF_ENABLE_RPLCOMPONENT_IN_GAMECODE,ENABLE_BASE_DESTRUCTION,BUDGET_OPTIMIZATION_CHECKS,SHOW_DISCLAIMER,DEBUG,RESPAWN_TIMER_COMPONENT_DEBUG,GAME_MODE_DEBUG,DEBUG_CONFIGURABLE_DIALOGS,DISABLE_WEAPON_SWITCHING,SCRIPTED_AIM_MODIFIER_DEBUG,CVON_RADIO_LISTEN,COALITION_LOBBY"; CRC32: eb34abcc
+11:28:52.541   PROFILING    : Compiling Game scripts took: 1743.660500 ms
+11:28:52.549   INIT         : Creating game instance(ArmaReforgerScripted), version 1.9.0.37 built 2026-10-27 15:39:59 UTC.
+11:28:52.649   ENGINE       : Game successfully created.
+11:28:52.650  PROFILING    : Workbench Create Game took: 1952.728500 ms
+11:28:52.655  DEFAULT      : Using thumbnail cache directory: C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Projects/Endgame/thumbnails
+11:28:53.666 AUDIO        : Endpoint: Kopfhörer (SteelSeries Arctis Nova 5)
+11:28:53.666 AUDIO        :  Format: Channels: 2, Sample rate: 48kHz, Avg. bytes: 384kB, Sample bits: 32, Block align: 8B
+11:28:53.668 AUDIO        : Audio client:
+11:28:53.668 AUDIO        :  Format: Channels: 2, Sample rate: 48kHz, Buffer size: 1536B, Frame: 512
+11:28:53.685  DEFAULT      : Using autosave directory: C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Projects/Endgame/autosaves
+11:28:53.687 PROFILING    : Workbench startup took: 9530.197300 ms
+11:28:56.535 DEFAULT      : Checking pending workshop invites...
+11:28:56.628 DEFAULT      : Pending workshop invites request done (1)
+11:33:37.549  INIT         : INIT         : Workbench Reload Game
+11:33:37.550  ENGINE       : Game destroyed.
+11:33:37.558  GUI          : Using default language (en_us)
+11:33:37.558  GUI          : Loading 'en_us' localization file.
+11:33:37.558   INIT         : INIT         : Loading StringTable
+11:33:37.571  PROFILING    : Loading StringTable took: 12.067500 ms
+11:33:37.571  INIT         : Creating game instance(ArmaReforgerScripted), version 1.9.0.37 built 2026-10-27 15:39:59 UTC.
+11:33:37.583  SCRIPT       : Unable to register a script command due keyword duplicity: ban
+11:33:37.583  SCRIPT       : Unable to register a script command due keyword duplicity: kick
+11:33:37.583  ENGINE       : Game successfully created.
+11:33:37.583  ENGINE       : Game successfully initialized.
+11:33:37.583 PROFILING    : Workbench Reload Game took: 34.084000 ms
+11:33:38.210  WORLD        : WORLD        : CreateEntities
+11:33:38.210   WORLD        : WORLD        : NotifyBeforeEntitiesCreated
+11:33:38.211  PROFILING    : NotifyBeforeEntitiesCreated took: 0.005500 ms
+11:33:38.211   WORLD        : WORLD        : Wait for preloading data
+11:33:38.211  PROFILING    : Wait for preloading data took: 0.000300 ms
+11:33:38.211   WORLD        : WORLD        : NotifyBeforeEntitiesInitialized
+11:33:38.211  PROFILING    : NotifyBeforeEntitiesInitialized took: 0.003700 ms
+11:33:38.211   WORLD        : WORLD        : NotifyEntitiesInitialized
+11:33:38.211  PROFILING    : NotifyEntitiesInitialized took: 0.009200 ms
+11:33:38.211  WORLD        : World statistics:
+11:33:38.211  WORLD        : Leafs 1024
+11:33:38.211  WORLD        : Leafs with entities 0
+11:33:38.211  WORLD        : Leafs with items 0
+11:33:38.212  WORLD        : Leaf items 0 (ss 0 occ 0 li 0)
+11:33:38.212  WORLD        : Max items/Leaf 0
+11:33:38.212  WORLD        : Total entities 1
+11:33:38.212  WORLD        : Static entities 0
+11:33:38.212  WORLD        : Dynamic entities 0
+11:33:38.212  WORLD        : Features entities 0
+11:33:38.212  WORLD        : NoLink entities 1
+11:33:38.212  WORLD        : Max ents/leaf 0
+11:33:38.212  WORLD        : Max static ents/leaf 0
+11:33:38.212  WORLD        : Max dynamic ents/leaf 0
+11:33:38.212 PROFILING    : CreateEntities took: 2.994000 ms
+11:33:38.241  WORLD        : WORLD        : CreateEntities
+11:33:38.241   WORLD        : WORLD        : NotifyBeforeEntitiesCreated
+11:33:38.241  PROFILING    : NotifyBeforeEntitiesCreated took: 0.001500 ms
+11:33:38.241   WORLD        : WORLD        : Wait for preloading data
+11:33:38.241  PROFILING    : Wait for preloading data took: 0.000200 ms
+11:33:38.241   WORLD        : WORLD        : NotifyBeforeEntitiesInitialized
+11:33:38.241  PROFILING    : NotifyBeforeEntitiesInitialized took: 0.001400 ms
+11:33:38.241   WORLD        : WORLD        : NotifyEntitiesInitialized
+11:33:38.241  PROFILING    : NotifyEntitiesInitialized took: 0.006600 ms
+11:33:38.241  WORLD        : World statistics:
+11:33:38.242  WORLD        : Leafs 1024
+11:33:38.242  WORLD        : Leafs with entities 0
+11:33:38.242  WORLD        : Leafs with items 0
+11:33:38.242  WORLD        : Leaf items 0 (ss 0 occ 0 li 0)
+11:33:38.242  WORLD        : Max items/Leaf 0
+11:33:38.242  WORLD        : Total entities 1
+11:33:38.242  WORLD        : Static entities 0
+11:33:38.242  WORLD        : Dynamic entities 0
+11:33:38.242  WORLD        : Features entities 0
+11:33:38.243  WORLD        : NoLink entities 1
+11:33:38.243  WORLD        : Max ents/leaf 0
+11:33:38.243  WORLD        : Max static ents/leaf 0
+11:33:38.243  WORLD        : Max dynamic ents/leaf 0
+11:33:38.243 PROFILING    : CreateEntities took: 2.857800 ms
+11:34:49.427 DEFAULT      : Checking addon processing status...
+11:34:55.747 DEFAULT      : Creating bundle...
+11:34:55.763 DEFAULT      : Checking required files...
+11:34:55.770 RESOURCES    : Checking world file @"$Endgame:worlds/endgame.ent"
+11:34:55.770  DEFAULT   (W): 	Sound map is missing
+11:34:55.770  DEFAULT   (W): 	Topology map is missing
+11:34:55.772  DEFAULT   (W): 	Navmesh is missing
+11:34:55.793 RESOURCES    : ResourceDB: saving cache (id=0 name=Endgame path=C:\Users\nomisum\Documents\my games\ArmaReforgerWorkbench\addons\Endgame/resourceDatabase.rdb)
+11:34:55.795 RESOURCES    : ResourceDB: written 7033/7033 bytes
+11:34:55.795 RESOURCES    : ResourceDB: cache successfully saved
+11:34:55.796 RESOURCES    : ResourceDB: saving cache (id=5 name=profile path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\profile/resourceDatabase.rdb)
+11:34:55.798 RESOURCES    : ResourceDB: written 3183/3183 bytes
+11:34:55.799 RESOURCES    : ResourceDB: cache successfully saved
+11:34:55.799 RESOURCES    : ResourceDB: saving cache (id=6 name=logs path=C:\Users\nomisum\Documents\My Games\ArmaReforgerWorkbench\logs\logs_2026-11-14_11-28-44/resourceDatabase.rdb)
+11:34:55.800 RESOURCES    : ResourceDB: written 81/81 bytes
+11:34:55.800 RESOURCES    : ResourceDB: cache successfully saved
+11:34:55.800 RESOURCES    : Packaging project started.
+11:34:55.801  DEFAULT      : DEFAULT      : Scanning source directory
+11:34:55.804 PROFILING    : Scanning source directory took: 2.627200 ms
+11:34:55.804  DEFAULT      : DEFAULT      : Scanning intermediate directory
+11:34:55.806 PROFILING    : Scanning intermediate directory took: 1.811700 ms
+11:34:55.806  DEFAULT      : DEFAULT      : Refreshing intermediate directory
+11:34:55.837  DEFAULT      : Refreshed 5 files in intermediate directory.
+11:34:55.837 PROFILING    : Refreshing intermediate directory took: 30.175000 ms
+11:34:55.837  DEFAULT      : DEFAULT      : Assigning files to selections
+11:34:55.837  DEFAULT      : Selection 'data': 83 files
+11:34:55.837  DEFAULT      : Default/unassigned selection: 0 files
+11:34:55.837 PROFILING    : Assigning files to selections took: 0.035000 ms
+11:34:55.837  DEFAULT      : DEFAULT      : Calculating chunk pak layouts
+11:34:55.837 PROFILING    : Calculating chunk pak layouts took: 0.031800 ms
+11:34:55.837  DEFAULT      : DEFAULT      : Writing pak files
+11:34:55.851 PROFILING    : Writing pak files took: 13.572100 ms
+11:34:55.852 RESOURCES    : Packaging done. Result: 1
+11:34:55.854 RESOURCES    : Gproj file copy successful
+11:34:55.859 RESOURCES    : Project thumbnail copy successful
+11:34:55.859 DEFAULT      : Created PAK files:
+11:34:55.859 RESOURCES    : 1: C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Publishing/6AD3266E1A154C66/data.pak
+11:34:55.871 RESOURCES    : Packaging project successful
+11:34:55.872 RESOURCES    : ResourceDB: saving cache (id=0 name=Endgame path=C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Publishing/6AD3266E1A154C66/resourceDatabase.rdb)
+11:34:55.874 RESOURCES    : ResourceDB: written 6804/6804 bytes
+11:34:55.874 RESOURCES    : ResourceDB: cache successfully saved
+11:34:55.888 RESOURCES (E): Failed to load metafile of image: UI/Textures/MissionThumbnails/GM_Eden.edds
+11:34:55.935 RESOURCES    : Saving manifest successful: C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Publishing/6AD3266E1A154C66/manifest.json
+11:34:55.935 DEFAULT      : Bundle successfully saved into: C:/Users/nomisum/AppData/Local/Temp/Arma Reforger Workbench/Publishing/6AD3266E1A154C66
+11:34:55.941 RESOURCES    : Creating bundle successful
+11:34:55.941 DEFAULT      : Validating bundle...
+11:34:55.962 DEFAULT      : Validating bundle successful
+11:34:56.675 DEFAULT      : Publishing project to Workshop...
+11:34:56.685 DEFAULT      : Validating bundle...
+11:34:56.702 DEFAULT      : Validating bundle successful
+11:34:57.081 DEFAULT      : Uploading status: 5%
+11:34:57.217 DEFAULT      : Uploading status: 15%
+11:34:59.096 DEFAULT      : Uploading status: 20%
+11:34:59.183 DEFAULT      : Uploading status: 30%
+11:34:59.226 DEFAULT      : Uploading status: 35%
+11:34:59.259 DEFAULT      : Uploading status: 40%
+11:35:00.431 DEFAULT      : Uploading status: 50%
+11:35:00.485 DEFAULT      : Uploading status: 60%
+11:35:01.485 DEFAULT      : Uploading status: 75%
+11:35:01.528 DEFAULT      : Uploading status: 80%
+11:35:01.582 DEFAULT      : Uploading status: 95%
+11:35:01.605 DEFAULT      : Uploading status: 100%
+11:35:02.745 DEFAULT      : Uploading finished
+11:35:02.746 DEFAULT      : Project uploaded successfully
+11:35:02.746 DEFAULT      : Checking addon processing status...
+11:35:05.745 DEFAULT      : Addon processing successful

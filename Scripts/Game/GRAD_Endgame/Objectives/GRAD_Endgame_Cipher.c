@@ -113,7 +113,6 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
-		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 	}
 
@@ -134,6 +133,7 @@ class GRAD_Endgame_CipherSiteComponent : ScriptComponent
 		EntitySpawnParams params = new EntitySpawnParams();
 		params.TransformMode = ETransformMode.WORLD;
 		GetOwner().GetWorldTransform(params.Transform);
+		params.Transform[3][1] = params.Transform[3][1] + 0.5;   // let physics drop it, so it cannot start below the surface
 
 		IEntity item = GetGame().SpawnEntityPrefab(Resource.Load(prefab), GetGame().GetWorld(), params);
 		if (!item || !item.FindComponent(GRAD_Endgame_CipherComponent))

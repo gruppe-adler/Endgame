@@ -133,7 +133,7 @@ Prefabs to build in Workbench first:
 - **Cipher site**: an empty entity with `GRAD_Endgame_CipherSiteComponent`.
 - **Cipher item**: any small inventory item with `GRAD_Endgame_CipherComponent`; set it as `m_sCipherPrefab` in the config.
 
-With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test player the radio operator slot.
+With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, any role may transmit (`m_eTransmissionRole 1`); set it to 0 to test the radio-operator-only rule.
 
 | # | Do | Expect |
 | --- | --- | --- |
@@ -143,7 +143,7 @@ With `m_fDebugTimeScale 10` the 720 s transmission takes 72 s, and give one test
 | 35 | Both sides | Hint "Radio site" for each active radio site |
 | 36 | A BLUFOR leader respawns or rejoins | Gets the order and all BLUFOR markers again (SyncPlayer) |
 | 37 | Pick up the cipher | `cipher;BLUFOR;<id>;...;picked up` |
-| 38 | Non-operator with cipher uses the radio | "Only the radio operator" |
+| 38 | Any role carrying the cipher uses the radio | Transmission starts. With `m_eTransmissionRole 0`: a non-operator gets "Only the radio operator" |
 | 39 | Operator with cipher transmits | `transmission;BLUFOR;...;started at 0 s`; OPFOR gets "Enemy transmission within 300 m of ..." and `df_sent` |
 | 40 | Operator walks 10 m away | `interrupted (operator left the set) at N s`; with PAUSE, starting again continues from N |
 | 41 | Transmit to the end | `transmission ... done`, `match_end;BLUFOR;;;winner BLUFOR (transmission)` |

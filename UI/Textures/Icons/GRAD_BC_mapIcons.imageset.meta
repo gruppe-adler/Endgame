@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{3E2F061E35D2DA76}UI/Textures/Icons/GRAD_BC_mapIcons.imageset"
+ Configurations {
+  ImageSetResourceClass PC {
+  }
+  ImageSetResourceClass XBOX_ONE : PC {
+  }
+  ImageSetResourceClass XBOX_SERIES : PC {
+  }
+  ImageSetResourceClass PS4 : PC {
+  }
+  ImageSetResourceClass HEADLESS : PC {
+  }
+  ImageSetResourceClass PS5 : PC {
+  }
+ }
+}

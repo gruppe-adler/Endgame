@@ -7,6 +7,7 @@ GenericEntity {
   }
   GRAD_Endgame_GarrisonComponent "{F8240469B94EF8E5}" {
    m_eTier 1
+   m_fWaypointRadius 40
   }
  }
 }

@@ -40,6 +40,12 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	[RplProp()]
 	protected WorldTimestamp m_CopyStartTs;
 
+	//! Hold time of the copy that is running, in seconds: the action's own duration (the prefab's
+	//! Duration), as reported by the server when the hold started. The widget bar uses this and
+	//! not the config, so it fills in exactly the time the engine's hold takes.
+	[RplProp()]
+	protected float m_fCopyDuration;
+
 	//! Chosen for this match (GRAD_Endgame_SiteSelection). Inactive sites show no action and their
 	//! garrison does not spawn.
 	[RplProp()]
@@ -87,7 +93,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
-		GRAD_Endgame_Terrain.Snap(owner);
+		GRAD_Endgame_Rpl.Require(owner, "Document site");
 		s_aAll.Insert(this);
 	}
 
@@ -168,15 +174,15 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 
 		ChimeraWorld world = GetGame().GetWorld();
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
-		if (!world || !cfg || cfg.GetCopySeconds() <= 0)
+		if (!world || m_fCopyDuration <= 0)
 			return -1;
 
-		return Math.Clamp(world.GetServerTimestamp().DiffSeconds(m_CopyStartTs) / cfg.GetCopySeconds(), 0, 1);
+		return Math.Clamp(world.GetServerTimestamp().DiffSeconds(m_CopyStartTs) / m_fCopyDuration, 0, 1);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Server: a player started the hold. Returns false if someone else is at it.
-	bool Lock(int playerId)
+	bool Lock(int playerId, float duration)
 	{
 		if (!Replication.IsServer())
 			return false;
@@ -186,6 +192,7 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 			return true;
 
 		m_iUserId = playerId;
+		m_fCopyDuration = duration;
 		ChimeraWorld world = GetGame().GetWorld();
 		if (world)
 			m_CopyStartTs = world.GetServerTimestamp();

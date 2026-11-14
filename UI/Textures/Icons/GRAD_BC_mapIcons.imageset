@@ -1,0 +1,46 @@
+ImageSetClass {
+ RefSize 512 512
+ Textures {
+  ImageSetTextureClass {
+   screenSize FHD
+   size 512 512
+   path "{9C5B2BA4695A421C}UI/Textures/Icons/GRAD_BC_mapIcons.imageset.edds"
+  }
+  ImageSetTextureClass {
+   screenSize "4K"
+   size 512 512
+   path "{9C5B2BA4695A421C}UI/Textures/Icons/GRAD_BC_mapIcons.imageset.edds"
+  }
+ }
+ Groups {
+  ImageSetGroupClass GRAD_BC_mapIconsGroup {
+   Name "GRAD_BC_mapIconsGroup"
+   Images {
+    ImageSetDefClass transmission_active {
+     Name "transmission_active"
+     Pos 0 0
+     Size 256 256
+     Flags 0
+    }
+    ImageSetDefClass radiotruck_active {
+     Name "radiotruck_active"
+     Pos 256 0
+     Size 256 256
+     Flags 0
+    }
+    ImageSetDefClass transmission_default {
+     Name "transmission_default"
+     Pos 0 256
+     Size 256 256
+     Flags 0
+    }
+    ImageSetDefClass transmission_interrupted {
+     Name "transmission_interrupted"
+     Pos 256 256
+     Size 256 256
+     Flags 0
+    }
+   }
+  }
+ }
+}

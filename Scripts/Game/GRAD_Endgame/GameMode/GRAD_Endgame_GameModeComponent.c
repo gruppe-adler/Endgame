@@ -55,6 +55,14 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	protected bool m_bRespawnDisabledByUs;
 	protected int m_iEliminationTicksOne;
 	protected int m_iEliminationTicksTwo;
+	//! FOB taken per side. The FOB entity has no RplComponent, so its own flag never reaches a
+	//! client; the clients read these two instead (copy action label, HUD).
+	[RplProp()]
+	protected bool m_bFobTakenOne;
+
+	[RplProp()]
+	protected bool m_bFobTakenTwo;
+
 	[RplProp()]
 	bool m_bDocumentsForced;   //!< an admin advanced the phase: both sides may copy regardless of their FOB
 	protected bool m_bEliminationArmed;   //!< both sides had players when the radio phase began; with one side empty (solo test) nobody can be eliminated
@@ -175,8 +183,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		GetGame().GetCallqueue().Remove(ServerTick);
 		GetGame().GetCallqueue().Remove(ClientInitialSync);
 		GetGame().GetCallqueue().Remove(EnablePermadeath);
-		GetGame().GetCallqueue().Remove(SendReplayFrame);
-		GetGame().GetCallqueue().Remove(AdvanceToAfterAction);
+		GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
 		if (s_Instance == this)
 			s_Instance = null;
 		super.OnDelete(owner);
@@ -229,7 +236,14 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 				GRAD_Endgame_MatchLog.StartMatch(string.Format("world=%1, document threshold %2", GetGame().GetWorldFile(), GetDocumentThreshold()));
 				SelectDocumentSites();
 				SelectRadioSites();
-				SetPhase(GRAD_Endgame_EPhase.FOB, "rule");
+
+				// Phase 1 starts when COALITION's freeze time (safestart) is over, not at once:
+				// the garrisons spawn and the objectives appear only then. The phase stays
+				// WAITING during the freeze.
+				m_bFreezeWasActive = false;
+				m_iFreezeWaitTicks = 0;
+				GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
+				GetGame().GetCallqueue().CallLater(WaitForFreezeEnd, 1000, true);
 				break;
 			}
 
@@ -248,6 +262,54 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 				break;
 			}
 		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool m_bFreezeWasActive;     //!< COALITION's safestart has actually switched on
+	protected int m_iFreezeWaitTicks;      //!< seconds spent waiting for it to switch on
+	protected const int FREEZE_WAIT_MAX_TICKS = 15;   //!< after this long without it, there is no freeze time
+
+	//------------------------------------------------------------------------------------------------
+	//! Server, once a second after the game started: when the freeze time is over, start phase 1.
+	//! COALITION switches safestart on a moment after the game state flips, so "not active yet"
+	//! must not be mistaken for "already over" (the same latch BreakingContact's replay uses).
+	protected void WaitForFreezeEnd()
+	{
+		if (m_ePhase != GRAD_Endgame_EPhase.WAITING)
+		{
+			GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
+			return;
+		}
+
+		COA_SafestartManager safestartManager = COA_SafestartManager.GetInstance();
+		bool freezeOver = true;
+		if (safestartManager)
+		{
+			if (!m_bFreezeWasActive)
+			{
+				if (safestartManager.GetSafestartStatus())
+				{
+					m_bFreezeWasActive = true;
+					freezeOver = false;
+				}
+				else
+				{
+					m_iFreezeWaitTicks++;
+					freezeOver = m_iFreezeWaitTicks >= FREEZE_WAIT_MAX_TICKS;   // never switched on: no freeze time
+				}
+			}
+			else
+			{
+				freezeOver = !safestartManager.GetSafestartStatus();
+			}
+		}
+
+		if (!freezeOver)
+			return;
+
+		GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
+		GRAD_Endgame_MatchLog.Write("freeze_over", "", 0, vector.Zero, "phase 1 starts");
+		SetPhase(GRAD_Endgame_EPhase.FOB, "rule");
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -355,113 +417,22 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		COA_Gamemode gamemode = COA_Gamemode.Cast(GetOwner());
 		if (gamemode && gamemode.m_GamemodeState == COA_EGamemodeState.GAME)
 		{
-			// Replay first, then the after-action screen.
-			float replaySeconds = StartReplay();
-			if (replaySeconds > 0)
-				GetGame().GetCallqueue().CallLater(AdvanceToAfterAction, replaySeconds * 1000, false);
-			else
+			// With the replay on, the replay manager (a copy of BreakingContact's) plays it first and
+			// calls AdvanceToAfterAction() when it is over; otherwise go on at once.
+			GRAD_Endgame_ReplayManager replayManager = GRAD_Endgame_ReplayManager.GetInstance();
+			if (!replayManager || !replayManager.HandlesAfterAction())
 				gamemode.AdvanceGamemodeState(true);
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void AdvanceToAfterAction()
+	//! Server: move COALITION on to its after-action screen. Called by the replay manager when the
+	//! replay is over.
+	void AdvanceToAfterAction()
 	{
 		COA_Gamemode gamemode = COA_Gamemode.Cast(GetOwner());
 		if (gamemode && gamemode.m_GamemodeState == COA_EGamemodeState.GAME)
 			gamemode.AdvanceGamemodeState(true);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	// REPLAY (server sends, every client plays; see GRAD_Endgame_Replay and GRAD_Endgame_ReplayPlayer)
-	//------------------------------------------------------------------------------------------------
-	protected int m_iReplayNextFrame;
-
-	protected const int REPLAY_FRAME_DELAY_MS = 40;
-	protected const float REPLAY_TAIL_SECONDS = 5;
-
-	//------------------------------------------------------------------------------------------------
-	//! Server: send the recorded replay to everybody. Returns how many seconds the after-action
-	//! screen must wait for the replay (transfer plus playback), or 0 if there is no replay.
-	protected float StartReplay()
-	{
-		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
-		GRAD_Endgame_Replay replay = GRAD_Endgame_Replay.GetRecording();
-		if (!cfg || !cfg.GetReplayEnabled() || replay.m_aFrames.Count() < 2)
-			return 0;
-
-		float duration = replay.GetDuration();
-		float speed = Math.Max(duration / Math.Max(cfg.GetReplayTargetSeconds(), 10), 1);
-
-		array<int> ids = {};
-		array<string> names = {};
-		foreach (int id, string name : replay.m_mNames)
-		{
-			ids.Insert(id);
-			names.Insert(name);
-		}
-
-		Rpc(RpcDo_ReplayBegin, replay.m_fInterval, speed, ids, names);
-		if (HasLocalPlayer())
-			RpcDo_ReplayBegin(replay.m_fInterval, speed, ids, names);
-
-		m_iReplayNextFrame = 0;
-		GetGame().GetCallqueue().CallLater(SendReplayFrame, REPLAY_FRAME_DELAY_MS, true);
-
-		float transferSeconds = replay.m_aFrames.Count() * REPLAY_FRAME_DELAY_MS / 1000 + 1;
-		float playSeconds = duration / speed + replay.m_fInterval / speed;
-		GRAD_Endgame_MatchLog.Write("replay", "", 0, vector.Zero, string.Format("%1 frames, %2 events, speed %3x, %4 s", replay.m_aFrames.Count(), replay.m_aEventTexts.Count(), Math.Round(speed), Math.Round(playSeconds)));
-		return transferSeconds + playSeconds + REPLAY_TAIL_SECONDS;
-	}
-
-	//------------------------------------------------------------------------------------------------
-	protected bool HasLocalPlayer()
-	{
-		return SCR_PlayerController.GetLocalPlayerId() > 0;
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Server: one frame per call, then the events and the start signal.
-	protected void SendReplayFrame()
-	{
-		GRAD_Endgame_Replay replay = GRAD_Endgame_Replay.GetRecording();
-
-		if (m_iReplayNextFrame < replay.m_aFrames.Count())
-		{
-			GRAD_Endgame_ReplayFrame frame = replay.m_aFrames[m_iReplayNextFrame];
-			m_iReplayNextFrame++;
-			Rpc(RpcDo_ReplayFrame, frame.m_fTime, frame.m_aIds, frame.m_aFlags, frame.m_aX, frame.m_aZ);
-			if (HasLocalPlayer())
-				RpcDo_ReplayFrame(frame.m_fTime, frame.m_aIds, frame.m_aFlags, frame.m_aX, frame.m_aZ);
-			return;
-		}
-
-		GetGame().GetCallqueue().Remove(SendReplayFrame);
-		Rpc(RpcDo_ReplayEnd, replay.m_aEventTimes, replay.m_aEventTexts);
-		if (HasLocalPlayer())
-			RpcDo_ReplayEnd(replay.m_aEventTimes, replay.m_aEventTexts);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RpcDo_ReplayBegin(float interval, float speed, array<int> rosterIds, array<string> rosterNames)
-	{
-		GRAD_Endgame_ReplayPlayer.Begin(interval, speed, rosterIds, rosterNames);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RpcDo_ReplayFrame(float time, array<int> ids, array<int> flags, array<float> xs, array<float> zs)
-	{
-		GRAD_Endgame_ReplayPlayer.AddFrame(time, ids, flags, xs, zs);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RpcDo_ReplayEnd(array<float> eventTimes, array<string> eventTexts)
-	{
-		GRAD_Endgame_ReplayPlayer.SetEvents(eventTimes, eventTexts);
-		GRAD_Endgame_ReplayPlayer.Start();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -510,6 +481,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	protected void ResetForNewRound()
 	{
 		GetGame().GetCallqueue().Remove(EnablePermadeath);
+		GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
 
 		if (m_bRespawnDisabledByUs)
 		{
@@ -521,6 +493,8 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 
 		m_mDocumentTotals.Clear();
 		m_sLeadingFaction = "";
+		m_bFobTakenOne = false;
+		m_bFobTakenTwo = false;
 		GRAD_Endgame_InfoService.Reset();
 		// TODO (Workbench): a new round in the same load also needs fresh garrisons, FOBs back to
 		// untaken and spawn points back at their start. Check whether COALITION reloads the world
@@ -561,6 +535,12 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			return;
 
 		string key = fob.GetFactionKey();
+		if (key == cfg.GetFactionKeyOne())
+			m_bFobTakenOne = true;
+		else if (key == cfg.GetFactionKeyTwo())
+			m_bFobTakenTwo = true;
+		Replication.BumpMe();
+
 		GRAD_Endgame_InfoService.RemoveMarker(key, "fob_" + key, true);
 
 		if (m_ePhase == GRAD_Endgame_EPhase.FOB)
@@ -644,8 +624,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};
 		foreach (string key : keys)
 		{
-			GRAD_Endgame_FobComponent fob = GRAD_Endgame_FobComponent.GetForFaction(key);
-			if (everyone || !fob || fob.IsTaken())
+			if (everyone || IsFobTaken(key))
 				RevealDocumentSites(cfg, key);
 		}
 	}
@@ -658,8 +637,26 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (!gameMode || gameMode.GetPhase() != GRAD_Endgame_EPhase.DOCUMENTS)
 			return false;
 
+		return gameMode.m_bDocumentsForced || gameMode.IsFobTaken(factionKey);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! True once the side's FOB is taken, on server and clients. A side with no FOB placed in the
+	//! world counts as taken, so a test world without FOBs still works.
+	bool IsFobTaken(string factionKey)
+	{
 		GRAD_Endgame_FobComponent fob = GRAD_Endgame_FobComponent.GetForFaction(factionKey);
-		return !fob || fob.IsTaken() || gameMode.m_bDocumentsForced;
+		if (!fob)
+			return true;
+
+		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
+		if (!cfg)
+			return false;
+		if (factionKey == cfg.GetFactionKeyOne())
+			return m_bFobTakenOne;
+		if (factionKey == cfg.GetFactionKeyTwo())
+			return m_bFobTakenTwo;
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -871,8 +868,6 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			EndMatch("", "timer");
 			return;
 		}
-
-		GRAD_Endgame_Replay.GetRecording().Tick(TICK_MS / 1000, cfg);
 
 		int aliveOne, aliveTwo;
 		CountAlive(cfg, aliveOne, aliveTwo);

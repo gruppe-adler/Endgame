@@ -334,7 +334,7 @@ FrameWidgetClass {
         SizeMode Auto
        }
        Color 0.12 0.11 0.1 1
-       Text "[K] dismiss"
+       Text "[Shift+K] dismiss"
        "Font Size" 11
        "Min Font Size" 11
        "Horizontal Alignment" Left
@@ -427,7 +427,7 @@ FrameWidgetClass {
         SizeMode Auto
        }
        Color 0.12 0.11 0.1 1
-       Text "[T] hide"
+       Text "[Shift+T] hide"
        "Font Size" 11
        "Min Font Size" 11
        "Horizontal Alignment" Left
@@ -490,7 +490,7 @@ FrameWidgetClass {
         SizeMode Auto
        }
        Color 0.12 0.11 0.1 1
-       Text "[<] [>] switch · [U] hide"
+       Text "[<] [>] switch · [Shift+U] hide"
        "Font Size" 11
        "Min Font Size" 11
        "Horizontal Alignment" Left
@@ -631,7 +631,7 @@ FrameWidgetClass {
         SizeMode Auto
        }
        Color 0.12 0.11 0.1 1
-       Text "[J] close"
+       Text "[Shift+J] close"
        "Font Size" 11
        "Min Font Size" 11
        "Horizontal Alignment" Left

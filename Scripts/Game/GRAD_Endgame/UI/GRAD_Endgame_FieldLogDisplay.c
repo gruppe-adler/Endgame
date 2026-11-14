@@ -7,11 +7,11 @@
 //!   C Notice           top-centre, 8 s, no key (server hints arrive here, see ClientInfo)
 //!   D ActionSlip       centre-below, while a copy or transmission runs at a site you stand at
 //!   E WavePanel        centre-right, while dead and waiting for a wave
-//!   F DecodedOrder     left-middle, leaders of the informed side, until dismissed [K]
-//!   H TransmissionLog  bottom-right, while any radio site transmits or is interrupted [T]
-//!   I SpectatorStrip   bottom-centre, dead in phase 3 [U]
+//!   F DecodedOrder     left-middle, leaders of the informed side, until dismissed [Shift+K]
+//!   H TransmissionLog  bottom-right, while any radio site transmits or is interrupted [Shift+T]
+//!   I SpectatorStrip   bottom-centre, dead in phase 3 [Shift+U]
 //!   J ResultSheet      centred, 15 s at match end, no key
-//!   FieldLog           the full log on [J]: phase, time left, own count, order, last notices
+//!   FieldLog           the full log on [Shift+J]: phase, time left, own count, order, last notices
 //!
 //! Everything here only reads state that already reaches the client: the phase and permadeath
 //! (game-mode component), site states and progress (replicated on the sites), wave countdown
@@ -32,8 +32,8 @@
 //! m_LayoutPath = UI/layouts/GRAD_Endgame_FieldLog.layout, as COALITION does for its safe-start card.
 //!
 //! Keys (proposals from the HUD page; add the actions to the input config in Workbench):
-//!   GRAD_Endgame_FieldLog [J], GRAD_Endgame_DismissOrder [K],
-//!   GRAD_Endgame_ToggleTransmission [T], GRAD_Endgame_ToggleSpectator [U]
+//!   GRAD_Endgame_FieldLog [Shift+J], GRAD_Endgame_DismissOrder [Shift+K],
+//!   GRAD_Endgame_ToggleTransmission [Shift+T], GRAD_Endgame_ToggleSpectator [Shift+U]
 //!
 //! WRITTEN WITHOUT WORKBENCH (2026-11-11): not compiled, not run. Pattern from COALITION's
 //! COA_SafeStartInfoDisplay (SCR_InfoDisplayExtended, DisplayUpdate, m_wRoot.FindAnyWidget).
@@ -437,7 +437,7 @@ class GRAD_Endgame_FieldLogDisplay : SCR_InfoDisplayExtended
 	}
 
 	//------------------------------------------------------------------------------------------------
-	// FIELD LOG [J]
+	// FIELD LOG [Shift+J]
 	//------------------------------------------------------------------------------------------------
 	protected void UpdateFieldLog(notnull GRAD_Endgame_GameModeComponent gameMode)
 	{
@@ -566,7 +566,7 @@ class GRAD_Endgame_HudText
 				line += string.Format(" · TX %1 \%", Math.Round(site.GetProgressFraction() * 100));
 		}
 
-		return line + " · [J] log";
+		return line + " · [Shift+J] log";
 	}
 
 	//------------------------------------------------------------------------------------------------

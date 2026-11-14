@@ -14,7 +14,7 @@ Numbers below are the defaults. The server admin can change them.
 | 2. Documents | Copy documents at 3 of the marked sites. | The first side with 3 copies starts phase 3. |
 | 3. Radio | Find the cipher, take it to a radio site and transmit. | One side finishes the transmission, or the match ends otherwise. |
 
-You always know the current phase and the time left from the map status line, and the field log on **[J]** shows the rest.
+You always know the current phase and the time left from the map status line, and the field log on **[Shift+J]** shows the rest.
 
 ## Phase 1: take your FOB
 
@@ -40,9 +40,9 @@ You always know the current phase and the time left from the map status line, an
 - Each side gets one **free respawn**. After about 30 seconds, respawn is switched off: if you die now you stay dead and can only spectate.
 
 ### Transmitting
-- Only the **radio operator** can start a transmission, and only while carrying the cipher.
+- **Anyone** carrying the cipher can start a transmission, whatever their role.
 - Walk to a radio site and hold the transmit action for about 3 seconds. The transmission then runs on its own for **12 minutes**.
-- The operator must stay within **5 m** of the set the whole time. If the operator leaves, dies or loses the cipher, the transmission is **interrupted** and the progress is paused. Starting it again continues from there. The cipher can be taken from a dead body.
+- The player transmitting (the operator) must stay within **5 m** of the set the whole time. If the operator leaves, dies or loses the cipher, the transmission is **interrupted** and the progress is paused. Starting it again continues from there. The cipher can be taken from a dead body.
 - The progress belongs to the side that made it. If the other side transmits at the same set, it starts at 0.
 - A transmitting radio set can be **heard** at about 150 m.
 - **Direction finding:** the enemy gets a search area of about 300 m around a transmitting site every minute. Expect them to come.
@@ -70,10 +70,10 @@ You always know the current phase and the time left from the map status line, an
 
 | Key | What it shows |
 | --- | --- |
-| **J** | Field log: phase, time left, your document count, the order, recent notices |
-| **K** | Dismiss the decoded order card |
-| **T** | Show or hide the transmission card |
-| **U** | Spectator card (dead in phase 3) |
+| **Shift+J** | Field log: phase, time left, your document count, the order, recent notices |
+| **Shift+K** | Dismiss the decoded order card |
+| **Shift+T** | Show or hide the transmission card |
+| **Shift+U** | Spectator card (dead in phase 3) |
 
 Your objectives are also in the vanilla **task list** and on the map. Only your side sees its own objectives.
 
@@ -81,5 +81,5 @@ Your objectives are also in the vanilla **task list** and on the map. Only your 
 
 - Do not leave your FOB empty. The first cleared FOB starts the clock for everyone.
 - Documents are won by travel, not by fighting alone: check the area, then clear the site.
-- A squad leader and a radio operator are worth more than a rifleman in phase 3. Keep them alive.
+- Whoever holds the cipher is worth more than a rifleman in phase 3. Keep them alive, and keep a second person ready to pick it up.
 - The militia does not respawn. A cleared site stays cleared, for both sides.

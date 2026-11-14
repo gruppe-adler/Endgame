@@ -3,25 +3,24 @@
 //! GRAD_BC_ToggleRadioTransmission:
 //!  - HasLocalEffectOnlyScript false: CanBeShown / CanBePerformed run on the client,
 //!    PerformAction runs on the server.
-//!  - The hold itself is PerformContinuousAction + LoopActionUpdate; a flag makes sure the copy is
-//!    counted once per hold.
+//!  - The hold is the engine's own: the prefab's Duration. PerformAction runs when it is up.
+//!    (An earlier version used PerformContinuousAction and LoopActionUpdate; that made the hold
+//!    time unclear and let the widget bar run on a different clock.)
 //!
-//! One player at a time (finding D1): the hold timer and the completed flag belong to this action
-//! object, not to the player, so two players holding at once would disturb each other. The site
-//! therefore carries a replicated "in use by" id; everyone else gets "In use".
+//! One player at a time (finding D1): the site carries a replicated "in use by" id, set by
+//! OnActionStart together with the action's real duration; everyone else gets "In use". The
+//! widget bar of the whole team is (server time now - start) / that duration, so it fills in the
+//! time the hold takes.
 //!
-//! The progress bar is local to the performer. The action label shows the copies the acting
-//! player's own side has made here.
+//! The action label shows the copies the acting player's own side has made here.
 //!
-//! TODO (Workbench): read the hold duration from the config (m_fCopySeconds); for now the
-//! prefab's Duration decides. TODO: confirm that OnActionStart and OnActionCanceled run on the
-//! server for a broadcast action. If they do not, the lock is never set (harmless) and D1 stays.
+//! TODO: confirm that OnActionStart and OnActionCanceled run on the server for a broadcast
+//! action. If they do not, the lock is never set, and no widget bar is shown.
 //!
 //! CHANGED WITHOUT WORKBENCH (2026-11-10): not compiled, not run.
 class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 {
 	protected GRAD_Endgame_DocumentSiteComponent m_Site;
-	protected bool m_bActionCompleted;
 
 	//------------------------------------------------------------------------------------------------
 	override void Init(IEntity pOwnerEntity, GenericComponent pManagerComponent)
@@ -71,33 +70,17 @@ class GRAD_Endgame_CopyDocumentAction : SCR_ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void OnActionStart(IEntity pUserEntity)
 	{
-		m_bActionCompleted = false;
 		super.OnActionStart(pUserEntity);
 
 		if (m_Site && Replication.IsServer())
-			m_Site.Lock(GetPlayerId(pUserEntity));
+			m_Site.Lock(GetPlayerId(pUserEntity), GetActionDuration());
 	}
 
 	//------------------------------------------------------------------------------------------------
 	override void OnActionCanceled(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		m_bActionCompleted = false;
-
 		if (m_Site && Replication.IsServer())
 			m_Site.Unlock(GetPlayerId(pUserEntity));
-	}
-
-	//------------------------------------------------------------------------------------------------
-	override void PerformContinuousAction(IEntity pOwnerEntity, IEntity pUserEntity, float timeSlice)
-	{
-		if (!LoopActionUpdate(timeSlice))
-			return;
-
-		if (m_bActionCompleted)
-			return;
-
-		m_bActionCompleted = true;
-		PerformAction(pOwnerEntity, pUserEntity);
 	}
 
 	//------------------------------------------------------------------------------------------------

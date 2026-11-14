@@ -1,0 +1,39 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ Slot FrameWidgetSlot "{65BB62A3F239FF21}" {
+  Anchor 0 0 1 1
+  PositionX 0
+  OffsetLeft 0
+  PositionY 0
+  OffsetTop 0
+  SizeX 0
+  OffsetRight 0
+  SizeY 0
+  OffsetBottom 0
+ }
+ "Z Order" 70
+ {
+  CanvasWidgetClass "{6471110A76D8C009}" {
+   Name "Canvas"
+   Slot FrameWidgetSlot "{6471110A76D8C06D}" {
+    Anchor 0 0 1 1
+    PositionX 0
+    OffsetLeft 0
+    PositionY 0
+    OffsetTop 0
+    SizeX 0
+    OffsetRight 0
+    SizeY 0
+    OffsetBottom 0
+   }
+   "Z Order" 71
+   SizeInUnits 1024 1024
+   FontProperties {
+    FontProperties "{6471110AE5F61397}" {
+     Font "{EABA4FE9D014CCEF}UI/Fonts/RobotoCondensed/RobotoCondensed_Bold.fnt"
+     OutlineSize 1
+    }
+   }
+  }
+ }
+}

@@ -53,6 +53,34 @@ modded class COA_RespawnManager
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Server: while permadeath is on, log each death once (no wave, no countdown).
+	protected void EndgameLogPermadeathDeaths(notnull GRAD_Endgame_Config cfg)
+	{
+		array<int> players = {};
+		GetGame().GetPlayerManager().GetPlayers(players);
+		foreach (int playerId : players)
+		{
+			if (!m_SlottingManager.IsPlayerInASlot(playerId))
+				continue;
+			Faction faction = m_SlottingManager.GetPlayerSlotFaction(playerId);
+			if (!faction || !cfg.IsPlayerFaction(faction.GetFactionKey()))
+				continue;
+
+			bool dead = m_SlottingManager.IsPlayerConsideredDead(playerId);
+			bool tracked = m_aEndgameTracked.Contains(playerId);
+			if (dead && !tracked)
+			{
+				m_aEndgameTracked.Insert(playerId);
+				GRAD_Endgame_MatchLog.Write("death", faction.GetFactionKey(), playerId, vector.Zero, "permadeath, no respawn");
+			}
+			else if (!dead && tracked)
+			{
+				m_aEndgameTracked.RemoveItem(playerId);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
 	protected GRAD_Endgame_FactionWave EndgameGetWave(string factionKey)
 	{
 		GRAD_Endgame_FactionWave wave = m_mEndgameWaves.Get(factionKey);
@@ -96,6 +124,16 @@ modded class COA_RespawnManager
 		GRAD_Endgame_Config cfg = GRAD_Endgame_ConfigLoader.Get();
 		if (!cfg)
 			return;
+
+		// Permadeath (radio phase, after the grace period): nobody respawns, so there is no wave.
+		// Only the deaths are logged. Without this the wave system kept counting down and released
+		// dead players, who then respawned in the middle of phase 3.
+		GRAD_Endgame_GameModeComponent gameMode = GRAD_Endgame_GameModeComponent.GetInstance();
+		if (gameMode && gameMode.IsPermadeathActive())
+		{
+			EndgameLogPermadeathDeaths(cfg);
+			return;
+		}
 
 		float now = EndgameNow();
 		array<string> keys = {cfg.GetFactionKeyOne(), cfg.GetFactionKeyTwo()};

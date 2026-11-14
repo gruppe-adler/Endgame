@@ -1,9 +1,27 @@
 SCR_AIWorld : "{70CCCF16487C927F}Prefabs/AI/SCR_AIWorld_Eden.et" {
- coords 4813.21 28 11100
+ components {
+  NavmeshWorldComponent "{5584F30E67F617AD}" {
+   NavmeshSettings NavmeshWorld "{50FC63BEBE3973C5}" {
+    NavmeshFilesConfig BaseNavmeshFilesConfig "{60B8A297F9E52831}" {
+     NavmeshFile "{AD5F99CD7C59D5E0}worlds/GameMaster/Navmeshes/GM_Eden.nmn"
+    }
+   }
+  }
+  NavmeshWorldComponent "{5584F30EEFEE1223}" {
+   NavmeshSettings ChimeraNavmeshWorld "{50FC63BEBE3973C5}" {
+    NavmeshFilesConfig BaseNavmeshFilesConfig "{60B8A297F3B4EE8A}" {
+     NavmeshFile "{C35ECF3276824654}worlds/GameMaster/Navmeshes/GM_Eden_vehicles.nmn"
+    }
+   }
+  }
+ }
+ coords -14.67 13.202 10.472
 }
 COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et" {
  components {
   GRAD_Endgame_GameModeComponent "{7A1E3C5B9D204F68}" {
+  }
+  GRAD_Endgame_ReplayManager "{7A1E3C5B9D204F69}" {
   }
  }
  coords 0 0 0
@@ -37,6 +55,7 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
     MEDIC
     RIFLEMAN_ANTITANK
     GRENADIER
+    RADIO_TELEPHONE_OPERATOR
    }
    m_eRespawnPoolType PER_SLOT
    m_iGroupRespawns -1
@@ -63,6 +82,7 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
     MEDIC
     RIFLEMAN_ANTITANK
     GRENADIER
+    RADIO_TELEPHONE_OPERATOR
    }
    m_eRespawnPoolType PER_SLOT
    m_iGroupRespawns -1
@@ -85,20 +105,26 @@ COA_Gamemode COA_Lobby : "{6A996BBFCEB37E78}Prefabs/!Systems/!Lobby/COA_Lobby.et
  m_BLUFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7301}" {
   m_rGearScript "{B0EB1A0A0C8C4698}Configs/Gearscripts/GRAD_Endgame_GS_US80s.conf"
   m_bEnableBFT 1
-  m_bEnableLeadershipRadios 1
+  m_bEnableLeadershipRadios 0
   m_bEnableGIRadios 0
-  m_bEnableRTORadios 1
+  m_bEnableRTORadios 0
  }
  m_OPFORGearScriptSettings COA_GearScriptContainer "{6A190A84AAFF7302}" {
   m_rGearScript "{61052F4A8AC7951B}Configs/Gearscripts/GRAD_Endgame_GS_USSR80s.conf"
   m_bEnableBFT 1
-  m_bEnableLeadershipRadios 1
+  m_bEnableLeadershipRadios 0
   m_bEnableGIRadios 0
-  m_bEnableRTORadios 1
+  m_bEnableRTORadios 0
  }
 }
 COA_StaticSpawnPoint "6AD556E33B9D8B6F" : "{0B3312C6940005B9}PrefabsMissionMaking/SpawnPoints/SpawnPoints/OPFOR_Spawn.et" {
  coords 4206.199 44.841 7779.609
+ {
+  COA_ManualMarker {
+   ID "68682AC1849E53AF"
+   coords 471.76 115.265 -432.442
+  }
+ }
 }
 GenericEntity : "{142A5B364288AED4}Prefabs/GRAD_Endgame_Fob_OPFOR.et" {
  coords 4846.613 111.953 8100.167

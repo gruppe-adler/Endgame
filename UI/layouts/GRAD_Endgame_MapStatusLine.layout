@@ -40,7 +40,7 @@ FrameWidgetClass {
         SizeMode Auto
        }
        Color 0.12 0.11 0.1 1
-       Text "PHASE 2 - DOCUMENTS   34:12   TRANSMISSION: NONE   [J] LOG"
+       Text "PHASE 2 - DOCUMENTS   34:12   TRANSMISSION: NONE   [Shift+J] LOG"
        "Font Size" 32
        "Min Font Size" 13
        "Horizontal Alignment" Left

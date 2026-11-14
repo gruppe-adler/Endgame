@@ -55,7 +55,6 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
-		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 
 		if (Replication.IsServer())
@@ -207,5 +206,11 @@ class GRAD_Endgame_FobVehicleSpawnerComponent : ScriptComponent
 		}
 
 		GRAD_Endgame_MatchLog.Write("vehicle_spawn", m_sFactionKey, 0, GetOwner().GetOrigin(), m_sVehiclePrefab);
+
+		// Show the vehicle in the after-action replay (as BreakingContact does for its vehicles).
+		Vehicle vehicle = Vehicle.Cast(m_Vehicle);
+		GRAD_Endgame_ReplayManager replayManager = GRAD_Endgame_ReplayManager.GetInstance();
+		if (vehicle && replayManager)
+			replayManager.RegisterTrackedVehicle(vehicle);
 	}
 }

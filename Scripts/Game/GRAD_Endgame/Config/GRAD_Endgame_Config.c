@@ -101,7 +101,7 @@ class GRAD_Endgame_Config
 	protected float m_fTransportRespawnRadius;
 
 	// --- Documents ---
-	[Attribute(defvalue: "10", desc: "Seconds to copy the documents at a site. Not read by the action yet: the prefab's Duration still decides.", category: "Documents")]
+	[Attribute(defvalue: "10", desc: "Not used: the hold time of the copy is the Duration of the copy action in the document site prefab (the widget bar follows that value). Kept so old configs load.", category: "Documents")]
 	protected float m_fCopySeconds;
 
 	[Attribute(defvalue: "5", desc: "Document sites the server activates per match, chosen at random from all placed sites. 0 = all placed sites.", category: "Documents")]
@@ -144,7 +144,7 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", uiwidget: UIWidgets.ComboBox, desc: "What happens to the progress when the operator leaves or dies.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ETransmissionInterrupt), category: "Radio")]
 	protected GRAD_Endgame_ETransmissionInterrupt m_eTransmissionInterrupt;
 
-	[Attribute(defvalue: "0", uiwidget: UIWidgets.ComboBox, desc: "Who may start a transmission.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ETransmissionRole), category: "Radio")]
+	[Attribute(defvalue: "1", uiwidget: UIWidgets.ComboBox, desc: "Who may start a transmission. ANY_PLAYER (default, decided 2026-11-14): whoever carries the cipher. SIGNALLER_ONLY: only a player in the radio operator slot.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_ETransmissionRole), category: "Radio")]
 	protected GRAD_Endgame_ETransmissionRole m_eTransmissionRole;
 
 	[Attribute(defvalue: "1", uiwidget: UIWidgets.ComboBox, desc: "When the opponent gets a fix on a transmitting site.", enums: ParamEnumArray.FromEnum(GRAD_Endgame_EDirectionFinding), category: "Radio")]
@@ -221,14 +221,8 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "Also print every match log line and extra debug lines to the console.", category: "Debug")]
 	protected bool m_bDebugLog;
 
-	[Attribute(defvalue: "1", desc: "Record player positions during the match and play them back on the map before the after-action screen.", category: "Replay")]
+	[Attribute(defvalue: "1", desc: "Record the match and play it back on the map (BreakingContact's replay, copied) before the after-action screen. Recording interval and maximum replay length are attributes of the GRAD_Endgame_ReplayManager component on the lobby entity.", category: "Replay")]
 	protected bool m_bReplayEnabled;
-
-	[Attribute(defvalue: "5", desc: "Seconds between recorded positions. Smaller is smoother but sends more data at the end.", params: "1 30 1", category: "Replay")]
-	protected float m_fReplayIntervalSeconds;
-
-	[Attribute(defvalue: "60", desc: "The replay is sped up so it takes about this many real seconds.", params: "10 300 5", category: "Replay")]
-	protected float m_fReplayTargetSeconds;
 
 	[Attribute(defvalue: "0", desc: "Run the built-in self tests (wave rules, site selection) once when the match starts and print the results to the log. Replaces the script console.", category: "Debug")]
 	protected bool m_bRunSelfTests;
@@ -327,6 +321,4 @@ class GRAD_Endgame_Config
 	bool GetDebugLog() { return m_bDebugLog; }
 	bool GetRunSelfTests() { return m_bRunSelfTests; }
 	bool GetReplayEnabled() { return m_bReplayEnabled; }
-	float GetReplayIntervalSeconds() { return m_fReplayIntervalSeconds; }
-	float GetReplayTargetSeconds() { return m_fReplayTargetSeconds; }
 }

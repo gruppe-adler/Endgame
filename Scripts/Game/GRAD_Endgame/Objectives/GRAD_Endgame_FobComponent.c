@@ -25,7 +25,7 @@ class GRAD_Endgame_FobComponent : ScriptComponent
 	[Attribute("0 0 0", desc: "Where the moved spawn point stands, relative to this entity. Keep it clear of the garrison.")]
 	protected vector m_vSpawnOffset;
 
-	[RplProp()]
+	//! Server only. The FOB entity has no RplComponent; clients read GRAD_Endgame_GameModeComponent.IsFobTaken().
 	protected bool m_bTaken;
 
 	protected static ref array<GRAD_Endgame_FobComponent> s_aAll = {};
@@ -70,7 +70,6 @@ class GRAD_Endgame_FobComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
-		GRAD_Endgame_Terrain.Snap(owner);
 		s_aAll.Insert(this);
 
 		if (!Replication.IsServer())
@@ -115,7 +114,6 @@ class GRAD_Endgame_FobComponent : ScriptComponent
 			return;
 
 		m_bTaken = true;
-		Replication.BumpMe();
 		GRAD_Endgame_MatchLog.Write("fob_state", m_sFactionKey, 0, GetOwner().GetOrigin(), "taken (" + cause + ")");
 
 		MoveSpawnPoints();
