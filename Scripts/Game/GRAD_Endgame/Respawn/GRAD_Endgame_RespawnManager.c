@@ -329,6 +329,11 @@ modded class COA_RespawnManager
 		if (gameMode && gameMode.IsPermadeathActive())
 			return true;
 
+		// Radio phase, grace period: only those who were dead when the phase began may come back.
+		// A death after the phase began is final, even before the grace period is over.
+		if (gameMode && gameMode.GetPhase() == GRAD_Endgame_EPhase.RADIO && !gameMode.MayRespawnInRadioPhase(playerId))
+			return true;
+
 		return !EndgameGetWave(faction.GetFactionKey()).IsReleased(playerId);
 	}
 

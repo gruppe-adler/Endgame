@@ -31,7 +31,7 @@ It is a short, tense, three-act match that plays like a campaign compressed into
 ## What makes it different
 
 - **Three acts, three kinds of fight:** assault a garrison, race across the map for documents, then besiege a radio set.
-- **Permadeath finale:** one free respawn per side in phase 3, then you stay dead.
+- **Permadeath finale:** players who are dead when phase 3 begins come back at once. Anyone who dies after that stays dead.
 - **Wave respawn:** the dead return together on a visible clock, so a lost fight costs minutes.
 - **A fair race:** sites are chosen at random, but only selections where both sides travel about the same distance.
 - **A hunted transmission:** the enemy gets a 300 m search area around your radio site every minute, and the set can be heard from 150 m away.
@@ -74,7 +74,7 @@ The final phase is where the mode is decided, so it has the most rules.
 - **Carrier down.** If the carrier dies or is knocked out, both sides get a task and a HUD notice with the last known position, blurred to within 25 m.
 - **Direction finding.** The enemy gets a fresh 300 m search area around a transmitting site every minute.
 - **Radio sites are contested.** Both sides may transmit at any site, so you can defend one, or attack and take over another.
-- **Permadeath.** One free respawn per side, then no returns. If a side has no living players left, it loses.
+- **Permadeath.** Players who are dead when phase 3 begins respawn at once. A death after that is final. If a side has no living players left, it loses.
 
 ---
 

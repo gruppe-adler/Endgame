@@ -49,8 +49,8 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
 3. First FOB cleared: phase 2 for both sides. Each side only sees and may copy documents once its
    own FOB is cleared. Spawns move to the cleared FOB, waiting dead are released.
 4. A side with the threshold (default 3) of copies: phase 3 for both. Cipher spawns (0.5 m above its
-   site), the leading side's leaders get its position as a task. Each side gets one free respawn,
-   then permadeath after a grace period. Anyone carrying the cipher may transmit
+   site), the leading side's leaders get its position as a task. Players dead at that moment are released at once;
+   any death after it is final (permadeath switches on after a grace period for the released ones). Anyone carrying the cipher may transmit
    (`m_eTransmissionRole 1`).
 5. Win: transmission finished, or a side eliminated (only if both sides had players at phase 3
    start), or time (COALITION limit 60 min = draw). Then the replay plays, then COALITION's AAR.

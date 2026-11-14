@@ -40,6 +40,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	[RplProp()]
 	protected bool m_bPermadeathActive;
 
+	//! Server: players who were dead when phase 3 began. Only they may respawn in phase 3 (at once,
+	//! within the grace period); anyone who dies after the phase began stays dead.
+	protected ref set<int> m_aRadioStartDead = new set<int>();
+
 	//! Document threshold set by an admin before the mission starts. -1 = use the config value.
 	[RplProp()]
 	protected int m_iThresholdOverride = -1;
@@ -128,6 +132,13 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	bool IsPermadeathActive()
 	{
 		return m_bPermadeathActive;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: true if this player was dead when phase 3 began, so he may respawn in phase 3.
+	bool MayRespawnInRadioPhase(int playerId)
+	{
+		return m_aRadioStartDead.Contains(playerId);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -456,7 +467,24 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		if (!respawnManager)
 			return;
 
-		// Sugar Lake: both sides get one free respawn when phase 3 begins, then nobody respawns.
+		// Players who are dead as phase 3 begins come back at once (released below). Anyone who dies
+		// after this point does not respawn: remember who was dead now.
+		m_aRadioStartDead.Clear();
+		COA_SlottingManager slottingManager = COA_SlottingManager.GetInstance();
+		if (slottingManager)
+		{
+			array<int> playerIds = {};
+			GetGame().GetPlayerManager().GetPlayers(playerIds);
+			foreach (int playerId : playerIds)
+			{
+				Faction faction = slottingManager.GetPlayerSlotFaction(playerId);
+				if (faction && cfg.IsPlayerFaction(faction.GetFactionKey()) && slottingManager.IsPlayerConsideredDead(playerId))
+					m_aRadioStartDead.Insert(playerId);
+			}
+		}
+		GRAD_Endgame_MatchLog.Write("radio_start_dead", "", 0, vector.Zero, string.Format("%1 dead players may respawn, later deaths do not", m_aRadioStartDead.Count()));
+
+		// Sugar Lake: everyone who is dead when phase 3 begins gets a free respawn; after that nobody does.
 		if (cfg.GetFreeRespawnOnRadioPhase())
 		{
 			respawnManager.EndgameFreeRespawn(cfg.GetFactionKeyOne(), "radio phase");
@@ -514,6 +542,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		m_iEliminationTicksTwo = 0;
 		m_bEliminationArmed = false;
 		m_bPermadeathActive = false;
+		m_aRadioStartDead.Clear();
 		m_sWinnerKey = "";
 
 		if (m_ePhase != GRAD_Endgame_EPhase.WAITING)

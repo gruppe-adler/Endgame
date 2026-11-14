@@ -37,7 +37,7 @@ You always know the current phase and the time left from the map status line, an
 ### What happens at the start
 - The radio sites are revealed on the map to both sides (2 sites per match).
 - The **cipher** appears as an item at a hidden place. The side that finished the documents first gets its position as a decoded order, delivered to its squad leaders. The other side is not told where it is and has to find it or take it from someone.
-- Each side gets one **free respawn**. After about 30 seconds, respawn is switched off: if you die now you stay dead and can only spectate.
+- Everyone who is **already dead** when phase 3 begins is released at once and can respawn (they have about 30 seconds to pick a spawn point). **Anyone who dies after phase 3 has begun stays dead** and can only spectate.
 
 ### Transmitting
 - **Anyone** carrying the cipher can start a transmission, whatever their role.
