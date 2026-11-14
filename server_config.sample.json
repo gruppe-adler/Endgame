@@ -107,9 +107,9 @@
 						"m_bReplayEnabled": true
 					},
 					"m_Debug": {
-						"m_fDebugTimeScale": 10.0,
-						"m_bDebugLog": true,
-						"m_bRunSelfTests": true
+						"m_fDebugTimeScale": 1.0,
+						"m_bDebugLog": false,
+						"m_bRunSelfTests": false
 					}
 				}
 			}

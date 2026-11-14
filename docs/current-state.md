@@ -1,6 +1,6 @@
 # Endgame 1989: current state
 
-As of 2026-11-14 (evening update: table placement, replay fixes, GM debug). Written for whoever picks this up next, human or Claude session. Read this first,
+As of 2026-11-15 (night update: nested config, join in progress, carrier-down notice, replay trackers, HUD overlay, new document site prefab, GitHub README). Written for whoever picks this up next, human or Claude session. Read this first,
 then `docs/test-routine.md` (what to check in play) and `Endgame 1989 implementation plan.md` (the
 original plan; parts are superseded, see "Decisions that changed the plan").
 
@@ -25,16 +25,20 @@ players is `docs/briefing.md`.
 | `.../Info/` | `GRAD_Endgame_TaskService` (objectives as vanilla `SCR_Task`s), `InfoService` (server), `InfoClient` (client, owner RPCs) |
 | `.../UI/` | `FieldLogDisplay` (HUD info display), `MapStatusLine`, `Typewriter` sounds, `AdminMenu`, `MapJournalGuard` |
 | `.../Replay/` | **Copy of BreakingContact's replay** (`GRAD_BC_*` renamed `GRAD_Endgame_*`) + `ReplayStubs` |
-| `.../Config/`, `.../Log/` | `GRAD_Endgame_Config` (all tunables), match log (`$profile:GRAD_Endgame/match_*.log`) |
+| `.../Config/`, `.../Log/` | `GRAD_Endgame_Config` (all tunables, now NESTED: one `m_GRAD_Endgame` object with groups `m_Respawn`, `m_Factions`, `m_Fob`, `m_Documents`, `m_Fia`, `m_Radio`, `m_Hud`, `m_Match`, `m_Debug`; getters unchanged), match log (`$profile:GRAD_Endgame/match_*.log`) |
+| `.../GameMode/GRAD_Endgame_LateJoin.c` | Join in progress: Shift+O opens COALITION's slotting menu for a slotless late joiner (phases 1 and 2); server gate in a modded `COA_SlottingManager.UpdateSlotPlayerID` |
+| `.../Objectives/GRAD_Endgame_NoPickup.c` | Modded `SCR_InventoryAction`: refuses every inventory action on a document site (the site prefab inherits a vanilla inventory item) |
+| `.../Replay/GRAD_Endgame_*Tracker.c`, `ExplosiveCatalog`, `DetonationWatcher` | Shots, grenades, smoke, rockets for the replay (ported from BreakingContact). Hooked in by minimal overrides in `Prefabs/Characters/Core/Character_Base.et`, `Prefabs/Weapons/Core/{Ammo_Rocket,FragGrenade,SmokeGrenade}_Base.et` and a component on the lobby entity |
 | `Missions/Endgame89.conf` + `Scripts/.../Config/GRAD_Endgame_Config.c` | **The options.** `GRAD_Endgame_Config` is a `SCR_MissionHeader` subclass: all values live in the mission file (currently a TEST config, see "Before a real match"); a server overrides any of them under `game.gameProperties.missionHeader` (`server_config.sample.json` lists all 70). There is no separate config file |
 | `Configs/System/chimeraInputCommon.conf` | Input actions: Shift+J/K/T/U, plus V/C on the replay map |
 | `Configs/Map/MapFullscreen.conf` | Adds the replay map layer to the fullscreen map (same GUID as vanilla, partial override like BreakingContact) |
 | `Configs/Gearscripts/` | US 80s and USSR 80s gearscripts (copied from BreakingContact) |
-| `Prefabs/` | FOB (per side), document site (`Items/Misc/IntelligenceFolder_E_01/EG_IntelligenceFolder_E_01`, inherits the vanilla intel folder: placed on a table by script, cannot be picked up; the old table-based prefab and `DocumentSite_Auto` were deleted), radio site, cipher item, cipher site, vehicle spots, ammo arsenal boxes, test garrison |
+| `Prefabs/` | FOB (per side), document site (`Items/Misc/IntelligenceFolder_E_01/EG_IntelligenceFolder_E_01`, inherits the vanilla intel folder, made in Workbench; placed on a RANDOM free table by script; hidden when the site is not chosen; pickup blocked; the old table-based prefab and `DocumentSite_Auto` were deleted), radio site, cipher item, cipher site, vehicle spots, ammo arsenal boxes, test garrison |
 | `Prefabs/!Systems/!Characters/Core/COA_PlayerController.et` | Override of COALITION's controller: adds our HUD display (made in Workbench) |
 | `Missions/Endgame89.conf` | The scenario (`{3C7A91E05B2D48F6}Missions/Endgame89.conf`) |
 | `worlds/endgame.ent` + `endgame_Layers/default.layer` | Test world: sub-scene of Eden; lobby, 2 FOBs, 9 document sites, 3 radio sites, 2 cipher sites, vehicle spots |
-| `UI/layouts/`, `UI/Textures/Icons/` | HUD layouts (Roboto Mono font), replay map icons (copied from BreakingContact, same GUIDs) |
+| `UI/layouts/`, `UI/Textures/Icons/`, `UI/Textures/LoadingScreen/` | HUD layouts (Roboto Mono font), replay map icons (copied from BreakingContact, same GUIDs), the loading screen image (`m_sLoadingScreen`, `m_sPreviewImage`, `m_sIcon` of the mission file) |
+| `README.md` (root) | The GitHub README: pitch, phases, admin config, credits |
 | `Sounds/` | Typewriter audio projects (`key1..5`, `return`, `bing`) |
 | `docs/` | `briefing.md`, `test-routine.md`, `garrison-orders-research.md`, this file |
 
@@ -52,6 +56,8 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
    site), the leading side's leaders get its position as a task. Players dead at that moment are released at once;
    any death after it is final (permadeath switches on after a grace period for the released ones). Anyone carrying the cipher may transmit
    (`m_eTransmissionRole 1`).
+   When the cipher carrier goes down (dead or unconscious) BOTH sides get a task and a HUD notice with the last known position, blurred to `m_fCipherLastKnownRadius` (25 m). It is cleared when a living player carries the cipher again; the other side's stale "Recover the cipher" task is removed at the first pickup.
+   Join in progress: a player who connects after the match went live has no slot and (COALITION only offers slotting during safestart) sees no lobby. A HUD hint and Shift+O open the slotting menu until the phase `m_eLateJoinClosesAt` (default RADIO = phases 1 and 2) begins.
 5. Win: transmission finished, or a side eliminated (only if both sides had players at phase 3
    start), or time (COALITION limit 60 min = draw). Then the replay plays, then COALITION's AAR.
 
@@ -77,7 +83,15 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
 | Game Master debug | **written** | Document sites and the cipher item are GM editables (the cipher site is NOT: the editable component put it at 0 0 0, so it has an orange marker instead); a green/grey sphere and line mark the planned document spot (only while the GM view is open); a GM move of a site is sent on to clients (`doc_moved`) |
 | Admin RPCs (advance phase, end match, threshold) | **written** | No UI; need a console or a menu |
 | Gearscripts | works, 6 check errors | Inherited from BreakingContact; radios are shared default items (see below) |
-| Dedicated server / Workshop publish | **played** | Server loads the mission and the addon |
+| Nested config (`m_GRAD_Endgame` groups) | **open, broken** | Server JSON overrides in the nested layout work, but the nested values in `Missions/Endgame89.conf` are NOT applied (local Workbench play: self-tests and `m_fDebugTimeScale 10` ignored; earlier server: empty garrison lists). The code defaults therefore carry the prefab paths and arrays. `UIWidgets.Object` on the nested attributes did not help (checked 2026-11-15) |
+| Join in progress (Shift+O) | **written** | Untested: hint shows for a spectator?, key reaches the spectator screen?, slot pick spawns him, refusal after the window (`late_join_refused`) |
+| Cipher carrier-down notice and task | **written** | Played once: `cipher_last` line, notice and task appeared in the match log; the radius, clearing and both sides' notice are untested with two sides |
+| Replay: shots, smoke, HE, rockets | **written** | Trackers ported. First test: one of two HE showed, smoke did not. Likely cause fixed (grenade poll gave up after 180 s in an inventory), not retested. Debug prints are off because the `.conf` debug flag is ignored |
+| Replay: FIA colour, FIA-crewed vehicles | **written** | FIA = neutral icons tinted green; a vehicle with no faction of its own takes its occupant's faction (was recorded `Empty` = yellow). Untested |
+| HUD overlay (cards above spectator menu and replay) | **played** | A second copy of the HUD layout in its own top layer (`OVERLAY_ZORDER 1000`); the HUD copy is hidden. Confirmed working above the map and the replay (2026-11-15). Only one live display instance (old ones retire: they doubled the typewriter sound): not yet tested through a spectator/respawn cycle |
+| Hidden inactive document sites | **played** | Visible flag off for sites not chosen; confirmed in play (2026-11-15). Collision stays |
+| FOB capture diagnostics | **written** | `garrison_left` lines (positions of the last 3 soldiers) when a FOB will not fall. A FOB is taken only when EVERY agent of its garrison is gone |
+| Dedicated server / Workshop publish | **played** | Server loads the mission and the addon. Two crashes in `Physics simulation` on 2026-11-14 (server 20:47 UTC, one client 22:07), cause unknown; see open problems |
 
 ## Decisions that changed the plan
 
@@ -93,19 +107,22 @@ Dependencies (`addon.gproj`): the base game, COALITION Lobby, Coalition VON.
 - Replay = BreakingContact's own code, copied (fast track, no extra dependency). Our first lean
   replay was deleted.
 - Documents go on tables that are already in the world: the server scans around each placed site
-  (`m_fPlaceRadius` 100 m), picks the nearest free suitable table on the same floor and sends the
+  (`m_fPlaceRadius` 100 m), picks a RANDOM free suitable table on the same floor (not the nearest: that was the same table every match) and sends the
   position to clients. `m_bAutoPlace` off keeps the documents where a mapper put them (manual).
-- The cipher item needs a real item with a model: the old parent (`IntelligenceFolder_E_01`) is a
-  system placeholder with no mesh or physics.
+- The cipher item is an inventory item: its parent is now `Campaign_CacheNote_FIA.et` (a different look from the document folder). The cipher also lies on a free table near its site (`m_bAutoPlace` on the cipher site).
+- The document site is no longer a paper prop with our own `RplComponent`/`ActionsManagerComponent`: it inherits the vanilla folder prefab, so those components are inherited. Adding them again gives `cannot be combined with component ...` and no site. The Copy action was added in Workbench to the inherited actions manager (default context). Disable the inherited `InventoryItemComponent` in the prefab (done by hand); a server-side `RequestUserLock` call was removed (it logged one `unregistred item` RPC error per site).
+- Late join is open in phases 1 and 2 (decided 2026-11-14); phase 3 locks every open slot as before. Players dead when phase 3 starts respawn at once; a later death is final, even inside the grace period.
 - Radio/leadership gear flags are off in the lobby (`m_bEnableLeadershipRadios 0`,
   `m_bEnableRTORadios 0`); everyone carries the shared radio and binoculars.
 
 ## Open problems, in the order I would do them
 
-0. **Document site action and visibility.** Check on the next run: no `has no RplComponent` error
-   for the sites, the papers are there (green marker shows where), "Copy documents" appears. If
-   the action does not, add a collision child (a vanilla prop with collision, invisible) to
-   `EG_IntelligenceFolder_E_01.et`. Also the site at 5507,10551 only has a drill bench in reach.
+A. **Nested `.conf` values are ignored** (see the status table). Until fixed, the `.conf` test values (debug scale 10, self-tests, debug log) do nothing, and so does any other value the `.conf` sets above the code default. Idea: in `GRAD_Endgame_ConfigLoader` read the container (`BaseContainer.GetObject("m_GRAD_Endgame")` and each group) and copy it into the instance with `BaseContainerTools.WriteToInstance`; for a real header the same repair would have to run without overwriting server JSON overrides. Not built.
+B. **Physics crash**, server and a client, both in `Physics simulation` with no script stack. The server log had nine `Attempting to send an RPC through unregistred item` errors from the (removed) `RequestUserLock`. Next A/B: disable the `RigidBody` on `EG_IntelligenceFolder_E_01` (the script places the folders anyway), or put the document site back on the old paper prop.
+C. **A FOB that will not fall** (documents never appear): read `garrison_left` in the match log; consider "most of the garrison dead" or a radius rule.
+D. **Late join key and hint** need a test with a second client; if Shift+O does nothing on the spectator screen, find the input context COALITION's spectator menu activates and add the action to it.
+
+0. **Document site (EG folder prefab).** Check on the next run: no `cannot be combined` error, the folder sits on its table, "Copy documents" appears, no pickup prompt, inactive sites are hidden. If the action does not appear, check the Copy action's context in the inherited actions manager. Also the site at 5507,10551 only has a drill bench in reach.
    0b. **Cipher visual:** give `GRAD_Endgame_CipherItem` a real inventory item with a model
    (briefcase, folder, codebook) as parent; no beam (it would reveal the position).
 1. ~~Navmesh~~ fixed by the mapper; garrisons and patrols confirmed moving (2026-11-14).
@@ -145,9 +162,9 @@ started). Use `SetRespawnEnabled(false)` for permadeath (already done).
 
 ## Before a real match
 
-The live config is a test config. Set in `Missions/Endgame89.conf` (or in the server config's `missionHeader`):
+The live config is a test config. Set in `Missions/Endgame89.conf` (or in the server config's `missionHeader`; `server_config.sample.json` already has release values):
 `m_fDebugTimeScale 1` (it is 10: waves 27 s, transmission 72 s), `m_bDebugLog 0`,
-`m_bRunSelfTests 0`. Check the document site prefab `Duration` (copy time). Remove or re-place
+`m_bRunSelfTests 0`. Local Workbench play runs transmissions ten times shorter (`#ifdef WORKBENCH` in `GetTransmissionSeconds`); a published server is not affected. Mind that the nested `.conf` values are currently ignored (open problem A). Check the document site prefab `Duration` (copy time). Remove or re-place
 test objects  (`GRAD_Endgame_Garrison` on the first document site).
 
 ## Things that cost time, so you do not repeat them
@@ -172,10 +189,17 @@ test objects  (`GRAD_Endgame_Garrison` on the first document site).
   guard logs it at startup.
 - The replay recorder had parked spectators at (40, 100000, 0) in its frames.
 - The replay assets share GUIDs with BreakingContact. Do not load both addons on one server.
+- **COALITION shows no lobby and no slotting prompt to a player who joins after safestart**: the "open slotting" prompt of its spectator menu exists only while safestart is on. `m_bLockUnusedSlots` (hidden attribute) locks empty slots at go-live and is a different thing.
+- **The HUD manager creates a new display every time the controlled entity changes** (spectator, slot, character, respawn). Old `SCR_InfoDisplayExtended` instances keep updating unless retired: several typewriters, doubled sounds, stacked key listeners.
+- A layout that ships with all cards visible (sample text) needs them hidden by script; moving the script to a second copy of the layout leaves the first copy's sample cards on screen unless it is hidden too.
+- Do not call `InventoryItemComponent.RequestUserLock` in `OnPostInit` (RPC through an unregistered item).
+- Inheriting a vanilla prefab and adding `ActionsManagerComponent` or `RplComponent` with new IDs gives `cannot be combined`. Use Workbench's inherit and edit the inherited component.
+- The Workbench MCP tools see nothing useful while Workbench is in game mode; terrain height queries return 0. The vanilla packed prefabs cannot be read from disk.
+- Server logs: `GRAD_Endgame/match_*.log` in the server profile plus `console.log` of the run; `garrison_left`, `doc_placed` ("one of N free tables"), `cipher_last`, `late_join_refused`, `radio_start_dead` are the new lines.
 
 ## Test checklist pointer
 
-`docs/test-routine.md` has the numbered checks (1 to 51). Next run should cover: `doc_placed` lines and the document action, the replay map (pan/zoom, FIA and your marker visible), the order widget not showing at start, the arsenal ammo, freeze-time phase
+`docs/test-routine.md` has the numbered checks (1 to 51). Next run should also cover: self-test `PASS` lines (is the `.conf` applied?), `doc_placed` randomness over several matches, hidden inactive sites, the HUD overlay over the spectator menu and the replay (no doubled sound, no cards at start), Shift+O for a late joiner, `cipher_last` with two sides, a smoke and two HE thrown late in the replay, and the physics crash A/B. The older list: `doc_placed` lines and the document action, the replay map (pan/zoom, FIA and your marker visible), the order widget not showing at start, the arsenal ammo, freeze-time phase
 start (`freeze_over` before `phase;;;;WAITING -> FOB`), permadeath deaths (no wave lines after
 `permadeath`), copy bar vs engine bar, any-role transmit, Shift key bindings, replay and
 after-action, the `has waypoint` log lines once the navmesh is fixed.

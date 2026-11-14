@@ -64,6 +64,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	protected bool m_bSpawned;      //!< the one spawn has happened (or failed for good)
 	protected bool m_bHadAgents;    //!< the groups have had at least one member
 	protected bool m_bCleared;
+	protected int m_iPeakAgents;   //!< most soldiers this garrison has had at once
 	protected int m_iLoggedStragglers = -1;   //!< last agent count written to the match log by LogStragglers
 	protected int m_iLastAgentCount;
 
@@ -281,8 +282,11 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		if (agents > 0)
 		{
 			m_bHadAgents = true;
-			// The last few soldiers keep a FOB from being taken: say where they are.
-			if (agents <= 3 && agents != m_iLoggedStragglers)
+			if (agents > m_iPeakAgents)
+				m_iPeakAgents = agents;
+			// The last few soldiers keep a FOB from being taken: say where they are. Only once the
+			// garrison has lost soldiers: while it is still spawning its groups the count is low too.
+			if (agents <= 3 && agents < m_iPeakAgents && agents != m_iLoggedStragglers)
 			{
 				m_iLoggedStragglers = agents;
 				LogStragglers(agents);
