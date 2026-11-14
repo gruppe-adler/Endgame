@@ -563,6 +563,7 @@ class GRAD_Endgame_ReplayManager : ScriptComponent
 		
 		// Record player positions
 		RecordPlayers(frame);
+		RecordGarrisons(frame);
 		
 		RecordTrackedVehicles(frame);
 		
@@ -665,6 +666,30 @@ class GRAD_Endgame_ReplayManager : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! The FIA garrison soldiers, as player snapshots with negative ids (BreakingContact records
+	//! players only). They take the neutral icon in the map layer.
+	void RecordGarrisons(GRAD_Endgame_ReplayFrame frame)
+	{
+		int aiId = 0;
+		array<IEntity> soldiers = {};
+		foreach (GRAD_Endgame_GarrisonComponent garrison : GRAD_Endgame_GarrisonComponent.GetAll())
+		{
+			soldiers.Clear();
+			garrison.GetSoldiers(soldiers);
+			foreach (IEntity soldier : soldiers)
+			{
+				SCR_ChimeraCharacter character = SCR_ChimeraCharacter.Cast(soldier);
+				if (!character || character.GetCharacterController().IsDead())
+					continue;
+
+				aiId--;
+				RplId noVehicle;
+				frame.players.Insert(GRAD_Endgame_PlayerSnapshot.Create(aiId, "FIA", "FIA", soldier.GetOrigin(), soldier.GetYawPitchRoll(), true, false, "", "Rifleman", noVehicle));
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
 	void RecordPlayers(GRAD_Endgame_ReplayFrame frame)
 	{
 		PlayerManager playerManager = GetGame().GetPlayerManager();
@@ -689,6 +714,11 @@ class GRAD_Endgame_ReplayManager : ScriptComponent
 			vector position = controlledEntity.GetOrigin();
 			vector angles = controlledEntity.GetYawPitchRoll();
 			bool isAlive = !character.GetCharacterController().IsDead();
+
+			// COALITION parks a spectator on a dummy character far above the map (40, 100000, 0).
+			// That is not a position on the replay map.
+			if (position[1] > 20000)
+				continue;
 
 			// vehicle info
 			bool isInVehicle = character.IsInVehicle();
@@ -1079,15 +1109,9 @@ void StartLocalReplayPlayback()
 			}
 			else
 			{
-				// No spectator menu — load Map.layout as root widget and use the double-open trick
-				// (same pattern as COA_SpectatorMenu.OpenMapWithConfig) so m_MapWidget is properly set
-				Widget mapFrame = GetGame().GetWorkspace().CreateWidgets("{0651202E9F2646DE}UI/layouts/Map/Map.layout", null);
-				MapConfiguration mapConfig = mapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, replayMapConfig, mapFrame);
-				mapConfig.MapEntityMode = EMapEntityMode.PLAIN;
-				mapEntity.OpenMap(mapConfig);
-				mapEntity.CloseMap();
-				mapConfig.MapEntityMode = EMapEntityMode.FULLSCREEN;
-				mapEntity.OpenMap(mapConfig);
+				// No spectator menu (a living player): open the vanilla map menu. It activates the map
+				// input (pan, zoom) and hides the HUD; our layer is part of its config (MapFullscreen.conf).
+				GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.MapMenu);
 				if (GRAD_Endgame_ReplayDebug.IsDebugMode())
 					Print("GRAD_Endgame_ReplayManager: Map opened with replay config", LogLevel.NORMAL);
 			}
@@ -1984,15 +2008,9 @@ void StartLocalReplayPlayback()
 		}
 		else
 		{
-			// No spectator menu — load Map.layout as root widget and use the double-open trick
-			// (same pattern as COA_SpectatorMenu.OpenMapWithConfig) so m_MapWidget is properly set
-			Widget mapFrame = GetGame().GetWorkspace().CreateWidgets("{0651202E9F2646DE}UI/layouts/Map/Map.layout", null);
-			MapConfiguration mapConfig = mapEntity.SetupMapConfig(EMapEntityMode.FULLSCREEN, replayMapConfig, mapFrame);
-			mapConfig.MapEntityMode = EMapEntityMode.PLAIN;
-			mapEntity.OpenMap(mapConfig);
-			mapEntity.CloseMap();
-			mapConfig.MapEntityMode = EMapEntityMode.FULLSCREEN;
-			mapEntity.OpenMap(mapConfig);
+			// No spectator menu (a living player): open the vanilla map menu. It activates the map
+			// input (pan, zoom) and hides the HUD; our layer is part of its config (MapFullscreen.conf).
+			GetGame().GetMenuManager().OpenMenu(ChimeraMenuPreset.MapMenu);
 		}
 
 		// Wait for map + replay layer to be ready before starting playback
@@ -2481,6 +2499,9 @@ void StartLocalReplayPlayback()
 		SCR_MapEntity mapEntity = SCR_MapEntity.GetMapInstance();
 		if (mapEntity && mapEntity.IsOpen())
 			mapEntity.CloseMap();
+
+		// The replay map was opened as the vanilla map menu for a living player: close that menu too.
+		GetGame().GetMenuManager().CloseMenuByPreset(ChimeraMenuPreset.MapMenu);
 
 		if (GRAD_Endgame_ReplayDebug.IsDebugMode())
 			Print("GRAD_Endgame_ReplayManager: Map closed successfully", LogLevel.NORMAL);

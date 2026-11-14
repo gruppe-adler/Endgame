@@ -125,6 +125,22 @@ class GRAD_Endgame_Config
 	[Attribute(defvalue: "0", desc: "A side sees the opponent's document count.", category: "Documents")]
 	protected bool m_bShowEnemyProgress;
 
+	// --- FIA vehicle patrols ---
+	[Attribute(defvalue: "2", desc: "How many FIA vehicle patrols drive between the document sites (0 = none).", params: "0 10 1", category: "AI")]
+	protected int m_iFiaPatrolCount;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Vehicle prefab of an FIA patrol. Suggestion: UAZ469_PKM_FIA.", params: "et", category: "AI")]
+	protected ResourceName m_sFiaPatrolVehicle;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Group prefab that crews the vehicle (soldiers beyond the seats are removed). Suggestion: FIA fire team.", params: "et", category: "AI")]
+	protected ResourceName m_sFiaPatrolCrewGroup;
+
+	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Waypoint prefab the patrol drives to, one stop after the other.", params: "et", category: "AI")]
+	protected ResourceName m_sFiaPatrolWaypoint;
+
+	[Attribute(defvalue: "25", desc: "Metres around a stop that count as arrived.", params: "5 100 1", category: "AI")]
+	protected float m_fFiaPatrolRadius;
+
 	// --- Cipher and radio ---
 	[Attribute(defvalue: "", uiwidget: UIWidgets.ResourcePickerThumbnail, desc: "Inventory item prefab carrying GRAD_Endgame_CipherComponent.", params: "et", category: "Radio")]
 	protected ResourceName m_sCipherPrefab;
@@ -265,6 +281,13 @@ class GRAD_Endgame_Config
 	bool GetExactDocumentPositions() { return m_bExactDocumentPositions; }
 	float GetDocumentAreaRadius() { return m_fDocumentAreaRadius; }
 	bool GetShowEnemyProgress() { return m_bShowEnemyProgress; }
+
+	// FIA patrols
+	int GetFiaPatrolCount() { return m_iFiaPatrolCount; }
+	ResourceName GetFiaPatrolVehicle() { return m_sFiaPatrolVehicle; }
+	ResourceName GetFiaPatrolCrewGroup() { return m_sFiaPatrolCrewGroup; }
+	ResourceName GetFiaPatrolWaypoint() { return m_sFiaPatrolWaypoint; }
+	float GetFiaPatrolRadius() { return m_fFiaPatrolRadius; }
 
 	// Cipher and radio
 	bool GetCipherRevealToDefenders() { return m_bCipherRevealToDefenders; }

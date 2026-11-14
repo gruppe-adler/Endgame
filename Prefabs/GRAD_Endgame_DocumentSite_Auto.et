@@ -1,0 +1,58 @@
+GenericEntity : "{5DA1635FAFD1600D}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V2.et" {
+ ID "7C1D9A3E5B2F4806"
+ components {
+  RplComponent "{7C1D9A3E5B2F4811}" {
+  }
+  SCR_EditableEntityComponent "{7C1D9A3E5B2F4830}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{7C1D9A3E5B2F4831}" {
+    Name "Endgame: Document site"
+   }
+   m_bAutoRegister ALWAYS
+  }
+  GRAD_Endgame_DocumentSiteComponent "{7C1D9A3E5B2F4812}" {
+   m_bAutoPlace 1
+   m_fPlaceRadius 100
+  }
+  GRAD_Endgame_GarrisonComponent "{7C1D9A3E5B2F4813}" {
+   m_eTier LIGHT
+  }
+  ActionsManagerComponent "{7C1D9A3E5B2F4814}" {
+   ActionContexts {
+    UserActionContext "{7C1D9A3E5B2F4815}" {
+     UIInfo SCR_ActionUIInfo "{7C1D9A3E5B2F4816}" {
+      Name "Documents"
+     }
+     ContextName "world"
+     Position PointInfo "{7C1D9A3E5B2F4817}" {
+      Offset 0 0.1 0
+     }
+     Radius 2.5
+    }
+   }
+   additionalActions {
+    GRAD_Endgame_CopyDocumentAction "{7C1D9A3E5B2F4818}" {
+     ParentContextList {
+      "world"
+     }
+     UIInfo SCR_ActionUIInfo "{7C1D9A3E5B2F4819}" {
+      Name "Copy documents"
+     }
+     Duration 10
+    }
+   }
+  }
+ }
+ {
+  GenericEntity : "{60954667DABDE93A}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V5.et" {
+   ID "7C1D9A3E5B2F4822"
+   coords 0.056 0.01 0.248
+   angles 0 107.493 0
+  }
+  GenericEntity : "{85090A9ED6587E51}Prefabs/Props/Garbage/Generic/LitterInterior_01/Single/LitterInterior_USSR_01_document_V4.et" {
+   ID "7C1D9A3E5B2F4823"
+   coords -0.056 0.01 0.254
+   angles 0 149.223 0
+  }
+ }
+}

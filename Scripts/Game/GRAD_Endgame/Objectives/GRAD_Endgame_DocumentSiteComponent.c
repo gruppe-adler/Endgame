@@ -51,7 +51,30 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	[RplProp()]
 	protected bool m_bActive = true;
 
+	//! Put the documents on a table that is already in the world near the placed position, instead
+	//! of where the site stands. The server picks the table when the site is chosen for the match.
+	//! Off = the documents stay exactly where they were placed (hand-placed on a table).
+	[Attribute(defvalue: "1", desc: "Automatic: on a free table near this site at match start. Off: stay where placed.")]
+	protected bool m_bAutoPlace = true;
+
+	[Attribute(defvalue: "100", desc: "Metres around the placed position to look for a table.", params: "5 300 1")]
+	protected float m_fPlaceRadius = 100;
+
+	//! Where the server put the documents (valid when m_bPlaced); clients move there too.
+	[RplProp(onRplName: "OnPlacedChanged")]
+	protected vector m_vPlaced;
+
+	[RplProp(onRplName: "OnPlacedChanged")]
+	protected bool m_bPlaced;
+
 	protected static ref array<GRAD_Endgame_DocumentSiteComponent> s_aAll = {};
+
+	//! Tables already taken by a site this match (several sites must not share one).
+	protected static ref array<IEntity> s_aUsedTables = {};
+
+	protected static const float MAX_TABLE_HEIGHT_DIFF = 2.5;   //!< metres above or below the placed spot
+	protected static const float TABLE_DROP_HEIGHT = 0.05;   //!< metres above the table top
+	protected static const float TABLE_MIN_SPACING = 3;   //!< two sites on one table spot would overlap
 
 	//! Server: id of this site's map marker ("doc_<index>").
 	protected string m_sMarkerId;
@@ -82,11 +105,129 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	//! Server: switch the site on or off for this match.
 	void SetActive(bool active)
 	{
-		if (!Replication.IsServer() || m_bActive == active)
+		if (!Replication.IsServer())
+			return;
+
+		// Sites start active, so "chosen" is no change of state: place them anyway.
+		if (active && m_bAutoPlace)
+			PlaceOnTable();
+
+		if (m_bActive == active)
 			return;
 
 		m_bActive = active;
 		Replication.BumpMe();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: find the nearest suitable free table around the placed position and put the documents
+	//! on it. Without a table the documents stay where they are.
+	protected void PlaceOnTable()
+	{
+		if (m_bPlaced)
+			return;
+
+		array<ref GRAD_Endgame_TableHit> hits = {};
+		GRAD_Endgame_TableScan.Find(GetOwner().GetOrigin(), m_fPlaceRadius, hits);
+
+		foreach (GRAD_Endgame_TableHit hit : hits)
+		{
+			if (!GRAD_Endgame_TableScan.IsSuitable(hit))
+				continue;
+			// Same floor: a table in an upper storey, or on a roof, is no table for this site.
+			if (Math.AbsFloat(hit.m_vTop[1] - GetOwner().GetOrigin()[1]) > MAX_TABLE_HEIGHT_DIFF)
+				continue;
+			if (s_aUsedTables.Contains(hit.m_Entity))
+				continue;
+
+			bool crowded;
+			foreach (IEntity used : s_aUsedTables)
+			{
+				if (used && vector.Distance(used.GetOrigin(), hit.m_Entity.GetOrigin()) < TABLE_MIN_SPACING)
+					crowded = true;
+			}
+			if (crowded)
+				continue;
+
+			s_aUsedTables.Insert(hit.m_Entity);
+			// A little above the surface: the site is a physics prop, gravity sets it down on the table.
+			m_vPlaced = hit.m_vTop + Vector(0, TABLE_DROP_HEIGHT, 0);
+			m_bPlaced = true;
+			Replication.BumpMe();
+			ApplyPlaced();
+			GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, m_vPlaced, string.Format("on %1, %2 m from the placed spot", FilePath.StripPath(hit.m_sName), Math.Round(hit.m_fDistance)));
+			return;
+		}
+
+		GRAD_Endgame_MatchLog.Write("doc_placed", "", 0, GetOwner().GetOrigin(), "no free table in reach, documents stay where placed");
+	}
+
+	protected vector m_vLastOrigin;
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: something else moved the site (the Game Master, to correct the placement): the
+	//! clients follow, as they do for a table placement.
+	protected void WatchMoved()
+	{
+		vector origin = GetOwner().GetOrigin();
+		if (vector.DistanceSq(origin, m_vLastOrigin) < 0.25)
+			return;
+
+		m_vLastOrigin = origin;
+		m_vPlaced = origin;
+		m_bPlaced = true;
+		Replication.BumpMe();
+		GRAD_Endgame_MatchLog.Write("doc_moved", "", 0, origin, "site moved (Game Master), clients follow");
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Debug marker, for the Game Master while the editor is open: a sphere and a tall line where
+	//! the documents are supposed to be. Green = a site of this match, grey = not chosen. If the
+	//! documents are not there, the placement or the prop is wrong, not the marker.
+	override void EOnFrame(IEntity owner, float timeSlice)
+	{
+		if (!IsDebugViewer())
+			return;
+
+		vector position = owner.GetOrigin();
+		if (m_bPlaced)
+			position = m_vPlaced;
+
+		int color = Color.GRAY;
+		if (m_bActive)
+			color = Color.GREEN;
+
+		Shape.CreateSphere(color, ShapeFlags.WIREFRAME | ShapeFlags.NOZBUFFER | ShapeFlags.ONCE, position, 0.35);
+		vector points[2];
+		points[0] = position;
+		points[1] = position + Vector(0, 25, 0);
+		Shape.CreateLines(color, ShapeFlags.NOZBUFFER | ShapeFlags.ONCE, points, 2);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected bool IsDebugViewer()
+	{
+		// Only while the Game Master view is open. Having the permission is not enough, and the
+		// debug log switch (on in the test config) must not show it to everyone.
+		SCR_EditorManagerEntity editorManager = SCR_EditorManagerEntity.GetInstance();
+		return editorManager && !editorManager.IsLimited() && editorManager.IsOpened();
+	}
+
+	//------------------------------------------------------------------------------------------------
+	protected void ApplyPlaced()
+	{
+		if (m_bPlaced)
+		{
+			GetOwner().SetOrigin(m_vPlaced);
+			m_vLastOrigin = m_vPlaced;
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Client: the server chose a table.
+	protected void OnPlacedChanged()
+	{
+		ApplyPlaced();
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -95,6 +236,19 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 		super.OnPostInit(owner);
 		GRAD_Endgame_Rpl.Require(owner, "Document site");
 		s_aAll.Insert(this);
+
+		// Debug marker for the Game Master (see EOnFrame); not on a dedicated server (no screen).
+		if (System.IsConsoleApp() == false)
+			SetEventMask(owner, EntityEvent.FRAME);
+
+		// A client that joins late may not get the change callback for the first sync.
+		if (!Replication.IsServer())
+			GetGame().GetCallqueue().CallLater(ApplyPlaced, 3000, false);
+		else
+		{
+			m_vLastOrigin = owner.GetOrigin();
+			GetGame().GetCallqueue().CallLater(WatchMoved, 1000, true);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -264,6 +418,8 @@ class GRAD_Endgame_DocumentSiteComponent : ScriptComponent
 	override void OnDelete(IEntity owner)
 	{
 		GetGame().GetCallqueue().Remove(DropStaleLock);
+		GetGame().GetCallqueue().Remove(ApplyPlaced);
+		GetGame().GetCallqueue().Remove(WatchMoved);
 		s_aAll.RemoveItem(this);
 		super.OnDelete(owner);
 	}

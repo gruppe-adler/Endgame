@@ -1,6 +1,15 @@
 GenericEntity {
  ID "28C3210E1952998F"
  components {
+  RplComponent "{7C1D9A3E5B2F4840}" {
+  }
+  SCR_EditableEntityComponent "{7C1D9A3E5B2F4841}" {
+   m_EntityType SYSTEM
+   m_UIInfo SCR_EditableEntityUIInfo "{7C1D9A3E5B2F4842}" {
+    Name "Endgame: Cipher site"
+   }
+   m_bAutoRegister ALWAYS
+  }
   GRAD_Endgame_CipherSiteComponent "{DCE8124F17226808}" {
   }
  }

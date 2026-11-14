@@ -158,6 +158,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		super.OnPostInit(owner);
 		s_Instance = this;
 
+		// A new match starts with nothing known on this machine (see GRAD_Endgame_ClientInfo.Clear).
+		GRAD_Endgame_ClientInfo.Clear();
+
 		if (!Replication.IsServer())
 		{
 			// A late joiner gets the current value without the change callback (BreakingContact's
@@ -342,7 +345,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		GRAD_Endgame_MatchLog.Write("phase", "", 0, vector.Zero, string.Format("%1 -> %2 (%3)", SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, oldPhase), SCR_Enum.GetEnumName(GRAD_Endgame_EPhase, phase), cause));
 
 		if (phase == GRAD_Endgame_EPhase.FOB && cfg)
+		{
 			ShowFobMarkers(cfg);
+			GRAD_Endgame_FiaPatrols.Start(cfg);
+		}
 
 		if (phase == GRAD_Endgame_EPhase.DOCUMENTS && cfg)
 		{
@@ -367,6 +373,9 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 			if (slottingManager)
 				slottingManager.LockAllOpenSlots();
 		}
+
+		if (phase == GRAD_Endgame_EPhase.ENDED)
+			GRAD_Endgame_FiaPatrols.Stop();
 
 		if (phase == GRAD_Endgame_EPhase.ENDED)
 			GRAD_Endgame_ClientInfo.Clear();   // the after-action screen must not find our map markers
@@ -482,6 +491,7 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 	{
 		GetGame().GetCallqueue().Remove(EnablePermadeath);
 		GetGame().GetCallqueue().Remove(WaitForFreezeEnd);
+		GRAD_Endgame_FiaPatrols.Stop();
 
 		if (m_bRespawnDisabledByUs)
 		{
@@ -614,6 +624,10 @@ class GRAD_Endgame_GameModeComponent : ScriptComponent
 		GRAD_Endgame_MatchLog.Write("sites_chosen", "", 0, vector.Zero, string.Format("%1 of %2 sites, imbalance %3 \%", chosen.Count(), all.Count(), Math.Round(imbalance * 100)));
 		if (fobOne && fobTwo && imbalance > cfg.GetSiteBalanceTolerance())
 			GRAD_Endgame_MatchLog.Error(string.Format("No fair set of document sites found (best imbalance %1 \%). Place more sites halfway between the FOBs.", Math.Round(imbalance * 100)));
+
+		// Test: are there tables near the sites to put the documents on? (see GRAD_Endgame_TableScan)
+		if (cfg.GetRunSelfTests())
+			GRAD_Endgame_TableScan.LogSiteScan();
 	}
 
 	//------------------------------------------------------------------------------------------------

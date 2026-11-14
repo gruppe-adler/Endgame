@@ -129,7 +129,18 @@ COA_StaticSpawnPoint "6AD556E33B9D8B6F" : "{0B3312C6940005B9}PrefabsMissionMakin
 GenericEntity : "{142A5B364288AED4}Prefabs/GRAD_Endgame_Fob_OPFOR.et" {
  coords 4846.613 111.953 8100.167
 }
-$grp GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
+$grp GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
+ {
+  coords 4407.722 9.383 9472.038
+ }
+ {
+  coords 5607.021 27.728 9823.284
+ }
+}
+COA_StaticSpawnPoint "6AD556E33B9D8980" : "{62865C82AB534D91}PrefabsMissionMaking/SpawnPoints/SpawnPoints/BLUFOR_Spawn.et" {
+ coords 4917.543 28 11763.395
+}
+$grp GenericEntity : "{811A1448CC521C45}Prefabs/GRAD_Endgame_DocumentSite_Auto.et" {
  {
   coords 4558.053 22.014 10504.468
   angles 0 -94.6 0
@@ -167,28 +178,17 @@ $grp GenericEntity : "{58ACB2B8A4C4815F}Prefabs/GRAD_Endgame_DocumentSite.et" {
   angles 0 -161.885 0
  }
 }
-$grp GenericEntity : "{6079BE0A0A6A0052}Prefabs/GRAD_Endgame_CipherSite.et" {
- {
-  coords 4407.722 9.383 9472.038
- }
- {
-  coords 5607.021 27.728 9823.284
- }
-}
-COA_StaticSpawnPoint "6AD556E33B9D8980" : "{62865C82AB534D91}PrefabsMissionMaking/SpawnPoints/SpawnPoints/BLUFOR_Spawn.et" {
- coords 4917.543 28 11763.395
-}
 GenericEntity : "{8CB7E485E9D08D1E}Prefabs/GRAD_Endgame_Fob_BLUFOR.et" {
  coords 4451.581 5.811 11212.504
 }
 $grp GenericEntity : "{9D1A106621301828}Prefabs/GRAD_Endgame_VehicleSpot_OPFOR.et" {
  {
   coords 4858.664 112.383 8131.787
-  angles 0 39.316 0
+  angles 0 39.316 15.013
  }
  {
   coords 4863.973 112.624 8137.461
-  angles 0 25.497 0
+  angles 0 25.497 15.46
  }
 }
 $grp GenericEntity : "{CA5DE314ACB59BA8}Prefabs/GRAD_Endgame_VehicleSpot_BLUFOR.et" {

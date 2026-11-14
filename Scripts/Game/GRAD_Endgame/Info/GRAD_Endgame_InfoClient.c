@@ -139,6 +139,11 @@ class GRAD_Endgame_ClientInfo
 		foreach (string id : ids)
 			HideOnMap(id);
 		s_mMarkers.Clear();
+		// The order and the notices too: statics survive a restart in the Workbench, and an old
+		// order must not show up in the next match.
+		s_sOrder = "";
+		s_aNoticeTitles.Clear();
+		s_aNoticeTexts.Clear();
 		s_OnChanged.Invoke();
 	}
 

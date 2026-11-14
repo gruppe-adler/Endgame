@@ -72,6 +72,32 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	static int s_iActiveGroups;
 	static int s_iActiveAgents;
 
+	protected static ref array<GRAD_Endgame_GarrisonComponent> s_aAll = {};
+
+	//------------------------------------------------------------------------------------------------
+	static array<GRAD_Endgame_GarrisonComponent> GetAll()
+	{
+		return s_aAll;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Server: the soldiers of this garrison that are alive (for the replay recording).
+	void GetSoldiers(notnull array<IEntity> soldiers)
+	{
+		foreach (SCR_AIGroup group : m_aGroups)
+		{
+			if (!group)
+				continue;
+			array<AIAgent> agents = {};
+			group.GetAgents(agents);
+			foreach (AIAgent agent : agents)
+			{
+				if (agent && agent.GetControlledEntity())
+					soldiers.Insert(agent.GetControlledEntity());
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------------------
 	//! Server: fired once when the garrison has been wiped out.
 	ScriptInvoker GetOnCleared()
@@ -119,6 +145,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);
+		s_aAll.Insert(this);
 		if (!Replication.IsServer())
 			return;
 
@@ -132,6 +159,7 @@ class GRAD_Endgame_GarrisonComponent : ScriptComponent
 		GetGame().GetCallqueue().Remove(AssignWaypoint);
 		GetGame().GetCallqueue().Remove(CheckWaypoint);
 		RemoveGroups();
+		s_aAll.RemoveItem(this);
 		super.OnDelete(owner);
 	}
 

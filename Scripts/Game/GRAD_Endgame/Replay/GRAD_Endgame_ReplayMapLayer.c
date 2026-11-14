@@ -382,6 +382,10 @@ class GRAD_Endgame_ReplayMapLayer : GRAD_Endgame_MapMarkerLayer // Inherit from 
             else if (GRAD_Endgame_ReplayDebug.IsBluforFactionKey(plFaction))
                 plFaction = "US";
 
+            // Anyone who is neither side (the FIA garrison) gets the neutral icon.
+            if (plFaction != "US" && plFaction != "USSR")
+                plFaction = "CIV";
+
             string key = roleStr + "_" + plFaction;
             string texturePath = m_unitTypeTextures.Get(key);
 
